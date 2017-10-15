@@ -74,7 +74,7 @@ class SequenceLabelling(object):
     def evaluate(self, x, y):
         loss, acc = self.sess.run([self.loss, self.accuracy], feed_dict={self.data: x, self.target: y, self.dropout: 0.})
         return loss, acc
-
+    
     def predict(self, x):
         preds = self.sess.run(self.prediction, feed_dict={self.data: x, self.dropout: 0.})
         preds = np.argmax(preds, axis=2)
@@ -98,11 +98,11 @@ class SequenceLabelling(object):
         return prediction
     
     def _build_loss(self):
-        cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=self.prediction, labels=self.target)
-        #cross_entropy = self.target * tf.log(self.prediction)
-        #cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
+        #cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=self.prediction, labels=self.target)
+        cross_entropy = self.target * tf.log(self.prediction)
+        cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
         mask = tf.sign(tf.reduce_max(tf.abs(self.target), axis=2))
-        mask /= tf.reduce_mean(tf.reduce_mean(mask))
+        #mask /= tf.reduce_mean(tf.reduce_mean(mask))
         cross_entropy *= mask
         cross_entropy = tf.reduce_mean(cross_entropy, axis=1)
         return tf.reduce_mean(cross_entropy)
@@ -120,7 +120,7 @@ class SequenceLabelling(object):
         return tf.reduce_mean(tf.reduce_mean(correct))
     
     def _weight_and_bias(self, in_size, out_size):
-        weight = tf.truncated_normal([in_size, out_size], stddev=1.0)
+        weight = tf.truncated_normal([in_size, out_size], stddev=0.01)
         bias = tf.constant(0.1, shape=[out_size])
         return tf.Variable(weight), tf.Variable(bias)
     
@@ -152,7 +152,7 @@ class SequenceLabelling(object):
 input_dim = data_X[0].shape[-1]
 num_classes = data_Y[0].shape[-1]
 max_squ_len = MAX_SQU_LEN
-model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=1)
+model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=2)
 model.summary()
 
 valid_size = 500
@@ -161,9 +161,8 @@ train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=10, batch_size=16, eval_every=1)
 
 # predict
-preds = sess.run(predict, {input_x: train_X[:1]})
-preds = np.argmax(preds, axis=2)
-print(preds[0])
+model.save('test')
+preds = model.predict(test_X)
 
 
 
