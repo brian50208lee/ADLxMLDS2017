@@ -16,7 +16,7 @@ train_label = data_dir + 'label/train.lab'
 
 # load data
 loader = DataLoader()
-train_X, train_Y, label_map, instance_map = loader.load(fbank_train, labels_path=train_label, num_classes=48)
+data_X, data_Y, label_map, instance_map = loader.load(fbank_train, labels_path=train_label, num_classes=48)
 test_X, _, _, instance_map = loader.load(fbank_test)
 
 # padding
@@ -27,66 +27,138 @@ def pad(x, shape):
     return pad_x
 
 MAX_SQU_LEN = 800
-train_X = [pad(x, (MAX_SQU_LEN, x.shape[1])) for x in train_X]
-train_Y = [pad(y, (MAX_SQU_LEN, y.shape[1])) for y in train_Y]
+data_X = [pad(x, (MAX_SQU_LEN, x.shape[1])) for x in data_X]
+data_Y = [pad(y, (MAX_SQU_LEN, y.shape[1])) for y in data_Y]
 test_X = [pad(x, (MAX_SQU_LEN, x.shape[1])) for x in test_X]
 
+
+class SequenceLabelling(object):
+    def __init__(self, input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=3):
+        self._num_hidden = num_hidden
+        self._num_layers = num_layers
+        self._max_squ_len = max_squ_len
+        #build
+        tf.reset_default_graph()
+        self.data = tf.placeholder(tf.float32, [None, self._max_squ_len, input_dim])
+        self.target = tf.placeholder(tf.float32, [None, self._max_squ_len, num_classes])
+        self.dropout = tf.placeholder(tf.float32)
+        self.prediction = self._build_prediction()
+        self.loss = self._build_loss()
+        self.optimize = self._build_optimize()
+        self.accuracy = self._build_accuracy()
+        # vars
+        self.vars = {var.name: var for var in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)}
+        # init session
+        self.sess = tf.Session()
+        self.sess.run(tf.global_variables_initializer())
+    
+    def fit(self, train, valid=None, dropout=0., num_epochs=10, batch_size=16, eval_every=1):
+        train_X, train_Y = train
+        for epoch in range(num_epochs):
+            num_steps = (len(train_X)-1)//batch_size + 1
+            for step in range(num_steps):
+                batch_x = train_X[step*batch_size : step*batch_size+batch_size]
+                batch_y = train_Y[step*batch_size : step*batch_size+batch_size]
+                # run
+                self.sess.run(self.optimize, feed_dict={self.data: batch_x, self.target: batch_y, self.dropout: dropout})
+                loss, acc = self.evaluate(batch_x, batch_y)
+                print('epoch:{:>2d}/{:<2d}  batch:{:>4d}/{:<4d}  '.format(epoch+1, num_epochs, step*batch_size, num_steps*batch_size), end='')
+                print('loss:{:<3.5f}  acc:{:>3.1f}%  '.format(loss, 100*acc), end='')
+                # evaluation
+                if step % eval_every == 0 and valid is not None:
+                    valid_x, valid_y = valid
+                    val_loss, val_acc = self.evaluate(valid_x, valid_y)
+                    print('val_loss:{:<3.5f}  va_acc:{:>3.1f}%  '.format(val_loss, 100*val_acc), end='')
+                print()
+    
+    def evaluate(self, x, y):
+        loss, acc = self.sess.run([self.loss, self.accuracy], feed_dict={self.data: x, self.target: y, self.dropout: 0.})
+        return loss, acc
+
+    def predict(self, x):
+        preds = self.sess.run(self.prediction, feed_dict={self.data: x, self.dropout: 0.})
+        preds = np.argmax(preds, axis=2)
+        return preds
+    
+    def _build_prediction(self):
+        # Recurrent network.
+        cells = [tf.contrib.rnn.GRUCell(self._num_hidden, reuse=False) for _ in range(self._num_layers)]
+        dropcells = [tf.contrib.rnn.DropoutWrapper(cell, input_keep_prob=1-self.dropout) for cell in cells]
+        multicell = tf.contrib.rnn.MultiRNNCell(dropcells, state_is_tuple=True)
+        multicell = tf.contrib.rnn.DropoutWrapper(multicell, output_keep_prob=1-self.dropout)
+        output, _ = tf.nn.dynamic_rnn(multicell, self.data, dtype=tf.float32)
+        # Softmax layer.
+        max_length = int(self.target.get_shape()[1])
+        num_classes = int(self.target.get_shape()[2])
+        weight, bias = self._weight_and_bias(self._num_hidden, num_classes)
+        # Flatten to apply same weights to all time steps.
+        output = tf.reshape(output, [-1, self._num_hidden])
+        prediction = tf.nn.softmax(tf.matmul(output, weight) + bias)
+        prediction = tf.reshape(prediction, [-1, max_length, num_classes])
+        return prediction
+    
+    def _build_loss(self):
+        cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=self.prediction, labels=self.target)
+        #cross_entropy = self.target * tf.log(self.prediction)
+        #cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
+        mask = tf.sign(tf.reduce_max(tf.abs(self.target), axis=2))
+        mask /= tf.reduce_mean(tf.reduce_mean(mask))
+        cross_entropy *= mask
+        cross_entropy = tf.reduce_mean(cross_entropy, axis=1)
+        return tf.reduce_mean(cross_entropy)
+    
+    def _build_optimize(self):
+        optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
+        return optimizer.minimize(self.loss)
+    
+    def _build_accuracy(self):
+        correct = tf.equal(tf.argmax(self.target, 2), tf.argmax(self.prediction, 2))
+        correct = tf.cast(correct, tf.float32)
+        mask = tf.sign(tf.reduce_max(tf.abs(self.target), axis=2))
+        mask /= tf.reduce_mean(tf.reduce_mean(mask))
+        correct *= mask
+        return tf.reduce_mean(tf.reduce_mean(correct))
+    
+    def _weight_and_bias(self, in_size, out_size):
+        weight = tf.truncated_normal([in_size, out_size], stddev=1.0)
+        bias = tf.constant(0.1, shape=[out_size])
+        return tf.Variable(weight), tf.Variable(bias)
+    
+    def save(self, checkpoint_filename):
+        save_path = '{}.ckpt'.format(checkpoint_filename)
+        tf.train.Saver(self.vars).save(self.sess, save_path)
+        print('Model saved to: {}'.format(save_path))
+    
+    def load(self, checkpoint_filename):
+        load_path = '{}.ckpt'.format(checkpoint_filename)
+        tf.train.Saver(self.vars).restore(self.sess, load_path)
+        print('Model restored from: {}'.format(load_path))
+    
+    def summary(self):
+        print('='*50)
+        print('Summary:')
+        variables = [variable for variable in tf.trainable_variables()]
+        total_parms = 0
+        for variable in variables:
+            name = variable.name
+            shape = variable.shape
+            parms = np.array(list(variable.shape), dtype='int32').prod()
+            print('Var: {}    shape: {}    parms: {:,}'.format(name, shape, parms))
+            total_parms += parms
+        print('='*50)
+        print('Total Parameters: {:,}'.format(total_parms))
+
 # model
-input_dim = train_X[0].shape[-1]
-num_classes = train_Y[0].shape[-1]
-num_hidden = 128
-num_layer = 2
-tf.reset_default_graph()
-# Placeholders
-input_x = tf.placeholder(tf.float32, [None, MAX_SQU_LEN, input_dim])
-label_y = tf.placeholder(tf.float32, [None, MAX_SQU_LEN, num_classes])
-# rnn
-lstm_cell = tf.contrib.rnn.BasicLSTMCell(num_hidden, forget_bias=0.0, state_is_tuple=True)
-outputs, final_state = tf.nn.dynamic_rnn(lstm_cell, input_x, dtype=tf.float32, time_major=False)
-#init_state = lstm_cell.zero_state(batch_size, dtype=tf.float32)
-#outputs, final_state = tf.nn.dynamic_rnn(lstm_cell, input_x, initial_state=init_state, time_major=False)
+input_dim = data_X[0].shape[-1]
+num_classes = data_Y[0].shape[-1]
+max_squ_len = MAX_SQU_LEN
+model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=1)
+model.summary()
 
-# softmax
-outputs = tf.reshape(outputs, [-1, num_hidden])
-weight = tf.Variable(tf.truncated_normal([num_hidden, num_classes], stddev=0.1))
-bias = tf.Variable(tf.zeros([1, num_classes]) + 0.1)
-predict = tf.nn.softmax(tf.matmul(outputs, weight) + bias)
-predict = tf.reshape(predict, [-1, MAX_SQU_LEN, num_classes])
-
-# loss
-mask = tf.sign(tf.reduce_max(tf.abs(label_y), axis=2))
-cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=predict, labels=label_y)
-cross_entropy *= mask
-loss = tf.reduce_mean(tf.reduce_mean(cross_entropy))
-
-# accuracy
-correct = tf.equal(tf.argmax(predict, axis=2), tf.argmax(label_y, axis=2))
-correct = tf.cast(correct, tf.float32) 
-norm_mask = mask / tf.reduce_mean(mask)
-correct *= norm_mask
-accuracy = tf.reduce_mean(tf.reduce_mean(correct))
-
-# optimizer
-optimizer = tf.train.AdamOptimizer(learning_rate=0.1)
-train_step = optimizer.minimize(loss)
-
-# train
-num_epochs = 10
-batch_size = 1
-
-sess = tf.Session()
-sess.run(tf.global_variables_initializer())
-
-for epoch in range(num_epochs):
-    num_steps = (len(train_X)-1)//batch_size + 1
-    for step in range(num_steps):
-        batch_x = train_X[step*batch_size : step*batch_size+batch_size]
-        batch_y = train_Y[step*batch_size : step*batch_size+batch_size]
-        print('epoch:{:>3}/{:<3}  step:{:>5}/{:<5}  '.format(epoch+1, num_epochs, step+1, num_steps), end='')
-        _ = sess.run(train_step, {input_x: batch_x, label_y: batch_y})
-        loss_value, acc_value = sess.run([loss, accuracy], {input_x: batch_x, label_y: batch_y})
-        print('loss:{:<5f}  acc:{:<5f}'.format(loss_value, acc_value))
-        break
+valid_size = 500
+valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
+train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=10, batch_size=16, eval_every=1)
 
 # predict
 preds = sess.run(predict, {input_x: train_X[:1]})
