@@ -18,7 +18,7 @@ class DataLoader(object):
                 map_48_39[p1] = p2
 
         map_48phone_char = dict()
-        with open(file_path, 'r') as f:
+        with open(f_48phone_char, 'r') as f:
             for line in f:
                 p1, _, p2 = line.strip().split('\t')
                 map_48phone_char[p1] = p2
