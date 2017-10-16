@@ -89,14 +89,15 @@ class SequenceLabelling(object):
         inputs = self.data
         # Convolution network
         kernel_size = 5
+        num_filters = 32
         output = tf.pad(inputs, [[0,0],[kernel_size//2,kernel_size//2],[0,0]])
         output = tf.expand_dims(output, -1)
         output = tf.layers.conv2d(inputs=output,
-                                  filters=self._num_hidden,
+                                  filters=num_filters,
                                   kernel_size=[kernel_size, self._input_dim],
                                   padding="VALID",
                                   activation=tf.nn.relu)
-        output = tf.reshape(output, [-1, self._max_squ_len, self._num_hidden])
+        output = tf.reshape(output, [-1, self._max_squ_len, num_filters])
         # Recurrent network.
         def bidirectional_lstm(inputs, num_units, num_layers):
             bi_lstms = inputs
@@ -136,7 +137,7 @@ class SequenceLabelling(object):
         return tf.reduce_mean(cross_entropy)
     
     def _build_optimize(self):
-        optimizer = tf.train.AdamOptimizer(learning_rate=0.1)
+        optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
         return optimizer.minimize(self.loss)
     
     def _build_accuracy(self):
@@ -148,7 +149,7 @@ class SequenceLabelling(object):
         return tf.reduce_mean(tf.reduce_mean(correct))
     
     def _weight_and_bias(self, in_size, out_size):
-        weight = tf.truncated_normal([in_size, out_size], stddev=0.01)
+        weight = tf.truncated_normal([in_size, out_size], stddev=0.1)
         bias = tf.constant(0.1, shape=[out_size])
         return tf.Variable(weight), tf.Variable(bias)
     
@@ -180,14 +181,14 @@ class SequenceLabelling(object):
 input_dim = data_X[0].shape[-1]
 num_classes = data_Y[0].shape[-1]
 max_squ_len = MAX_SQU_LEN
-model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=2)
+model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=64, num_layers=1)
 model.summary()
 
 valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=30, batch_size=32, eval_every=1)
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=50, batch_size=32, eval_every=1)
 
 # predict
 preds = model.predict(test_X)
