@@ -10,7 +10,7 @@ class DataLoader(object):
     def __init__(self):
         pass
 
-    def load_map(f_48_39, f_48phone_char):
+    def load_map(self, f_48_39, f_48phone_char):
         map_48_39 = dict()
         with open(f_48_39, 'r') as f:
             for line in f:
