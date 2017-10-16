@@ -13,11 +13,14 @@ fbank_test = data_dir + 'fbank/test.ark'
 mfcc_train = data_dir + 'mfcc/train.ark'
 mfcc_test = data_dir + 'mfcc/test.ark'
 train_label = data_dir + 'label/train.lab'
+file_48_39 = data_dir + 'phones/48_39.map'
+file_48phone_char = data_dir + '48phone_char.map'
 
 # load data
 loader = DataLoader()
-data_X, data_Y, label_map, instance_map = loader.load(fbank_train, labels_path=train_label, num_classes=48)
-test_X, _, _, instance_map = loader.load(fbank_test)
+data_X, data_Y, label_map, train_instance_map = loader.load(fbank_train, labels_path=train_label, num_classes=48)
+test_X, _, _, test_instance_map = loader.load(fbank_test)
+map_48_39, map_48phone_char = loader.load_map(file_48_39, file_48phone_char)
 
 # padding
 def pad(x, shape):
@@ -155,14 +158,42 @@ max_squ_len = MAX_SQU_LEN
 model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=2)
 model.summary()
 
-valid_size = 500
+valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=10, batch_size=16, eval_every=1)
+
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=10, batch_size=128, eval_every=1)
 
 # predict
 model.save('test')
 preds = model.predict(test_X)
+
+# transform
+output = np.vectorize(label_map.get)(preds)
+output = np.vectorize(map_48_39.get)(output)
+output = np.vectorize(map_48phone_char.get)(output)
+
+# to string
+import re
+result_strs = []
+for sent_idx, sent in enumerate(test_X):
+    for frame_idx, frame in enumerate(sent):
+        if all(frame == 0.): # repadding
+            result_str = output[sent_idx][:frame_idx]
+            result_str = ''.join(result_str)
+            result_str = result_str.replace(map_48phone_char[map_48_39['sil']], '') # remove sil
+            result_str = re.sub(r'([a-zA-Z0-9])\1+', r'\1', result_str) # trim
+            result_strs.append(result_str)
+            break
+
+# output prediction
+with open(output_file, 'w') as out:
+    _ = out.write('id,phone_sequence\n')
+    for k, v in sorted(list(test_instance_map.items())):
+        _ = out.write('{},{}\n'.format(v, result_strs[k]))
+
+
+
 
 
 
