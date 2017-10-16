@@ -181,7 +181,7 @@ for sent_idx, sent in enumerate(test_X):
         if all(frame == 0.): # repadding
             result_str = output[sent_idx][:frame_idx]
             result_str = ''.join(result_str)
-            result_str = result_str.replace(map_48phone_char[map_48_39['sil']], '') # remove sil
+            result_str = result_str.strip(map_48phone_char[map_48_39['sil']]) # trim sil
             result_str = re.sub(r'([a-zA-Z0-9])\1+', r'\1', result_str) # trim
             result_strs.append(result_str)
             break
