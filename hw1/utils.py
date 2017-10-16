@@ -10,6 +10,21 @@ class DataLoader(object):
     def __init__(self):
         pass
 
+    def load_map(f_48_39, f_48phone_char):
+        map_48_39 = dict()
+        with open(f_48_39, 'r') as f:
+            for line in f:
+                p1, p2 = line.strip().split('\t')
+                map_48_39[p1] = p2
+
+        map_48phone_char = dict()
+        with open(file_path, 'r') as f:
+            for line in f:
+                p1, _, p2 = line.strip().split('\t')
+                map_48phone_char[p1] = p2
+
+        return map_48_39, map_48phone_char
+
     def load_dataset(self, dataset_path):
         print('load_dataset: {}'.format(dataset_path))
         dataset = dict()
