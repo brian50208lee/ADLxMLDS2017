@@ -37,13 +37,15 @@ test_X = [pad(x, (MAX_SQU_LEN, x.shape[1])) for x in test_X]
 
 class SequenceLabelling(object):
     def __init__(self, input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=3):
+        self._input_dim = input_dim
+        self._num_classes = num_classes
+        self._max_squ_len = max_squ_len
         self._num_hidden = num_hidden
         self._num_layers = num_layers
-        self._max_squ_len = max_squ_len
         #build
         tf.reset_default_graph()
-        self.data = tf.placeholder(tf.float32, [None, self._max_squ_len, input_dim])
-        self.target = tf.placeholder(tf.float32, [None, self._max_squ_len, num_classes])
+        self.data = tf.placeholder(tf.float32, [None, self._max_squ_len, self._input_dim])
+        self.target = tf.placeholder(tf.float32, [None, self._max_squ_len, self._num_classes])
         self.dropout = tf.placeholder(tf.float32)
         self.prediction = self._build_prediction()
         self.loss = self._build_loss()
@@ -84,20 +86,43 @@ class SequenceLabelling(object):
         return preds
     
     def _build_prediction(self):
+        inputs = self.data
+        # Convolution network
+        kernel_size = 5
+        output = tf.pad(inputs, [[0,0],[kernel_size//2,kernel_size//2],[0,0]])
+        output = tf.expand_dims(output, -1)
+        output = tf.layers.conv2d(inputs=output,
+                                  filters=self._num_hidden,
+                                  kernel_size=[kernel_size, self._input_dim],
+                                  padding="VALID",
+                                  activation=tf.nn.relu)
+        output = tf.reshape(output, [-1, self._max_squ_len, self._num_hidden])
         # Recurrent network.
+        def bidirectional_lstm(inputs, num_units, num_layers):
+            bi_lstms = inputs
+            for _ in range(num_layers):
+                with tf.variable_scope(None, default_name="bidirectional-rnn"):
+                    lstm_cell_fw = tf.contrib.rnn.LSTMCell(num_units, reuse=False)
+                    lstm_cell_bw = tf.contrib.rnn.LSTMCell(num_units, reuse=False)
+                    drop_cell_fw = tf.contrib.rnn.DropoutWrapper(lstm_cell_fw, input_keep_prob=1-self.dropout)
+                    drop_cell_bw = tf.contrib.rnn.DropoutWrapper(lstm_cell_bw, input_keep_prob=1-self.dropout)
+                    output, state = tf.nn.bidirectional_dynamic_rnn(drop_cell_fw, drop_cell_bw, bi_lstms,  dtype=tf.float32)
+                    bi_lstms = tf.concat(output, 2)
+            return bi_lstms
+        '''
         cells = [tf.contrib.rnn.GRUCell(self._num_hidden, reuse=False) for _ in range(self._num_layers)]
         dropcells = [tf.contrib.rnn.DropoutWrapper(cell, input_keep_prob=1-self.dropout) for cell in cells]
         multicell = tf.contrib.rnn.MultiRNNCell(dropcells, state_is_tuple=True)
         multicell = tf.contrib.rnn.DropoutWrapper(multicell, output_keep_prob=1-self.dropout)
-        output, _ = tf.nn.dynamic_rnn(multicell, self.data, dtype=tf.float32)
-        # Softmax layer.
-        max_length = int(self.target.get_shape()[1])
-        num_classes = int(self.target.get_shape()[2])
-        weight, bias = self._weight_and_bias(self._num_hidden, num_classes)
+        output, state = tf.nn.dynamic_rnn(multicell, self.data, dtype=tf.float32)
+        '''
+        output = bidirectional_lstm(output, self._num_hidden, self._num_layers)
         # Flatten to apply same weights to all time steps.
-        output = tf.reshape(output, [-1, self._num_hidden])
+        output = tf.reshape(output, [-1, self._num_hidden*2])
+        weight, bias = self._weight_and_bias(self._num_hidden*2, self._num_classes)
+        # Softmax layer.
         prediction = tf.nn.softmax(tf.matmul(output, weight) + bias)
-        prediction = tf.reshape(prediction, [-1, max_length, num_classes])
+        prediction = tf.reshape(prediction, [-1, self._max_squ_len, self._num_classes])
         return prediction
     
     def _build_loss(self):
@@ -111,7 +136,7 @@ class SequenceLabelling(object):
         return tf.reduce_mean(cross_entropy)
     
     def _build_optimize(self):
-        optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
+        optimizer = tf.train.AdamOptimizer(learning_rate=0.1)
         return optimizer.minimize(self.loss)
     
     def _build_accuracy(self):
@@ -128,12 +153,12 @@ class SequenceLabelling(object):
         return tf.Variable(weight), tf.Variable(bias)
     
     def save(self, checkpoint_filename):
-        save_path = '{}.ckpt'.format(checkpoint_filename)
+        save_path = './{}.ckpt'.format(checkpoint_filename)
         tf.train.Saver(self.vars).save(self.sess, save_path)
         print('Model saved to: {}'.format(save_path))
     
     def load(self, checkpoint_filename):
-        load_path = '{}.ckpt'.format(checkpoint_filename)
+        load_path = './{}.ckpt'.format(checkpoint_filename)
         tf.train.Saver(self.vars).restore(self.sess, load_path)
         print('Model restored from: {}'.format(load_path))
     
@@ -162,10 +187,9 @@ valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=10, batch_size=128, eval_every=1)
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=30, batch_size=32, eval_every=1)
 
 # predict
-model.save('test')
 preds = model.predict(test_X)
 
 # transform
@@ -192,7 +216,8 @@ with open(output_file, 'w') as out:
     for k, v in sorted(list(test_instance_map.items())):
         _ = out.write('{},{}\n'.format(v, result_strs[k]))
 
-
+# save
+model.save('test')
 
 
 
