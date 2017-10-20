@@ -1,39 +1,44 @@
 import os, sys
 import numpy as np
 import tensorflow as tf
-from utils import DataLoader
+from utils import load_phone_map, load_data, rearrange, pad, reverse_map
 
 # argv
 data_dir = sys.argv[1] + os.sep if len(sys.argv) > 1 else './data/'
-output_file = sys.argv[2] if len(sys.argv) > 2 else 'predict.csv'
+f_output = sys.argv[2] if len(sys.argv) > 2 else 'predict.csv'
 
 # file path
-fbank_train = data_dir + 'fbank/train.ark'
-fbank_test = data_dir + 'fbank/test.ark'
-mfcc_train = data_dir + 'mfcc/train.ark'
-mfcc_test = data_dir + 'mfcc/test.ark'
-train_label = data_dir + 'label/train.lab'
-file_48_39 = data_dir + 'phones/48_39.map'
-file_48phone_char = data_dir + '48phone_char.map'
+f_fbank_train = data_dir + 'fbank/train.ark'
+f_fbank_test = data_dir + 'fbank/test.ark'
+f_mfcc_train = data_dir + 'mfcc/train.ark'
+f_mfcc_test = data_dir + 'mfcc/test.ark'
+f_train_label = data_dir + 'label/train.lab'
+f_phone2phone = data_dir + 'phones/48_39.map'
+f_phone2char = data_dir + '48phone_char.map'
 
-# load data
-loader = DataLoader()
-data_X, data_Y, label_map, train_instance_map = loader.load(fbank_train, labels_path=train_label, num_classes=48)
-test_X, _, _, test_instance_map = loader.load(fbank_test)
-map_48_39, map_48phone_char = loader.load_map(file_48_39, file_48phone_char)
+# load map
+phone2phone, phone2char, phone2idx = load_phone_map(f_phone2phone, f_phone2char)
+
+# load train
+data_X, data_X_id = load_data(f_fbank_train, delimiter=' ', dtype='float32')
+data_Y, data_Y_id = load_data(f_train_label, delimiter=',', dtype='str')
+data_X, data_X_id = rearrange(data_X, data_X_id, data_Y_id)
+
+# load test
+test_X, test_X_id = load_data(f_fbank_test, delimiter=' ', dtype='float32')
+
+# to 39 phone to idx to one-hot
+for idx in range(len(data_Y)):
+    data_Y[idx] = np.vectorize(phone2phone.get)(data_Y[idx])
+    data_Y[idx] = np.vectorize(phone2idx.get)(data_Y[idx])
+    data_Y[idx] = np.eye(48)[data_Y[idx].reshape(-1)]
 
 # padding
-def pad(x, shape):
-    pad_x = np.zeros(shape, dtype='float32')
-    if len(shape) == 2:
-        pad_x[:x.shape[0], :x.shape[1]] = x
-    return pad_x
-
-MAX_SQU_LEN = 800
-data_X = [pad(x, (MAX_SQU_LEN, x.shape[1])) for x in data_X]
-data_Y = [pad(y, (MAX_SQU_LEN, y.shape[1])) for y in data_Y]
-test_X = [pad(x, (MAX_SQU_LEN, x.shape[1])) for x in test_X]
-
+max_squ_len = np.array([len(d) for d in data_X] + [len(t) for t in test_X]).max()
+print('max_squ_len:{}'.format(max_squ_len))
+data_X = np.array([pad(x, (max_squ_len, x.shape[1])) for x in data_X])
+data_Y = np.array([pad(y, (max_squ_len, y.shape[1])) for y in data_Y])
+test_X = np.array([pad(x, (max_squ_len, x.shape[1])) for x in test_X])
 
 class SequenceLabelling(object):
     def __init__(self, input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=3):
@@ -57,9 +62,16 @@ class SequenceLabelling(object):
         self.sess = tf.Session()
         self.sess.run(tf.global_variables_initializer())
     
-    def fit(self, train, valid=None, dropout=0., num_epochs=10, batch_size=16, eval_every=1):
-        train_X, train_Y = train
+    def fit(self, train, valid=None, dropout=0., num_epochs=10, batch_size=16, eval_every=1, shuffle=False):
+        train_X = np.array(train[0], dtype='float32')
+        train_Y = np.array(train[1], dtype='float32')
         for epoch in range(num_epochs):
+            # shuffle
+            if shuffle:
+                shuffle_idx = np.random.permutation(len(train_X))
+                train_X = train_X[shuffle_idx]
+                train_Y = train_Y[shuffle_idx]
+            # epoch
             num_steps = (len(train_X)-1)//batch_size + 1
             for step in range(num_steps):
                 batch_x = train_X[step*batch_size : step*batch_size+batch_size]
@@ -86,11 +98,12 @@ class SequenceLabelling(object):
         return preds
     
     def _build_prediction(self):
-        inputs = self.data
+        output = self.data
         # Convolution network
+        '''
         kernel_size = 5
         num_filters = 32
-        output = tf.pad(inputs, [[0,0],[kernel_size//2,kernel_size//2],[0,0]])
+        output = tf.pad(output, [[0,0],[kernel_size//2,kernel_size//2],[0,0]])
         output = tf.expand_dims(output, -1)
         output = tf.layers.conv2d(inputs=output,
                                   filters=num_filters,
@@ -98,6 +111,7 @@ class SequenceLabelling(object):
                                   padding="VALID",
                                   activation=tf.nn.relu)
         output = tf.reshape(output, [-1, self._max_squ_len, num_filters])
+        '''
         # Recurrent network.
         def bidirectional_lstm(inputs, num_units, num_layers):
             bi_lstms = inputs
@@ -108,7 +122,7 @@ class SequenceLabelling(object):
                     drop_cell_fw = tf.contrib.rnn.DropoutWrapper(lstm_cell_fw, input_keep_prob=1-self.dropout)
                     drop_cell_bw = tf.contrib.rnn.DropoutWrapper(lstm_cell_bw, input_keep_prob=1-self.dropout)
                     output, state = tf.nn.bidirectional_dynamic_rnn(drop_cell_fw, drop_cell_bw, bi_lstms,  dtype=tf.float32)
-                    bi_lstms = tf.concat(output, 2)
+                    bi_lstms = output[0] + output[1]
             return bi_lstms
         '''
         cells = [tf.contrib.rnn.GRUCell(self._num_hidden, reuse=False) for _ in range(self._num_layers)]
@@ -119,8 +133,8 @@ class SequenceLabelling(object):
         '''
         output = bidirectional_lstm(output, self._num_hidden, self._num_layers)
         # Flatten to apply same weights to all time steps.
-        output = tf.reshape(output, [-1, self._num_hidden*2])
-        weight, bias = self._weight_and_bias(self._num_hidden*2, self._num_classes)
+        output = tf.reshape(output, [-1, self._num_hidden])
+        weight, bias = self._weight_and_bias(self._num_hidden, self._num_classes)
         # Softmax layer.
         prediction = tf.nn.softmax(tf.matmul(output, weight) + bias)
         prediction = tf.reshape(prediction, [-1, self._max_squ_len, self._num_classes])
@@ -131,13 +145,13 @@ class SequenceLabelling(object):
         cross_entropy = self.target * tf.log(self.prediction)
         cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
         mask = tf.sign(tf.reduce_max(tf.abs(self.target), axis=2))
-        #mask /= tf.reduce_mean(tf.reduce_mean(mask))
+        mask /= tf.reduce_mean(tf.reduce_mean(mask))
         cross_entropy *= mask
         cross_entropy = tf.reduce_mean(cross_entropy, axis=1)
         return tf.reduce_mean(cross_entropy)
     
     def _build_optimize(self):
-        optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
+        optimizer = tf.train.RMSProp(learning_rate=0.01)
         return optimizer.minimize(self.loss)
     
     def _build_accuracy(self):
@@ -178,44 +192,47 @@ class SequenceLabelling(object):
         print('Total Parameters: {:,}'.format(total_parms))
 
 # model
-input_dim = data_X[0].shape[-1]
-num_classes = data_Y[0].shape[-1]
-max_squ_len = MAX_SQU_LEN
-model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=64, num_layers=1)
+input_dim = data_X.shape[-1]
+num_classes = data_Y.shape[-1]
+model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=1)
 model.summary()
 
 valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=50, batch_size=32, eval_every=1)
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=50, batch_size=32, eval_every=1, shuffle=True)
 
-# predict
-preds = model.predict(test_X)
-
-# transform
-output = np.vectorize(label_map.get)(preds)
-output = np.vectorize(map_48_39.get)(output)
-output = np.vectorize(map_48phone_char.get)(output)
-
-# to string
-import re
-result_strs = []
-for sent_idx, sent in enumerate(test_X):
-    for frame_idx, frame in enumerate(sent):
-        if all(frame == 0.): # repadding
-            result_str = output[sent_idx][:frame_idx]
+def output_result(f_output, model, datas, instanse_id, frame_wise=False):
+    print('predict size:{}'.format(len(datas)))
+    # mask of sentence len
+    sents_len = []
+    for data in datas:
+        for frame_idx, vector in enumerate(data):
+            if all(vector == 0.):
+                sents_len.append(frame_idx)
+                continue
+    # predict
+    preds = model.predict(datas)
+    # transform
+    preds = np.vectorize(reverse_map(phone2idx).get)(preds)
+    preds = np.vectorize(phone2char.get)(preds)
+    # output prediction
+    import re
+    print('output:{}'.format(f_output))
+    with open(f_output, 'w') as out:
+        _ = out.write('id,phone_sequence\n')
+        for data_idx, pred in enumerate(preds):
+            result_str = pred[:sents_len[data_idx]]
             result_str = ''.join(result_str)
-            result_str = result_str.strip(map_48phone_char[map_48_39['sil']]) # trim sil
-            result_str = re.sub(r'([a-zA-Z0-9])\1+', r'\1', result_str) # trim
-            result_strs.append(result_str)
-            break
+            if not frame_wise:
+                result_str = result_str.strip(phone2char['sil']) # trim sil
+                result_str = re.sub(r'([a-zA-Z0-9])\1+', r'\1', result_str) # trim
+            _ = out.write('{},{}\n'.format(instanse_id[data_idx], result_str))
 
-# output prediction
-with open(output_file, 'w') as out:
-    _ = out.write('id,phone_sequence\n')
-    for k, v in sorted(list(test_instance_map.items())):
-        _ = out.write('{},{}\n'.format(v, result_strs[k]))
+output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
+output_result('train_out.csv', model, data_X, data_X_id)
+output_result(f_output, model, test_X, test_X_id)
 
 # save
 model.save('test')
