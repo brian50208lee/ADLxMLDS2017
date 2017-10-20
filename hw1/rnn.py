@@ -136,11 +136,11 @@ class SequenceLabelling(object):
         output = tf.reshape(output, [-1, self._num_hidden])
         # Dense
         def dense(inputs, num_units, act=lambda x: x):
-            weight, bias = self._weight_and_bias(inputs.get_shape()[-1].velue, num_units)
-            return tf.matmul(inputs, weight) + bias
-        # Softmax layer.
-        prediction = tf.nn.softmax(tf.matmul(output, weight) + bias)
-        prediction = tf.reshape(prediction, [-1, self._max_squ_len, self._num_classes])
+            weight, bias = self._weight_and_bias(inputs.get_shape()[-1].value, num_units)
+            return act(tf.matmul(inputs, weight) + bias)
+        output = dense(output, self._num_hidden, act=tf.nn.relu)
+        output = dense(output, self._num_classes, act=tf.nn.softmax)
+        prediction = tf.reshape(output, [-1, self._max_squ_len, self._num_classes])
         return prediction
     
     def _build_loss(self):
