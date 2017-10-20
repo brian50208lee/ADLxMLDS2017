@@ -134,7 +134,10 @@ class SequenceLabelling(object):
         output = bidirectional_lstm(output, self._num_hidden, self._num_layers)
         # Flatten to apply same weights to all time steps.
         output = tf.reshape(output, [-1, self._num_hidden])
-        weight, bias = self._weight_and_bias(self._num_hidden, self._num_classes)
+        # Dense
+        def dense(inputs, num_units, act=lambda x: x):
+            weight, bias = self._weight_and_bias(inputs.get_shape()[-1].velue, num_units)
+            return tf.matmul(inputs, weight) + bias
         # Softmax layer.
         prediction = tf.nn.softmax(tf.matmul(output, weight) + bias)
         prediction = tf.reshape(prediction, [-1, self._max_squ_len, self._num_classes])
@@ -151,7 +154,7 @@ class SequenceLabelling(object):
         return tf.reduce_mean(cross_entropy)
     
     def _build_optimize(self):
-        optimizer = tf.train.RMSProp(learning_rate=0.01)
+        optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
         return optimizer.minimize(self.loss)
     
     def _build_accuracy(self):
@@ -164,7 +167,7 @@ class SequenceLabelling(object):
     
     def _weight_and_bias(self, in_size, out_size):
         weight = tf.truncated_normal([in_size, out_size], stddev=0.1)
-        bias = tf.constant(0.1, shape=[out_size])
+        bias = tf.constant(1., shape=[out_size])
         return tf.Variable(weight), tf.Variable(bias)
     
     def save(self, checkpoint_filename):
