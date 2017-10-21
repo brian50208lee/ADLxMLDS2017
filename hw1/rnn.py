@@ -99,7 +99,7 @@ class SequenceLabelling(object):
                     if save_min_loss and (min_loss == 0. or val_loss < min_loss):
                         min_loss = val_loss
                         self.save('./models/best.ckpt', verbose=False)
-                        print('save model, loss:{:<3.5f}  '.format(min_loss), end='')
+                        print('save min loss model  '.format(min_loss), end='')
                 print()
 
     def evaluate(self, x, y, batch_size=32):
