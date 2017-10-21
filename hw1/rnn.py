@@ -140,7 +140,7 @@ class SequenceLabelling(object):
         output = tf.reshape(output, [-1, self._max_squ_len, num_filters])
         '''
         # Recurrent network.
-        def bidirectional_lstm(inputs, num_units, num_layers):
+        def bidirectional_lstm(inputs, num_units, num_layers, act=lambda x: x):
             bi_lstms = inputs
             for _ in range(num_layers):
                 with tf.variable_scope(None, default_name="bidirectional-rnn"):
@@ -150,6 +150,7 @@ class SequenceLabelling(object):
                     drop_cell_bw = tf.contrib.rnn.DropoutWrapper(lstm_cell_bw, input_keep_prob=1-self.dropout)
                     output, state = tf.nn.bidirectional_dynamic_rnn(drop_cell_fw, drop_cell_bw, bi_lstms,  dtype=tf.float32)
                     bi_lstms = output[0] + output[1]
+                    bi_lstms = act(bi_lstms)
             return bi_lstms
         '''
         cells = [tf.contrib.rnn.GRUCell(self._num_hidden, reuse=False) for _ in range(self._num_layers)]
@@ -158,14 +159,14 @@ class SequenceLabelling(object):
         multicell = tf.contrib.rnn.DropoutWrapper(multicell, output_keep_prob=1-self.dropout)
         output, state = tf.nn.dynamic_rnn(multicell, self.data, dtype=tf.float32)
         '''
-        output = bidirectional_lstm(output, self._num_hidden, self._num_layers)
+        output = bidirectional_lstm(output, self._num_hidden, self._num_layers, act=tf.nn.tanh)
         # Flatten to apply same weights to all time steps.
         output = tf.reshape(output, [-1, self._num_hidden])
         # Dense
         def dense(inputs, num_units, act=lambda x: x):
             weight, bias = self._weight_and_bias(inputs.get_shape()[-1].value, num_units)
             return act(tf.matmul(inputs, weight) + bias)
-        output = dense(output, self._num_hidden, act=tf.nn.relu)
+        #output = dense(output, self._num_hidden, act=tf.nn.relu)
         output = dense(output, self._num_classes, act=tf.nn.softmax)
         prediction = tf.reshape(output, [-1, self._max_squ_len, self._num_classes])
         return prediction
@@ -184,7 +185,7 @@ class SequenceLabelling(object):
         clip_value = 1.
         trainable_variables = tf.trainable_variables()
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
-        optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
+        optimizer = tf.train.AdamOptimizer(learning_rate=0.001)
         return optimizer.apply_gradients(zip(grads, trainable_variables))
     
     def _build_accuracy(self):
@@ -227,14 +228,14 @@ class SequenceLabelling(object):
 # model
 input_dim = data_X.shape[-1]
 num_classes = data_Y.shape[-1]
-model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=2)
+model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=256, num_layers=2)
 model.summary()
 
 valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.1, num_epochs=50, batch_size=64, eval_every=1, shuffle=True, save_min_loss=True)
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=50, batch_size=128, eval_every=1, shuffle=True, save_min_loss=True)
 
 # output
 def output_result(f_output, model, datas, instanse_id, frame_wise=False):
@@ -245,7 +246,9 @@ def output_result(f_output, model, datas, instanse_id, frame_wise=False):
         for frame_idx, vector in enumerate(data):
             if all(vector == 0.):
                 sents_len.append(frame_idx)
-                continue
+                break
+            if frame_idx + 1 == len(data):
+                sents_len.append(frame_idx + 1)
     # predict
     preds = model.predict(datas)
     # transform
@@ -265,9 +268,9 @@ def output_result(f_output, model, datas, instanse_id, frame_wise=False):
             _ = out.write('{},{}\n'.format(instanse_id[data_idx], result_str))
 
 model.load('./models/best.ckpt')
+output_result(f_output, model, test_X, test_X_id)
 output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
 output_result('train_out.csv', model, data_X, data_X_id)
-output_result(f_output, model, test_X, test_X_id)
 
 
 
