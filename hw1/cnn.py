@@ -101,7 +101,7 @@ class SequenceLabelling(object):
                         self.save('./models/best.ckpt', verbose=False)
                         print('save min loss model  '.format(min_loss), end='')
                 print()
-
+    
     def evaluate(self, x, y, batch_size=32):
         losses, accs = [], []
         offset = 0
@@ -129,16 +129,17 @@ class SequenceLabelling(object):
         # Convolution network
         def conv2d(inputs, num_filters, kernel_size, act=lambda x: x):
             x = inputs
-            x = tf.pad(x, [[0,0],[kernel_size//2,kernel_size//2],[0,0]])
+            #x = tf.pad(x, [[0,0],[kernel_size//2,kernel_size//2],[0,0]])
             x = tf.expand_dims(x, -1)
             x = tf.layers.conv2d(inputs=x,
                                       filters=num_filters,
-                                      kernel_size=[kernel_size, self._input_dim],
-                                      padding="VALID",
-                                      activation=tf.nn.relu)
-            x = tf.reshape(x, [-1, self._max_squ_len, num_filters])
-            return act(x)
-        output = conv2d(output, self._num_hidden, 5, act=tf.nn.relu)
+                                      kernel_size=[kernel_size, 5],
+                                      padding="SAME",
+                                      activation=act)
+            x = tf.reshape(x, [-1, self._max_squ_len, num_filters*inputs.get_shape().as_list()[-1]])
+            print(x.get_shape().as_list())
+            return x
+        output = conv2d(output, 4, 5, act=tf.nn.relu)
         # Recurrent network.
         def bidirectional_lstm(inputs, num_units, num_layers, act=lambda x: x):
             bi_lstms = inputs
@@ -230,7 +231,7 @@ valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.1, num_epochs=50, batch_size=128, eval_every=1, shuffle=True, save_min_loss=True)
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.3, num_epochs=70, batch_size=128, eval_every=1, shuffle=True, save_min_loss=True)
 
 # output
 def output_result(f_output, model, datas, instanse_id, frame_wise=False):
@@ -266,10 +267,4 @@ model.load('./models/best.ckpt')
 output_result(f_output, model, test_X, test_X_id)
 output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
 output_result('train_out.csv', model, data_X, data_X_id)
-
-
-
-
-
-
 
