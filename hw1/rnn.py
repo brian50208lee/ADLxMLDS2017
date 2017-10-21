@@ -41,7 +41,7 @@ data_Y = np.array([pad(y, (max_squ_len, y.shape[1])) for y in data_Y])
 test_X = np.array([pad(x, (max_squ_len, x.shape[1])) for x in test_X])
 
 class SequenceLabelling(object):
-    def __init__(self, input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=3):
+    def __init__(self, input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=2, load_model_path=None):
         self._input_dim = input_dim
         self._num_classes = num_classes
         self._max_squ_len = max_squ_len
@@ -58,13 +58,22 @@ class SequenceLabelling(object):
         self.accuracy = self._build_accuracy()
         # vars
         self.vars = {var.name: var for var in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)}
+        self.saver = tf.train.Saver(self.vars)
         # init session
         self.sess = tf.Session()
-        self.sess.run(tf.global_variables_initializer())
+        self._init(load_model_path)
     
-    def fit(self, train, valid=None, dropout=0., num_epochs=10, batch_size=16, eval_every=1, shuffle=False):
+    def _init(self, load_model_path):
+        if load_model_path is not None:
+            self.load(load_model_path)
+        else:
+            self.sess.run(tf.global_variables_initializer())
+    
+    def fit(self, train, valid=None, dropout=0., num_epochs=10, batch_size=32, eval_every=1, shuffle=False, save_min_loss=False):
         train_X = np.array(train[0], dtype='float32')
         train_Y = np.array(train[1], dtype='float32')
+        
+        min_loss = 0.
         for epoch in range(num_epochs):
             # shuffle
             if shuffle:
@@ -78,31 +87,49 @@ class SequenceLabelling(object):
                 batch_y = train_Y[step*batch_size : step*batch_size+batch_size]
                 # run
                 self.sess.run(self.optimize, feed_dict={self.data: batch_x, self.target: batch_y, self.dropout: dropout})
-                loss, acc = self.evaluate(batch_x, batch_y)
+                loss, acc = self.evaluate(batch_x, batch_y, batch_size=batch_size)
                 print('epoch:{:>2d}/{:<2d}  batch:{:>4d}/{:<4d}  '.format(epoch+1, num_epochs, step*batch_size, num_steps*batch_size), end='')
                 print('loss:{:<3.5f}  acc:{:>3.1f}%  '.format(loss, 100*acc), end='')
                 # evaluation
                 if step % eval_every == 0 and valid is not None:
                     valid_x, valid_y = valid
-                    val_loss, val_acc = self.evaluate(valid_x, valid_y)
-                    print('val_loss:{:<3.5f}  va_acc:{:>3.1f}%  '.format(val_loss, 100*val_acc), end='')
+                    val_loss, val_acc = self.evaluate(valid_x, valid_y, batch_size=batch_size)
+                    print('val_loss:{:<3.5f}  val_acc:{:>3.1f}%  '.format(val_loss, 100*val_acc), end='')
+                    # save_min_loss
+                    if save_min_loss and (min_loss == 0. or val_loss < min_loss):
+                        min_loss = val_loss
+                        self.save('./models/best.ckpt', verbose=False)
+                        print('save model, loss:{:<3.5f}  '.format(min_loss), end='')
                 print()
+
+    def evaluate(self, x, y, batch_size=32):
+        losses, accs = [], []
+        offset = 0
+        while offset < len(x):
+            batch_x = x[offset : offset+batch_size]
+            batch_y = y[offset : offset+batch_size]
+            loss, acc = self.sess.run([self.loss, self.accuracy], feed_dict={self.data: batch_x, self.target: batch_y, self.dropout: 0.})
+            losses += [loss] * len(batch_x)
+            accs += [acc] * len(batch_x)
+            offset += batch_size
+        return np.array(losses).mean(), np.array(accs).mean()
     
-    def evaluate(self, x, y):
-        loss, acc = self.sess.run([self.loss, self.accuracy], feed_dict={self.data: x, self.target: y, self.dropout: 0.})
-        return loss, acc
-    
-    def predict(self, x):
-        preds = self.sess.run(self.prediction, feed_dict={self.data: x, self.dropout: 0.})
-        preds = np.argmax(preds, axis=2)
-        return preds
+    def predict(self, x, batch_size=32):
+        preds = []
+        offset = 0
+        while offset < len(x):
+            batch_x = x[offset : offset+batch_size]
+            pred = self.sess.run(self.prediction, feed_dict={self.data: batch_x, self.dropout: 0.})
+            preds.append(np.argmax(pred, axis=2))
+            offset += batch_size
+        return np.vstack(preds)
     
     def _build_prediction(self):
         output = self.data
         # Convolution network
         '''
         kernel_size = 5
-        num_filters = 32
+        num_filters = 128
         output = tf.pad(output, [[0,0],[kernel_size//2,kernel_size//2],[0,0]])
         output = tf.expand_dims(output, -1)
         output = tf.layers.conv2d(inputs=output,
@@ -154,8 +181,11 @@ class SequenceLabelling(object):
         return tf.reduce_mean(cross_entropy)
     
     def _build_optimize(self):
+        clip_value = 1.
+        trainable_variables = tf.trainable_variables()
+        grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
         optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
-        return optimizer.minimize(self.loss)
+        return optimizer.apply_gradients(zip(grads, trainable_variables))
     
     def _build_accuracy(self):
         correct = tf.equal(tf.argmax(self.target, 2), tf.argmax(self.prediction, 2))
@@ -170,15 +200,15 @@ class SequenceLabelling(object):
         bias = tf.constant(1., shape=[out_size])
         return tf.Variable(weight), tf.Variable(bias)
     
-    def save(self, checkpoint_filename):
-        save_path = './{}.ckpt'.format(checkpoint_filename)
-        tf.train.Saver(self.vars).save(self.sess, save_path)
-        print('Model saved to: {}'.format(save_path))
+    def save(self, checkpoint_file_path, verbose=True):
+        if not os.path.exists(os.path.dirname(checkpoint_file_path)):
+            os.makedirs(os.path.dirname(checkpoint_file_path))
+        self.saver.save(self.sess, checkpoint_file_path)
+        if verbose: print('Model saved to: {}'.format(checkpoint_file_path))
     
-    def load(self, checkpoint_filename):
-        load_path = './{}.ckpt'.format(checkpoint_filename)
-        tf.train.Saver(self.vars).restore(self.sess, load_path)
-        print('Model restored from: {}'.format(load_path))
+    def load(self, checkpoint_file_path, verbose=True):
+        self.saver.restore(self.sess, checkpoint_file_path)
+        if verbose: print('Model restored from: {}'.format(checkpoint_file_path))
     
     def summary(self):
         print('='*50)
@@ -197,15 +227,16 @@ class SequenceLabelling(object):
 # model
 input_dim = data_X.shape[-1]
 num_classes = data_Y.shape[-1]
-model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=1)
+model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=128, num_layers=2)
 model.summary()
 
 valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=50, batch_size=32, eval_every=1, shuffle=True)
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.1, num_epochs=50, batch_size=64, eval_every=1, shuffle=True, save_min_loss=True)
 
+# output
 def output_result(f_output, model, datas, instanse_id, frame_wise=False):
     print('predict size:{}'.format(len(datas)))
     # mask of sentence len
@@ -233,12 +264,12 @@ def output_result(f_output, model, datas, instanse_id, frame_wise=False):
                 result_str = re.sub(r'([a-zA-Z0-9])\1+', r'\1', result_str) # trim
             _ = out.write('{},{}\n'.format(instanse_id[data_idx], result_str))
 
+model.load('./models/best.ckpt')
 output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
 output_result('train_out.csv', model, data_X, data_X_id)
 output_result(f_output, model, test_X, test_X_id)
 
-# save
-model.save('test')
+
 
 
 
