@@ -139,7 +139,7 @@ class SequenceLabelling(object):
             x = tf.reshape(x, [-1, self._max_squ_len, num_filters*inputs.get_shape().as_list()[-1]])
             print(x.get_shape().as_list())
             return x
-        output = conv2d(output, 4, 5, act=tf.nn.relu)
+        output = conv2d(output, 10, 5, act=tf.nn.relu)
         # Recurrent network.
         def bidirectional_lstm(inputs, num_units, num_layers, act=lambda x: x):
             bi_lstms = inputs
@@ -224,14 +224,14 @@ class SequenceLabelling(object):
 # model
 input_dim = data_X.shape[-1]
 num_classes = data_Y.shape[-1]
-model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=256, num_layers=2)
+model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=256, num_layers=3)
 model.summary()
 
 valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.3, num_epochs=70, batch_size=128, eval_every=1, shuffle=True, save_min_loss=True)
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.5, num_epochs=70, batch_size=64, eval_every=1, shuffle=True, save_min_loss=True)
 
 # output
 def output_result(f_output, model, datas, instanse_id, frame_wise=False):
