@@ -228,7 +228,7 @@ valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.5, num_epochs=50, batch_size=64, eval_every=1, shuffle=True, save_min_loss=True)
+#model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.5, num_epochs=50, batch_size=64, eval_every=1, shuffle=True, save_min_loss=True)
 
 # output
 def output_result(f_output, model, datas, instanse_id, frame_wise=False):
@@ -254,14 +254,18 @@ def output_result(f_output, model, datas, instanse_id, frame_wise=False):
         _ = out.write('id,phone_sequence\n')
         for data_idx, pred in enumerate(preds):
             result_str = pred[:sents_len[data_idx]]
+            # remove peak
+            for i in range(1, len(result_str)-1):
+                if result_str[i-1] == result_str[i+1] and result_str[i] != result_str[i-1]:
+                    result_str[i]=''
             result_str = ''.join(result_str)
             if not frame_wise:
                 result_str = result_str.strip(phone2char['sil']) # trim sil
                 result_str = re.sub(r'([a-zA-Z0-9])\1+', r'\1', result_str) # trim
             _ = out.write('{},{}\n'.format(instanse_id[data_idx], result_str))
 
-model.load('./models/best.ckpt')
+model.load('./models/cnn_8_65536/best.ckpt')
 output_result(f_output, model, test_X, test_X_id)
-output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
-output_result('train_out.csv', model, data_X, data_X_id)
+#output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
+#output_result('train_out.csv', model, data_X, data_X_id)
 

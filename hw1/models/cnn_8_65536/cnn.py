@@ -101,7 +101,7 @@ class SequenceLabelling(object):
                         self.save('./models/best.ckpt', verbose=False)
                         print('save min loss model  '.format(min_loss), end='')
                 print()
-
+    
     def evaluate(self, x, y, batch_size=32):
         losses, accs = [], []
         offset = 0
@@ -125,25 +125,22 @@ class SequenceLabelling(object):
         return np.vstack(preds)
     
     def _build_prediction(self):
-        output = self.data
         # Convolution network
-        '''
-        kernel_size = 5
-        num_filters = 128
-        output = tf.pad(output, [[0,0],[kernel_size//2,kernel_size//2],[0,0]])
-        output = tf.expand_dims(output, -1)
-        output = tf.layers.conv2d(inputs=output,
-                                  filters=num_filters,
-                                  kernel_size=[kernel_size, self._input_dim],
-                                  padding="VALID",
-                                  activation=tf.nn.relu)
-        output = tf.reshape(output, [-1, self._max_squ_len, num_filters])
-        '''
+        def conv2d(inputs, num_filters, kernel_size, act=lambda x: x):
+            x = inputs
+            x = tf.expand_dims(x, -1)
+            x = tf.layers.conv2d(inputs=x,
+                                      filters=num_filters,
+                                      kernel_size=[kernel_size, kernel_size],
+                                      padding="SAME",
+                                      activation=act)
+            x = tf.reshape(x, [-1, self._max_squ_len, num_filters*inputs.get_shape().as_list()[-1]])
+            return x
         # Recurrent network.
         def bidirectional_lstm(inputs, num_units, num_layers, act=lambda x: x):
             bi_lstms = inputs
             for _ in range(num_layers):
-                with tf.variable_scope(None, default_name="bidirectional-rnn"):
+                with tf.variable_scope(None, default_name="bi-lstm"):
                     lstm_cell_fw = tf.contrib.rnn.LSTMCell(num_units, reuse=False)
                     lstm_cell_bw = tf.contrib.rnn.LSTMCell(num_units, reuse=False)
                     drop_cell_fw = tf.contrib.rnn.DropoutWrapper(lstm_cell_fw, input_keep_prob=1-self.dropout)
@@ -152,29 +149,23 @@ class SequenceLabelling(object):
                     bi_lstms = output[0] + output[1]
                     bi_lstms = act(bi_lstms)
             return bi_lstms
-        '''
-        cells = [tf.contrib.rnn.GRUCell(self._num_hidden, reuse=False) for _ in range(self._num_layers)]
-        dropcells = [tf.contrib.rnn.DropoutWrapper(cell, input_keep_prob=1-self.dropout) for cell in cells]
-        multicell = tf.contrib.rnn.MultiRNNCell(dropcells, state_is_tuple=True)
-        multicell = tf.contrib.rnn.DropoutWrapper(multicell, output_keep_prob=1-self.dropout)
-        output, state = tf.nn.dynamic_rnn(multicell, self.data, dtype=tf.float32)
-        '''
-        output = bidirectional_lstm(output, self._num_hidden, self._num_layers, act=tf.nn.tanh)
-        # Flatten to apply same weights to all time steps.
-        output = tf.reshape(output, [-1, self._num_hidden])
         # Dense
         def dense(inputs, num_units, act=lambda x: x):
             weight, bias = self._weight_and_bias(inputs.get_shape()[-1].value, num_units)
             x = inputs
             x = tf.nn.dropout(x, keep_prob=1-self.dropout)
             return act(tf.matmul(x, weight) + bias)
-        #output = dense(output, self._num_hidden, act=tf.nn.relu)
+        # build
+        output = self.data
+        output = conv2d(output, 10, 5, act=tf.nn.relu)
+        output = bidirectional_lstm(output, self._num_hidden, self._num_layers, act=tf.nn.tanh)
+        # Flatten
+        output = tf.reshape(output, [-1, self._num_hidden])
         output = dense(output, self._num_classes, act=tf.nn.softmax)
         prediction = tf.reshape(output, [-1, self._max_squ_len, self._num_classes])
         return prediction
     
     def _build_loss(self):
-        #cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=self.prediction, labels=self.target)
         cross_entropy = self.target * tf.log(self.prediction)
         cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
         mask = tf.sign(tf.reduce_max(tf.abs(self.target), axis=2))
@@ -230,14 +221,14 @@ class SequenceLabelling(object):
 # model
 input_dim = data_X.shape[-1]
 num_classes = data_Y.shape[-1]
-model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=256, num_layers=2)
+model = SequenceLabelling(input_dim, num_classes, max_squ_len, num_hidden=256, num_layers=3)
 model.summary()
 
 valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0., num_epochs=50, batch_size=128, eval_every=1, shuffle=True, save_min_loss=True)
+model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.5, num_epochs=50, batch_size=64, eval_every=1, shuffle=True, save_min_loss=True)
 
 # output
 def output_result(f_output, model, datas, instanse_id, frame_wise=False):
@@ -263,6 +254,10 @@ def output_result(f_output, model, datas, instanse_id, frame_wise=False):
         _ = out.write('id,phone_sequence\n')
         for data_idx, pred in enumerate(preds):
             result_str = pred[:sents_len[data_idx]]
+            # remove peak
+            for i in range(1, len(result_str)-1):
+                if result_str[i-1] == result_str[i+1] and result_str[i] != result_str[i-1]:
+                    result_str[i]=''
             result_str = ''.join(result_str)
             if not frame_wise:
                 result_str = result_str.strip(phone2char['sil']) # trim sil
@@ -271,12 +266,6 @@ def output_result(f_output, model, datas, instanse_id, frame_wise=False):
 
 model.load('./models/best.ckpt')
 output_result(f_output, model, test_X, test_X_id)
-output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
-output_result('train_out.csv', model, data_X, data_X_id)
-
-
-
-
-
-
+#output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
+#output_result('train_out.csv', model, data_X, data_X_id)
 

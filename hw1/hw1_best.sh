@@ -1,1 +1,1 @@
-python cnn.py "$@"
+python model_cnn.py "$@"

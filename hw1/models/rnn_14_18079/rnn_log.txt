@@ -1,0 +1,1414 @@
+==================================================
+Summary:
+Var: bidirectional-rnn/bidirectional_rnn/fw/lstm_cell/kernel:0    shape: (325, 1024)    parms: 332,800
+Var: bidirectional-rnn/bidirectional_rnn/fw/lstm_cell/bias:0    shape: (1024,)    parms: 1,024
+Var: bidirectional-rnn/bidirectional_rnn/bw/lstm_cell/kernel:0    shape: (325, 1024)    parms: 332,800
+Var: bidirectional-rnn/bidirectional_rnn/bw/lstm_cell/bias:0    shape: (1024,)    parms: 1,024
+Var: bidirectional-rnn_1/bidirectional_rnn/fw/lstm_cell/kernel:0    shape: (512, 1024)    parms: 524,288
+Var: bidirectional-rnn_1/bidirectional_rnn/fw/lstm_cell/bias:0    shape: (1024,)    parms: 1,024
+Var: bidirectional-rnn_1/bidirectional_rnn/bw/lstm_cell/kernel:0    shape: (512, 1024)    parms: 524,288
+Var: bidirectional-rnn_1/bidirectional_rnn/bw/lstm_cell/bias:0    shape: (1024,)    parms: 1,024
+Var: Variable:0    shape: (256, 48)    parms: 12,288
+Var: Variable_1:0    shape: (48,)    parms: 48
+==================================================
+Total Parameters: 1,730,608
+epoch: 1/50  batch:   0/3584  loss:0.07767  acc:20.0%  val_loss:0.07774  val_acc:20.1%  save min loss model
+epoch: 1/50  batch: 128/3584  loss:0.07038  acc:15.3%  val_loss:0.06948  val_acc:16.8%  save min loss model
+epoch: 1/50  batch: 256/3584  loss:0.06978  acc:14.8%  val_loss:0.06968  val_acc:15.3%
+epoch: 1/50  batch: 384/3584  loss:0.06746  acc:17.2%  val_loss:0.06732  val_acc:17.2%  save min loss model
+epoch: 1/50  batch: 512/3584  loss:0.06480  acc:22.9%  val_loss:0.06439  val_acc:23.5%  save min loss model
+epoch: 1/50  batch: 640/3584  loss:0.06412  acc:19.9%  val_loss:0.06353  val_acc:20.1%  save min loss model
+epoch: 1/50  batch: 768/3584  loss:0.06338  acc:19.1%  val_loss:0.06274  val_acc:20.1%  save min loss model
+epoch: 1/50  batch: 896/3584  loss:0.06125  acc:21.5%  val_loss:0.06091  val_acc:21.9%  save min loss model
+epoch: 1/50  batch:1024/3584  loss:0.06049  acc:25.1%  val_loss:0.05967  val_acc:26.1%  save min loss model
+epoch: 1/50  batch:1152/3584  loss:0.05830  acc:28.2%  val_loss:0.05838  val_acc:27.5%  save min loss model
+epoch: 1/50  batch:1280/3584  loss:0.05702  acc:30.9%  val_loss:0.05731  val_acc:29.7%  save min loss model
+epoch: 1/50  batch:1408/3584  loss:0.05698  acc:29.1%  val_loss:0.05633  val_acc:29.0%  save min loss model
+epoch: 1/50  batch:1536/3584  loss:0.05586  acc:30.0%  val_loss:0.05533  val_acc:30.0%  save min loss model
+epoch: 1/50  batch:1664/3584  loss:0.05438  acc:32.2%  val_loss:0.05449  val_acc:31.1%  save min loss model
+epoch: 1/50  batch:1792/3584  loss:0.05370  acc:32.5%  val_loss:0.05354  val_acc:31.5%  save min loss model
+epoch: 1/50  batch:1920/3584  loss:0.05196  acc:33.6%  val_loss:0.05250  val_acc:31.8%  save min loss model
+epoch: 1/50  batch:2048/3584  loss:0.05140  acc:33.1%  val_loss:0.05167  val_acc:32.7%  save min loss model
+epoch: 1/50  batch:2176/3584  loss:0.05039  acc:35.2%  val_loss:0.05071  val_acc:34.5%  save min loss model
+epoch: 1/50  batch:2304/3584  loss:0.04933  acc:36.1%  val_loss:0.04987  val_acc:35.7%  save min loss model
+epoch: 1/50  batch:2432/3584  loss:0.04903  acc:36.8%  val_loss:0.04898  val_acc:36.6%  save min loss model
+epoch: 1/50  batch:2560/3584  loss:0.04892  acc:36.6%  val_loss:0.04835  val_acc:36.8%  save min loss model
+epoch: 1/50  batch:2688/3584  loss:0.04715  acc:37.4%  val_loss:0.04801  val_acc:36.3%  save min loss model
+epoch: 1/50  batch:2816/3584  loss:0.04753  acc:37.7%  val_loss:0.04678  val_acc:38.5%  save min loss model
+epoch: 1/50  batch:2944/3584  loss:0.04594  acc:40.2%  val_loss:0.04595  val_acc:40.2%  save min loss model
+epoch: 1/50  batch:3072/3584  loss:0.04528  acc:40.6%  val_loss:0.04552  val_acc:39.2%  save min loss model
+epoch: 1/50  batch:3200/3584  loss:0.04465  acc:40.7%  val_loss:0.04442  val_acc:40.6%  save min loss model
+epoch: 1/50  batch:3328/3584  loss:0.04402  acc:41.3%  val_loss:0.04391  val_acc:41.3%  save min loss model
+epoch: 1/50  batch:3456/3584  loss:0.04273  acc:43.2%  val_loss:0.04368  val_acc:41.1%  save min loss model
+epoch: 2/50  batch:   0/3584  loss:0.04286  acc:41.4%  val_loss:0.04275  val_acc:41.3%  save min loss model
+epoch: 2/50  batch: 128/3584  loss:0.04231  acc:42.1%  val_loss:0.04226  val_acc:42.0%  save min loss model
+epoch: 2/50  batch: 256/3584  loss:0.04161  acc:43.8%  val_loss:0.04178  val_acc:43.9%  save min loss model
+epoch: 2/50  batch: 384/3584  loss:0.04163  acc:43.8%  val_loss:0.04137  val_acc:43.9%  save min loss model
+epoch: 2/50  batch: 512/3584  loss:0.03994  acc:46.1%  val_loss:0.04044  val_acc:44.8%  save min loss model
+epoch: 2/50  batch: 640/3584  loss:0.03996  acc:45.3%  val_loss:0.04006  val_acc:44.8%  save min loss model
+epoch: 2/50  batch: 768/3584  loss:0.03899  acc:45.8%  val_loss:0.03978  val_acc:44.0%  save min loss model
+epoch: 2/50  batch: 896/3584  loss:0.03863  acc:45.5%  val_loss:0.03892  val_acc:45.2%  save min loss model
+epoch: 2/50  batch:1024/3584  loss:0.03817  acc:47.4%  val_loss:0.03857  val_acc:46.5%  save min loss model
+epoch: 2/50  batch:1152/3584  loss:0.03834  acc:47.3%  val_loss:0.03809  val_acc:46.5%  save min loss model
+epoch: 2/50  batch:1280/3584  loss:0.03719  acc:48.3%  val_loss:0.03787  val_acc:47.0%  save min loss model
+epoch: 2/50  batch:1408/3584  loss:0.03722  acc:48.9%  val_loss:0.03746  val_acc:47.2%  save min loss model
+epoch: 2/50  batch:1536/3584  loss:0.03633  acc:48.6%  val_loss:0.03674  val_acc:48.5%  save min loss model
+epoch: 2/50  batch:1664/3584  loss:0.03629  acc:50.2%  val_loss:0.03707  val_acc:48.3%
+epoch: 2/50  batch:1792/3584  loss:0.03510  acc:51.1%  val_loss:0.03599  val_acc:49.6%  save min loss model
+epoch: 2/50  batch:1920/3584  loss:0.03612  acc:48.8%  val_loss:0.03591  val_acc:48.8%  save min loss model
+epoch: 2/50  batch:2048/3584  loss:0.03540  acc:49.7%  val_loss:0.03553  val_acc:49.7%  save min loss model
+epoch: 2/50  batch:2176/3584  loss:0.03534  acc:50.3%  val_loss:0.03541  val_acc:50.1%  save min loss model
+epoch: 2/50  batch:2304/3584  loss:0.03392  acc:52.3%  val_loss:0.03476  val_acc:51.1%  save min loss model
+epoch: 2/50  batch:2432/3584  loss:0.03435  acc:52.0%  val_loss:0.03468  val_acc:50.9%  save min loss model
+epoch: 2/50  batch:2560/3584  loss:0.03385  acc:51.4%  val_loss:0.03462  val_acc:50.2%  save min loss model
+epoch: 2/50  batch:2688/3584  loss:0.03309  acc:52.5%  val_loss:0.03373  val_acc:51.8%  save min loss model
+epoch: 2/50  batch:2816/3584  loss:0.03288  acc:52.9%  val_loss:0.03389  val_acc:52.0%
+epoch: 2/50  batch:2944/3584  loss:0.03305  acc:52.7%  val_loss:0.03333  val_acc:52.7%  save min loss model
+epoch: 2/50  batch:3072/3584  loss:0.03359  acc:52.0%  val_loss:0.03311  val_acc:52.6%  save min loss model
+epoch: 2/50  batch:3200/3584  loss:0.03231  acc:53.9%  val_loss:0.03287  val_acc:52.9%  save min loss model
+epoch: 2/50  batch:3328/3584  loss:0.03163  acc:54.9%  val_loss:0.03268  val_acc:53.2%  save min loss model
+epoch: 2/50  batch:3456/3584  loss:0.03175  acc:55.6%  val_loss:0.03232  val_acc:53.5%  save min loss model
+epoch: 3/50  batch:   0/3584  loss:0.03127  acc:55.6%  val_loss:0.03196  val_acc:54.0%  save min loss model
+epoch: 3/50  batch: 128/3584  loss:0.03164  acc:54.4%  val_loss:0.03159  val_acc:54.5%  save min loss model
+epoch: 3/50  batch: 256/3584  loss:0.03077  acc:56.0%  val_loss:0.03246  val_acc:53.7%
+epoch: 3/50  batch: 384/3584  loss:0.03138  acc:54.5%  val_loss:0.03119  val_acc:55.2%  save min loss model
+epoch: 3/50  batch: 512/3584  loss:0.03062  acc:56.2%  val_loss:0.03091  val_acc:55.5%  save min loss model
+epoch: 3/50  batch: 640/3584  loss:0.03099  acc:55.5%  val_loss:0.03115  val_acc:55.3%
+epoch: 3/50  batch: 768/3584  loss:0.03051  acc:55.8%  val_loss:0.03072  val_acc:55.8%  save min loss model
+epoch: 3/50  batch: 896/3584  loss:0.02929  acc:57.5%  val_loss:0.03023  val_acc:56.3%  save min loss model
+epoch: 3/50  batch:1024/3584  loss:0.03085  acc:55.3%  val_loss:0.03129  val_acc:54.8%
+epoch: 3/50  batch:1152/3584  loss:0.02957  acc:57.1%  val_loss:0.03045  val_acc:55.9%
+epoch: 3/50  batch:1280/3584  loss:0.02903  acc:58.8%  val_loss:0.03011  val_acc:56.6%  save min loss model
+epoch: 3/50  batch:1408/3584  loss:0.02963  acc:57.4%  val_loss:0.03093  val_acc:55.1%
+epoch: 3/50  batch:1536/3584  loss:0.03002  acc:56.6%  val_loss:0.02940  val_acc:57.1%  save min loss model
+epoch: 3/50  batch:1664/3584  loss:0.03024  acc:56.5%  val_loss:0.03006  val_acc:56.5%
+epoch: 3/50  batch:1792/3584  loss:0.02851  acc:59.3%  val_loss:0.02969  val_acc:56.7%
+epoch: 3/50  batch:1920/3584  loss:0.02928  acc:57.4%  val_loss:0.02993  val_acc:56.6%
+epoch: 3/50  batch:2048/3584  loss:0.02901  acc:57.6%  val_loss:0.02901  val_acc:57.6%  save min loss model
+epoch: 3/50  batch:2176/3584  loss:0.02831  acc:58.6%  val_loss:0.02889  val_acc:57.7%  save min loss model
+epoch: 3/50  batch:2304/3584  loss:0.02896  acc:58.0%  val_loss:0.02941  val_acc:57.3%
+epoch: 3/50  batch:2432/3584  loss:0.02826  acc:58.9%  val_loss:0.02874  val_acc:57.8%  save min loss model
+epoch: 3/50  batch:2560/3584  loss:0.02801  acc:59.0%  val_loss:0.02824  val_acc:58.5%  save min loss model
+epoch: 3/50  batch:2688/3584  loss:0.02790  acc:59.9%  val_loss:0.02839  val_acc:58.6%
+epoch: 3/50  batch:2816/3584  loss:0.02716  acc:60.7%  val_loss:0.02874  val_acc:58.2%
+epoch: 3/50  batch:2944/3584  loss:0.02785  acc:59.5%  val_loss:0.02790  val_acc:59.0%  save min loss model
+epoch: 3/50  batch:3072/3584  loss:0.02789  acc:59.3%  val_loss:0.02804  val_acc:58.7%
+epoch: 3/50  batch:3200/3584  loss:0.02741  acc:60.3%  val_loss:0.02849  val_acc:58.3%
+epoch: 3/50  batch:3328/3584  loss:0.02692  acc:61.5%  val_loss:0.02768  val_acc:59.7%  save min loss model
+epoch: 3/50  batch:3456/3584  loss:0.02571  acc:63.1%  val_loss:0.02749  val_acc:59.9%  save min loss model
+epoch: 4/50  batch:   0/3584  loss:0.02660  acc:60.6%  val_loss:0.02768  val_acc:59.3%
+epoch: 4/50  batch: 128/3584  loss:0.02607  acc:61.9%  val_loss:0.02685  val_acc:60.5%  save min loss model
+epoch: 4/50  batch: 256/3584  loss:0.02760  acc:59.6%  val_loss:0.02735  val_acc:59.6%
+epoch: 4/50  batch: 384/3584  loss:0.02697  acc:60.4%  val_loss:0.02750  val_acc:59.4%
+epoch: 4/50  batch: 512/3584  loss:0.02689  acc:60.9%  val_loss:0.02677  val_acc:60.9%  save min loss model
+epoch: 4/50  batch: 640/3584  loss:0.02610  acc:61.9%  val_loss:0.02654  val_acc:61.2%  save min loss model
+epoch: 4/50  batch: 768/3584  loss:0.02646  acc:61.2%  val_loss:0.02679  val_acc:60.7%
+epoch: 4/50  batch: 896/3584  loss:0.02563  acc:62.3%  val_loss:0.02735  val_acc:60.1%
+epoch: 4/50  batch:1024/3584  loss:0.02590  acc:62.4%  val_loss:0.02610  val_acc:61.7%  save min loss model
+epoch: 4/50  batch:1152/3584  loss:0.02624  acc:61.6%  val_loss:0.02647  val_acc:60.9%
+epoch: 4/50  batch:1280/3584  loss:0.02524  acc:62.9%  val_loss:0.02619  val_acc:61.5%
+epoch: 4/50  batch:1408/3584  loss:0.02518  acc:63.0%  val_loss:0.02615  val_acc:61.5%
+epoch: 4/50  batch:1536/3584  loss:0.02536  acc:62.7%  val_loss:0.02634  val_acc:61.0%
+epoch: 4/50  batch:1664/3584  loss:0.02540  acc:62.9%  val_loss:0.02594  val_acc:61.8%  save min loss model
+epoch: 4/50  batch:1792/3584  loss:0.02485  acc:63.8%  val_loss:0.02549  val_acc:62.5%  save min loss model
+epoch: 4/50  batch:1920/3584  loss:0.02473  acc:63.2%  val_loss:0.02550  val_acc:62.2%
+epoch: 4/50  batch:2048/3584  loss:0.02543  acc:63.0%  val_loss:0.02654  val_acc:61.0%
+epoch: 4/50  batch:2176/3584  loss:0.02576  acc:61.8%  val_loss:0.02613  val_acc:61.4%
+epoch: 4/50  batch:2304/3584  loss:0.02448  acc:64.1%  val_loss:0.02519  val_acc:62.6%  save min loss model
+epoch: 4/50  batch:2432/3584  loss:0.02486  acc:63.2%  val_loss:0.02594  val_acc:61.7%
+epoch: 4/50  batch:2560/3584  loss:0.02572  acc:62.0%  val_loss:0.02604  val_acc:61.5%
+epoch: 4/50  batch:2688/3584  loss:0.02520  acc:63.2%  val_loss:0.02544  val_acc:62.1%
+epoch: 4/50  batch:2816/3584  loss:0.02517  acc:62.7%  val_loss:0.02503  val_acc:62.9%  save min loss model
+epoch: 4/50  batch:2944/3584  loss:0.02467  acc:63.8%  val_loss:0.02516  val_acc:62.8%
+epoch: 4/50  batch:3072/3584  loss:0.02420  acc:64.5%  val_loss:0.02505  val_acc:62.7%
+epoch: 4/50  batch:3200/3584  loss:0.02417  acc:64.0%  val_loss:0.02512  val_acc:62.6%
+epoch: 4/50  batch:3328/3584  loss:0.02394  acc:64.5%  val_loss:0.02455  val_acc:63.5%  save min loss model
+epoch: 4/50  batch:3456/3584  loss:0.02409  acc:64.4%  val_loss:0.02579  val_acc:61.8%
+epoch: 5/50  batch:   0/3584  loss:0.02395  acc:64.8%  val_loss:0.02476  val_acc:63.3%
+epoch: 5/50  batch: 128/3584  loss:0.02414  acc:64.2%  val_loss:0.02555  val_acc:62.1%
+epoch: 5/50  batch: 256/3584  loss:0.02377  acc:64.8%  val_loss:0.02479  val_acc:62.9%
+epoch: 5/50  batch: 384/3584  loss:0.02379  acc:64.8%  val_loss:0.02493  val_acc:62.6%
+epoch: 5/50  batch: 512/3584  loss:0.02449  acc:63.5%  val_loss:0.02497  val_acc:62.9%
+epoch: 5/50  batch: 640/3584  loss:0.02407  acc:64.3%  val_loss:0.02471  val_acc:63.3%
+epoch: 5/50  batch: 768/3584  loss:0.02420  acc:64.5%  val_loss:0.02489  val_acc:63.2%
+epoch: 5/50  batch: 896/3584  loss:0.02375  acc:64.9%  val_loss:0.02493  val_acc:62.7%
+epoch: 5/50  batch:1024/3584  loss:0.02371  acc:65.0%  val_loss:0.02433  val_acc:63.7%  save min loss model
+epoch: 5/50  batch:1152/3584  loss:0.02373  acc:64.8%  val_loss:0.02451  val_acc:63.6%
+epoch: 5/50  batch:1280/3584  loss:0.02277  acc:66.3%  val_loss:0.02366  val_acc:64.8%  save min loss model
+epoch: 5/50  batch:1408/3584  loss:0.02306  acc:65.6%  val_loss:0.02439  val_acc:63.5%
+epoch: 5/50  batch:1536/3584  loss:0.02301  acc:66.0%  val_loss:0.02412  val_acc:64.0%
+epoch: 5/50  batch:1664/3584  loss:0.02300  acc:65.7%  val_loss:0.02339  val_acc:65.2%  save min loss model
+epoch: 5/50  batch:1792/3584  loss:0.02306  acc:65.6%  val_loss:0.02358  val_acc:65.0%
+epoch: 5/50  batch:1920/3584  loss:0.02343  acc:64.8%  val_loss:0.02343  val_acc:65.2%
+epoch: 5/50  batch:2048/3584  loss:0.02331  acc:64.9%  val_loss:0.02340  val_acc:65.2%
+epoch: 5/50  batch:2176/3584  loss:0.02324  acc:64.7%  val_loss:0.02366  val_acc:64.3%
+epoch: 5/50  batch:2304/3584  loss:0.02310  acc:64.9%  val_loss:0.02353  val_acc:64.3%
+epoch: 5/50  batch:2432/3584  loss:0.02266  acc:65.8%  val_loss:0.02284  val_acc:65.9%  save min loss model
+epoch: 5/50  batch:2560/3584  loss:0.02284  acc:65.4%  val_loss:0.02346  val_acc:65.1%
+epoch: 5/50  batch:2688/3584  loss:0.02167  acc:67.6%  val_loss:0.02304  val_acc:65.7%
+epoch: 5/50  batch:2816/3584  loss:0.02196  acc:67.2%  val_loss:0.02295  val_acc:65.9%
+epoch: 5/50  batch:2944/3584  loss:0.02248  acc:67.2%  val_loss:0.02289  val_acc:65.8%
+epoch: 5/50  batch:3072/3584  loss:0.02259  acc:66.4%  val_loss:0.02348  val_acc:64.8%
+epoch: 5/50  batch:3200/3584  loss:0.02203  acc:67.4%  val_loss:0.02303  val_acc:65.6%
+epoch: 5/50  batch:3328/3584  loss:0.02192  acc:67.4%  val_loss:0.02265  val_acc:66.2%  save min loss model
+epoch: 5/50  batch:3456/3584  loss:0.02185  acc:67.5%  val_loss:0.02297  val_acc:65.5%
+epoch: 6/50  batch:   0/3584  loss:0.02181  acc:67.5%  val_loss:0.02242  val_acc:66.4%  save min loss model
+epoch: 6/50  batch: 128/3584  loss:0.02102  acc:68.7%  val_loss:0.02266  val_acc:66.0%
+epoch: 6/50  batch: 256/3584  loss:0.02241  acc:66.4%  val_loss:0.02324  val_acc:65.3%
+epoch: 6/50  batch: 384/3584  loss:0.02261  acc:66.6%  val_loss:0.02239  val_acc:66.6%  save min loss model
+epoch: 6/50  batch: 512/3584  loss:0.02130  acc:68.3%  val_loss:0.02205  val_acc:67.1%  save min loss model
+epoch: 6/50  batch: 640/3584  loss:0.02251  acc:66.4%  val_loss:0.02280  val_acc:65.9%
+epoch: 6/50  batch: 768/3584  loss:0.02144  acc:67.8%  val_loss:0.02211  val_acc:66.6%
+epoch: 6/50  batch: 896/3584  loss:0.02093  acc:69.2%  val_loss:0.02187  val_acc:67.1%  save min loss model
+epoch: 6/50  batch:1024/3584  loss:0.02096  acc:68.3%  val_loss:0.02264  val_acc:65.9%
+epoch: 6/50  batch:1152/3584  loss:0.02185  acc:67.2%  val_loss:0.02196  val_acc:67.0%
+epoch: 6/50  batch:1280/3584  loss:0.02106  acc:68.6%  val_loss:0.02184  val_acc:67.2%  save min loss model
+epoch: 6/50  batch:1408/3584  loss:0.02131  acc:68.3%  val_loss:0.02208  val_acc:67.0%
+epoch: 6/50  batch:1536/3584  loss:0.02078  acc:68.6%  val_loss:0.02185  val_acc:67.2%
+epoch: 6/50  batch:1664/3584  loss:0.02028  acc:69.5%  val_loss:0.02177  val_acc:67.4%  save min loss model
+epoch: 6/50  batch:1792/3584  loss:0.02055  acc:69.5%  val_loss:0.02201  val_acc:66.7%
+epoch: 6/50  batch:1920/3584  loss:0.02053  acc:68.9%  val_loss:0.02163  val_acc:67.3%  save min loss model
+epoch: 6/50  batch:2048/3584  loss:0.02090  acc:68.4%  val_loss:0.02216  val_acc:66.7%
+epoch: 6/50  batch:2176/3584  loss:0.02086  acc:69.2%  val_loss:0.02148  val_acc:67.8%  save min loss model
+epoch: 6/50  batch:2304/3584  loss:0.02043  acc:69.2%  val_loss:0.02157  val_acc:67.8%
+epoch: 6/50  batch:2432/3584  loss:0.02156  acc:67.0%  val_loss:0.02206  val_acc:67.0%
+epoch: 6/50  batch:2560/3584  loss:0.02082  acc:68.4%  val_loss:0.02179  val_acc:67.2%
+epoch: 6/50  batch:2688/3584  loss:0.02120  acc:67.9%  val_loss:0.02180  val_acc:67.0%
+epoch: 6/50  batch:2816/3584  loss:0.02040  acc:69.2%  val_loss:0.02111  val_acc:68.4%  save min loss model
+epoch: 6/50  batch:2944/3584  loss:0.02121  acc:68.3%  val_loss:0.02226  val_acc:66.5%
+epoch: 6/50  batch:3072/3584  loss:0.02147  acc:67.5%  val_loss:0.02189  val_acc:66.8%
+epoch: 6/50  batch:3200/3584  loss:0.02083  acc:68.8%  val_loss:0.02127  val_acc:67.6%
+epoch: 6/50  batch:3328/3584  loss:0.02041  acc:69.4%  val_loss:0.02177  val_acc:67.1%
+epoch: 6/50  batch:3456/3584  loss:0.01952  acc:70.1%  val_loss:0.02183  val_acc:67.2%
+epoch: 7/50  batch:   0/3584  loss:0.02061  acc:68.8%  val_loss:0.02165  val_acc:67.5%
+epoch: 7/50  batch: 128/3584  loss:0.02077  acc:68.7%  val_loss:0.02188  val_acc:67.0%
+epoch: 7/50  batch: 256/3584  loss:0.02060  acc:68.3%  val_loss:0.02119  val_acc:68.0%
+epoch: 7/50  batch: 384/3584  loss:0.02062  acc:68.8%  val_loss:0.02151  val_acc:68.0%
+epoch: 7/50  batch: 512/3584  loss:0.01996  acc:70.1%  val_loss:0.02171  val_acc:67.3%
+epoch: 7/50  batch: 640/3584  loss:0.02042  acc:69.5%  val_loss:0.02123  val_acc:67.9%
+epoch: 7/50  batch: 768/3584  loss:0.01984  acc:69.9%  val_loss:0.02132  val_acc:67.7%
+epoch: 7/50  batch: 896/3584  loss:0.02052  acc:69.1%  val_loss:0.02134  val_acc:67.8%
+epoch: 7/50  batch:1024/3584  loss:0.01987  acc:69.7%  val_loss:0.02081  val_acc:68.6%  save min loss model
+epoch: 7/50  batch:1152/3584  loss:0.01959  acc:70.5%  val_loss:0.02072  val_acc:69.0%  save min loss model
+epoch: 7/50  batch:1280/3584  loss:0.01975  acc:69.7%  val_loss:0.02116  val_acc:68.2%
+epoch: 7/50  batch:1408/3584  loss:0.01922  acc:70.9%  val_loss:0.02038  val_acc:69.1%  save min loss model
+epoch: 7/50  batch:1536/3584  loss:0.01896  acc:71.7%  val_loss:0.02041  val_acc:69.1%
+epoch: 7/50  batch:1664/3584  loss:0.01979  acc:69.8%  val_loss:0.02090  val_acc:68.4%
+epoch: 7/50  batch:1792/3584  loss:0.01951  acc:70.6%  val_loss:0.02050  val_acc:68.7%
+epoch: 7/50  batch:1920/3584  loss:0.01963  acc:70.2%  val_loss:0.02069  val_acc:68.7%
+epoch: 7/50  batch:2048/3584  loss:0.01889  acc:71.7%  val_loss:0.02078  val_acc:68.7%
+epoch: 7/50  batch:2176/3584  loss:0.01999  acc:69.4%  val_loss:0.02045  val_acc:69.0%
+epoch: 7/50  batch:2304/3584  loss:0.01984  acc:70.4%  val_loss:0.02020  val_acc:69.4%  save min loss model
+epoch: 7/50  batch:2432/3584  loss:0.01970  acc:69.9%  val_loss:0.02091  val_acc:68.3%
+epoch: 7/50  batch:2560/3584  loss:0.01841  acc:72.0%  val_loss:0.02033  val_acc:69.2%
+epoch: 7/50  batch:2688/3584  loss:0.01932  acc:71.1%  val_loss:0.02019  val_acc:69.3%  save min loss model
+epoch: 7/50  batch:2816/3584  loss:0.01957  acc:70.8%  val_loss:0.02089  val_acc:68.4%
+epoch: 7/50  batch:2944/3584  loss:0.01982  acc:69.7%  val_loss:0.02010  val_acc:69.5%  save min loss model
+epoch: 7/50  batch:3072/3584  loss:0.01949  acc:70.2%  val_loss:0.01996  val_acc:69.7%  save min loss model
+epoch: 7/50  batch:3200/3584  loss:0.01967  acc:70.0%  val_loss:0.02131  val_acc:67.7%
+epoch: 7/50  batch:3328/3584  loss:0.01942  acc:70.4%  val_loss:0.02031  val_acc:69.3%
+epoch: 7/50  batch:3456/3584  loss:0.01871  acc:71.9%  val_loss:0.01986  val_acc:70.1%  save min loss model
+epoch: 8/50  batch:   0/3584  loss:0.01958  acc:70.3%  val_loss:0.02010  val_acc:69.6%
+epoch: 8/50  batch: 128/3584  loss:0.01977  acc:70.0%  val_loss:0.02058  val_acc:68.5%
+epoch: 8/50  batch: 256/3584  loss:0.01830  acc:72.2%  val_loss:0.01991  val_acc:69.7%
+epoch: 8/50  batch: 384/3584  loss:0.01877  acc:71.5%  val_loss:0.02019  val_acc:69.7%
+epoch: 8/50  batch: 512/3584  loss:0.01851  acc:72.0%  val_loss:0.01977  val_acc:70.2%  save min loss model
+epoch: 8/50  batch: 640/3584  loss:0.01937  acc:70.8%  val_loss:0.02012  val_acc:69.0%
+epoch: 8/50  batch: 768/3584  loss:0.01836  acc:72.5%  val_loss:0.02012  val_acc:69.4%
+epoch: 8/50  batch: 896/3584  loss:0.01883  acc:71.7%  val_loss:0.01982  val_acc:70.2%
+epoch: 8/50  batch:1024/3584  loss:0.01894  acc:71.2%  val_loss:0.01961  val_acc:70.6%  save min loss model
+epoch: 8/50  batch:1152/3584  loss:0.01816  acc:72.4%  val_loss:0.02013  val_acc:69.6%
+epoch: 8/50  batch:1280/3584  loss:0.01889  acc:71.4%  val_loss:0.02052  val_acc:69.0%
+epoch: 8/50  batch:1408/3584  loss:0.01847  acc:71.6%  val_loss:0.01975  val_acc:69.9%
+epoch: 8/50  batch:1536/3584  loss:0.01805  acc:72.4%  val_loss:0.01964  val_acc:69.9%
+epoch: 8/50  batch:1664/3584  loss:0.01802  acc:72.5%  val_loss:0.01954  val_acc:70.5%  save min loss model
+epoch: 8/50  batch:1792/3584  loss:0.01789  acc:72.8%  val_loss:0.01941  val_acc:70.7%  save min loss model
+epoch: 8/50  batch:1920/3584  loss:0.01820  acc:72.6%  val_loss:0.01979  val_acc:70.2%
+epoch: 8/50  batch:2048/3584  loss:0.01812  acc:72.4%  val_loss:0.01952  val_acc:70.7%
+epoch: 8/50  batch:2176/3584  loss:0.01836  acc:72.0%  val_loss:0.01960  val_acc:70.3%
+epoch: 8/50  batch:2304/3584  loss:0.01752  acc:73.6%  val_loss:0.01924  val_acc:70.8%  save min loss model
+epoch: 8/50  batch:2432/3584  loss:0.01874  acc:71.2%  val_loss:0.01999  val_acc:69.8%
+epoch: 8/50  batch:2560/3584  loss:0.01829  acc:71.8%  val_loss:0.01983  val_acc:69.8%
+epoch: 8/50  batch:2688/3584  loss:0.01858  acc:72.0%  val_loss:0.01963  val_acc:70.2%
+epoch: 8/50  batch:2816/3584  loss:0.01892  acc:70.9%  val_loss:0.01963  val_acc:70.0%
+epoch: 8/50  batch:2944/3584  loss:0.01812  acc:72.8%  val_loss:0.01904  val_acc:71.2%  save min loss model
+epoch: 8/50  batch:3072/3584  loss:0.01828  acc:71.9%  val_loss:0.01935  val_acc:70.7%
+epoch: 8/50  batch:3200/3584  loss:0.01817  acc:72.5%  val_loss:0.01946  val_acc:70.6%
+epoch: 8/50  batch:3328/3584  loss:0.01849  acc:71.6%  val_loss:0.01954  val_acc:70.0%
+epoch: 8/50  batch:3456/3584  loss:0.01758  acc:73.5%  val_loss:0.01919  val_acc:70.7%
+epoch: 9/50  batch:   0/3584  loss:0.01815  acc:72.2%  val_loss:0.01969  val_acc:70.2%
+epoch: 9/50  batch: 128/3584  loss:0.01817  acc:72.4%  val_loss:0.01985  val_acc:69.7%
+epoch: 9/50  batch: 256/3584  loss:0.01836  acc:72.0%  val_loss:0.01931  val_acc:70.5%
+epoch: 9/50  batch: 384/3584  loss:0.01746  acc:73.4%  val_loss:0.01934  val_acc:70.5%
+epoch: 9/50  batch: 512/3584  loss:0.01858  acc:71.8%  val_loss:0.01912  val_acc:71.1%
+epoch: 9/50  batch: 640/3584  loss:0.01714  acc:74.2%  val_loss:0.01922  val_acc:70.9%
+epoch: 9/50  batch: 768/3584  loss:0.01722  acc:73.9%  val_loss:0.01921  val_acc:70.5%
+epoch: 9/50  batch: 896/3584  loss:0.01753  acc:73.1%  val_loss:0.01908  val_acc:70.8%
+epoch: 9/50  batch:1024/3584  loss:0.01760  acc:73.3%  val_loss:0.01938  val_acc:70.6%
+epoch: 9/50  batch:1152/3584  loss:0.01686  acc:74.5%  val_loss:0.01889  val_acc:71.2%  save min loss model
+epoch: 9/50  batch:1280/3584  loss:0.01740  acc:72.9%  val_loss:0.01932  val_acc:70.4%
+epoch: 9/50  batch:1408/3584  loss:0.01739  acc:73.1%  val_loss:0.01936  val_acc:70.5%
+epoch: 9/50  batch:1536/3584  loss:0.01772  acc:72.7%  val_loss:0.01879  val_acc:71.6%  save min loss model
+epoch: 9/50  batch:1664/3584  loss:0.01834  acc:72.0%  val_loss:0.01881  val_acc:71.4%
+epoch: 9/50  batch:1792/3584  loss:0.01718  acc:74.0%  val_loss:0.01933  val_acc:70.6%
+epoch: 9/50  batch:1920/3584  loss:0.01797  acc:72.8%  val_loss:0.01893  val_acc:71.1%
+epoch: 9/50  batch:2048/3584  loss:0.01799  acc:72.7%  val_loss:0.01866  val_acc:71.4%  save min loss model
+epoch: 9/50  batch:2176/3584  loss:0.01736  acc:73.4%  val_loss:0.01907  val_acc:71.2%
+epoch: 9/50  batch:2304/3584  loss:0.01750  acc:73.2%  val_loss:0.01861  val_acc:71.4%  save min loss model
+epoch: 9/50  batch:2432/3584  loss:0.01737  acc:73.3%  val_loss:0.01856  val_acc:71.6%  save min loss model
+epoch: 9/50  batch:2560/3584  loss:0.01713  acc:74.0%  val_loss:0.01858  val_acc:71.7%
+epoch: 9/50  batch:2688/3584  loss:0.01738  acc:72.9%  val_loss:0.01880  val_acc:71.6%
+epoch: 9/50  batch:2816/3584  loss:0.01753  acc:73.4%  val_loss:0.01880  val_acc:71.5%
+epoch: 9/50  batch:2944/3584  loss:0.01703  acc:73.5%  val_loss:0.01861  val_acc:71.3%
+epoch: 9/50  batch:3072/3584  loss:0.01785  acc:72.7%  val_loss:0.01852  val_acc:71.5%  save min loss model
+epoch: 9/50  batch:3200/3584  loss:0.01761  acc:73.0%  val_loss:0.01860  val_acc:71.6%
+epoch: 9/50  batch:3328/3584  loss:0.01748  acc:73.1%  val_loss:0.01833  val_acc:72.1%  save min loss model
+epoch: 9/50  batch:3456/3584  loss:0.01618  acc:75.6%  val_loss:0.01862  val_acc:71.7%
+epoch:10/50  batch:   0/3584  loss:0.01697  acc:73.9%  val_loss:0.01878  val_acc:70.8%
+epoch:10/50  batch: 128/3584  loss:0.01661  acc:74.3%  val_loss:0.01864  val_acc:71.3%
+epoch:10/50  batch: 256/3584  loss:0.01751  acc:73.4%  val_loss:0.01886  val_acc:71.2%
+epoch:10/50  batch: 384/3584  loss:0.01685  acc:74.2%  val_loss:0.01809  val_acc:72.2%  save min loss model
+epoch:10/50  batch: 512/3584  loss:0.01768  acc:73.1%  val_loss:0.01944  val_acc:70.3%
+epoch:10/50  batch: 640/3584  loss:0.01758  acc:72.7%  val_loss:0.01911  val_acc:70.8%
+epoch:10/50  batch: 768/3584  loss:0.01662  acc:74.2%  val_loss:0.01888  val_acc:71.3%
+epoch:10/50  batch: 896/3584  loss:0.01736  acc:73.3%  val_loss:0.01917  val_acc:70.5%
+epoch:10/50  batch:1024/3584  loss:0.01675  acc:74.1%  val_loss:0.01854  val_acc:71.5%
+epoch:10/50  batch:1152/3584  loss:0.01704  acc:73.7%  val_loss:0.01834  val_acc:71.9%
+epoch:10/50  batch:1280/3584  loss:0.01623  acc:74.9%  val_loss:0.01880  val_acc:71.4%
+epoch:10/50  batch:1408/3584  loss:0.01682  acc:74.1%  val_loss:0.01873  val_acc:71.5%
+epoch:10/50  batch:1536/3584  loss:0.01677  acc:74.2%  val_loss:0.01839  val_acc:72.1%
+epoch:10/50  batch:1664/3584  loss:0.01729  acc:73.6%  val_loss:0.01838  val_acc:71.8%
+epoch:10/50  batch:1792/3584  loss:0.01640  acc:75.2%  val_loss:0.01841  val_acc:72.0%
+epoch:10/50  batch:1920/3584  loss:0.01710  acc:73.8%  val_loss:0.01844  val_acc:71.7%
+epoch:10/50  batch:2048/3584  loss:0.01662  acc:74.2%  val_loss:0.01843  val_acc:71.9%
+epoch:10/50  batch:2176/3584  loss:0.01706  acc:73.2%  val_loss:0.01836  val_acc:72.0%
+epoch:10/50  batch:2304/3584  loss:0.01703  acc:73.5%  val_loss:0.01833  val_acc:72.2%
+epoch:10/50  batch:2432/3584  loss:0.01674  acc:74.5%  val_loss:0.01801  val_acc:72.3%  save min loss model
+epoch:10/50  batch:2560/3584  loss:0.01681  acc:74.2%  val_loss:0.01823  val_acc:71.9%
+epoch:10/50  batch:2688/3584  loss:0.01730  acc:73.3%  val_loss:0.01836  val_acc:71.9%
+epoch:10/50  batch:2816/3584  loss:0.01655  acc:74.5%  val_loss:0.01784  val_acc:72.6%  save min loss model
+epoch:10/50  batch:2944/3584  loss:0.01674  acc:74.7%  val_loss:0.01784  val_acc:72.6%
+epoch:10/50  batch:3072/3584  loss:0.01629  acc:75.7%  val_loss:0.01804  val_acc:72.4%
+epoch:10/50  batch:3200/3584  loss:0.01625  acc:75.0%  val_loss:0.01785  val_acc:72.6%
+epoch:10/50  batch:3328/3584  loss:0.01669  acc:74.5%  val_loss:0.01790  val_acc:72.7%
+epoch:10/50  batch:3456/3584  loss:0.01626  acc:74.8%  val_loss:0.01849  val_acc:71.8%
+epoch:11/50  batch:   0/3584  loss:0.01611  acc:74.5%  val_loss:0.01783  val_acc:72.7%  save min loss model
+epoch:11/50  batch: 128/3584  loss:0.01665  acc:74.4%  val_loss:0.01801  val_acc:72.2%
+epoch:11/50  batch: 256/3584  loss:0.01635  acc:75.6%  val_loss:0.01781  val_acc:73.1%  save min loss model
+epoch:11/50  batch: 384/3584  loss:0.01642  acc:74.7%  val_loss:0.01820  val_acc:72.6%
+epoch:11/50  batch: 512/3584  loss:0.01619  acc:75.1%  val_loss:0.01792  val_acc:72.6%
+epoch:11/50  batch: 640/3584  loss:0.01609  acc:75.5%  val_loss:0.01805  val_acc:72.4%
+epoch:11/50  batch: 768/3584  loss:0.01624  acc:75.2%  val_loss:0.01798  val_acc:72.7%
+epoch:11/50  batch: 896/3584  loss:0.01600  acc:75.7%  val_loss:0.01790  val_acc:72.5%
+epoch:11/50  batch:1024/3584  loss:0.01623  acc:74.7%  val_loss:0.01777  val_acc:72.7%  save min loss model
+epoch:11/50  batch:1152/3584  loss:0.01602  acc:75.3%  val_loss:0.01841  val_acc:71.6%
+epoch:11/50  batch:1280/3584  loss:0.01538  acc:76.4%  val_loss:0.01770  val_acc:72.9%  save min loss model
+epoch:11/50  batch:1408/3584  loss:0.01576  acc:75.8%  val_loss:0.01794  val_acc:72.7%
+epoch:11/50  batch:1536/3584  loss:0.01558  acc:76.0%  val_loss:0.01754  val_acc:73.1%  save min loss model
+epoch:11/50  batch:1664/3584  loss:0.01610  acc:74.6%  val_loss:0.01783  val_acc:72.4%
+epoch:11/50  batch:1792/3584  loss:0.01599  acc:75.2%  val_loss:0.01755  val_acc:72.9%
+epoch:11/50  batch:1920/3584  loss:0.01599  acc:75.4%  val_loss:0.01735  val_acc:73.4%  save min loss model
+epoch:11/50  batch:2048/3584  loss:0.01578  acc:75.9%  val_loss:0.01781  val_acc:72.9%
+epoch:11/50  batch:2176/3584  loss:0.01528  acc:76.4%  val_loss:0.01743  val_acc:73.1%
+epoch:11/50  batch:2304/3584  loss:0.01583  acc:75.5%  val_loss:0.01768  val_acc:72.8%
+epoch:11/50  batch:2432/3584  loss:0.01568  acc:76.0%  val_loss:0.01749  val_acc:73.2%
+epoch:11/50  batch:2560/3584  loss:0.01602  acc:74.9%  val_loss:0.01794  val_acc:72.5%
+epoch:11/50  batch:2688/3584  loss:0.01595  acc:75.3%  val_loss:0.01731  val_acc:73.4%  save min loss model
+epoch:11/50  batch:2816/3584  loss:0.01608  acc:74.5%  val_loss:0.01751  val_acc:73.1%
+epoch:11/50  batch:2944/3584  loss:0.01582  acc:75.7%  val_loss:0.01787  val_acc:72.5%
+epoch:11/50  batch:3072/3584  loss:0.01564  acc:76.0%  val_loss:0.01739  val_acc:73.2%
+epoch:11/50  batch:3200/3584  loss:0.01612  acc:75.0%  val_loss:0.01718  val_acc:73.5%  save min loss model
+epoch:11/50  batch:3328/3584  loss:0.01553  acc:75.8%  val_loss:0.01746  val_acc:73.2%
+epoch:11/50  batch:3456/3584  loss:0.01563  acc:76.8%  val_loss:0.01806  val_acc:72.3%
+epoch:12/50  batch:   0/3584  loss:0.01602  acc:75.4%  val_loss:0.01764  val_acc:73.1%
+epoch:12/50  batch: 128/3584  loss:0.01549  acc:76.1%  val_loss:0.01758  val_acc:72.8%
+epoch:12/50  batch: 256/3584  loss:0.01545  acc:76.0%  val_loss:0.01772  val_acc:73.0%
+epoch:12/50  batch: 384/3584  loss:0.01549  acc:75.7%  val_loss:0.01779  val_acc:73.0%
+epoch:12/50  batch: 512/3584  loss:0.01597  acc:75.4%  val_loss:0.01756  val_acc:72.6%
+epoch:12/50  batch: 640/3584  loss:0.01559  acc:75.9%  val_loss:0.01731  val_acc:73.2%
+epoch:12/50  batch: 768/3584  loss:0.01568  acc:76.1%  val_loss:0.01800  val_acc:72.5%
+epoch:12/50  batch: 896/3584  loss:0.01505  acc:76.5%  val_loss:0.01735  val_acc:73.3%
+epoch:12/50  batch:1024/3584  loss:0.01523  acc:76.8%  val_loss:0.01738  val_acc:73.2%
+epoch:12/50  batch:1152/3584  loss:0.01556  acc:75.9%  val_loss:0.01806  val_acc:72.2%
+epoch:12/50  batch:1280/3584  loss:0.01606  acc:75.3%  val_loss:0.01744  val_acc:73.1%
+epoch:12/50  batch:1408/3584  loss:0.01560  acc:75.9%  val_loss:0.01728  val_acc:73.6%
+epoch:12/50  batch:1536/3584  loss:0.01632  acc:74.2%  val_loss:0.01769  val_acc:72.9%
+epoch:12/50  batch:1664/3584  loss:0.01567  acc:75.4%  val_loss:0.01738  val_acc:73.1%
+epoch:12/50  batch:1792/3584  loss:0.01462  acc:77.3%  val_loss:0.01694  val_acc:73.9%  save min loss model
+epoch:12/50  batch:1920/3584  loss:0.01520  acc:76.3%  val_loss:0.01733  val_acc:73.6%
+epoch:12/50  batch:2048/3584  loss:0.01494  acc:77.0%  val_loss:0.01724  val_acc:73.7%
+epoch:12/50  batch:2176/3584  loss:0.01507  acc:77.0%  val_loss:0.01712  val_acc:73.4%
+epoch:12/50  batch:2304/3584  loss:0.01480  acc:77.0%  val_loss:0.01694  val_acc:73.8%
+epoch:12/50  batch:2432/3584  loss:0.01497  acc:76.9%  val_loss:0.01725  val_acc:73.7%
+epoch:12/50  batch:2560/3584  loss:0.01515  acc:76.6%  val_loss:0.01700  val_acc:74.0%
+epoch:12/50  batch:2688/3584  loss:0.01510  acc:76.6%  val_loss:0.01702  val_acc:73.8%
+epoch:12/50  batch:2816/3584  loss:0.01493  acc:77.1%  val_loss:0.01736  val_acc:73.5%
+epoch:12/50  batch:2944/3584  loss:0.01516  acc:76.7%  val_loss:0.01694  val_acc:74.2%
+epoch:12/50  batch:3072/3584  loss:0.01545  acc:75.8%  val_loss:0.01746  val_acc:73.2%
+epoch:12/50  batch:3200/3584  loss:0.01497  acc:76.6%  val_loss:0.01697  val_acc:74.0%
+epoch:12/50  batch:3328/3584  loss:0.01556  acc:76.0%  val_loss:0.01729  val_acc:73.5%
+epoch:12/50  batch:3456/3584  loss:0.01451  acc:78.0%  val_loss:0.01694  val_acc:74.0%
+epoch:13/50  batch:   0/3584  loss:0.01537  acc:76.3%  val_loss:0.01775  val_acc:72.8%
+epoch:13/50  batch: 128/3584  loss:0.01562  acc:75.8%  val_loss:0.01782  val_acc:72.9%
+epoch:13/50  batch: 256/3584  loss:0.01497  acc:76.8%  val_loss:0.01725  val_acc:73.5%
+epoch:13/50  batch: 384/3584  loss:0.01440  acc:77.7%  val_loss:0.01716  val_acc:73.8%
+epoch:13/50  batch: 512/3584  loss:0.01493  acc:76.8%  val_loss:0.01733  val_acc:73.5%
+epoch:13/50  batch: 640/3584  loss:0.01487  acc:76.8%  val_loss:0.01717  val_acc:73.8%
+epoch:13/50  batch: 768/3584  loss:0.01510  acc:76.8%  val_loss:0.01759  val_acc:73.2%
+epoch:13/50  batch: 896/3584  loss:0.01449  acc:77.4%  val_loss:0.01735  val_acc:73.6%
+epoch:13/50  batch:1024/3584  loss:0.01546  acc:76.1%  val_loss:0.01710  val_acc:73.9%
+epoch:13/50  batch:1152/3584  loss:0.01512  acc:76.6%  val_loss:0.01721  val_acc:73.9%
+epoch:13/50  batch:1280/3584  loss:0.01539  acc:76.2%  val_loss:0.01680  val_acc:74.0%  save min loss model
+epoch:13/50  batch:1408/3584  loss:0.01515  acc:76.6%  val_loss:0.01699  val_acc:73.9%
+epoch:13/50  batch:1536/3584  loss:0.01461  acc:77.8%  val_loss:0.01691  val_acc:74.1%
+epoch:13/50  batch:1664/3584  loss:0.01435  acc:78.2%  val_loss:0.01687  val_acc:74.2%
+epoch:13/50  batch:1792/3584  loss:0.01488  acc:77.0%  val_loss:0.01688  val_acc:73.9%
+epoch:13/50  batch:1920/3584  loss:0.01478  acc:77.3%  val_loss:0.01678  val_acc:74.2%  save min loss model
+epoch:13/50  batch:2048/3584  loss:0.01453  acc:77.9%  val_loss:0.01679  val_acc:74.2%
+epoch:13/50  batch:2176/3584  loss:0.01448  acc:77.7%  val_loss:0.01672  val_acc:74.2%  save min loss model
+epoch:13/50  batch:2304/3584  loss:0.01492  acc:77.1%  val_loss:0.01649  val_acc:74.5%  save min loss model
+epoch:13/50  batch:2432/3584  loss:0.01463  acc:77.5%  val_loss:0.01671  val_acc:74.3%
+epoch:13/50  batch:2560/3584  loss:0.01448  acc:77.4%  val_loss:0.01683  val_acc:74.2%
+epoch:13/50  batch:2688/3584  loss:0.01483  acc:76.8%  val_loss:0.01663  val_acc:74.4%
+epoch:13/50  batch:2816/3584  loss:0.01465  acc:77.2%  val_loss:0.01655  val_acc:74.5%
+epoch:13/50  batch:2944/3584  loss:0.01522  acc:76.4%  val_loss:0.01689  val_acc:73.8%
+epoch:13/50  batch:3072/3584  loss:0.01462  acc:76.8%  val_loss:0.01675  val_acc:74.0%
+epoch:13/50  batch:3200/3584  loss:0.01394  acc:78.4%  val_loss:0.01659  val_acc:74.2%
+epoch:13/50  batch:3328/3584  loss:0.01423  acc:77.9%  val_loss:0.01677  val_acc:74.2%
+epoch:13/50  batch:3456/3584  loss:0.01343  acc:79.2%  val_loss:0.01693  val_acc:74.0%
+epoch:14/50  batch:   0/3584  loss:0.01477  acc:77.5%  val_loss:0.01663  val_acc:74.1%
+epoch:14/50  batch: 128/3584  loss:0.01400  acc:78.6%  val_loss:0.01703  val_acc:73.5%
+epoch:14/50  batch: 256/3584  loss:0.01343  acc:79.3%  val_loss:0.01666  val_acc:74.3%
+epoch:14/50  batch: 384/3584  loss:0.01452  acc:77.2%  val_loss:0.01694  val_acc:73.8%
+epoch:14/50  batch: 512/3584  loss:0.01444  acc:77.5%  val_loss:0.01667  val_acc:74.4%
+epoch:14/50  batch: 640/3584  loss:0.01437  acc:77.5%  val_loss:0.01650  val_acc:74.6%
+epoch:14/50  batch: 768/3584  loss:0.01498  acc:76.8%  val_loss:0.01707  val_acc:73.8%
+epoch:14/50  batch: 896/3584  loss:0.01399  acc:78.1%  val_loss:0.01676  val_acc:74.1%
+epoch:14/50  batch:1024/3584  loss:0.01436  acc:77.9%  val_loss:0.01635  val_acc:74.9%  save min loss model
+epoch:14/50  batch:1152/3584  loss:0.01419  acc:78.1%  val_loss:0.01661  val_acc:74.6%
+epoch:14/50  batch:1280/3584  loss:0.01413  acc:78.0%  val_loss:0.01658  val_acc:74.6%
+epoch:14/50  batch:1408/3584  loss:0.01445  acc:77.3%  val_loss:0.01677  val_acc:74.4%
+epoch:14/50  batch:1536/3584  loss:0.01357  acc:79.0%  val_loss:0.01674  val_acc:74.2%
+epoch:14/50  batch:1664/3584  loss:0.01378  acc:78.5%  val_loss:0.01636  val_acc:74.6%
+epoch:14/50  batch:1792/3584  loss:0.01380  acc:78.4%  val_loss:0.01668  val_acc:74.6%
+epoch:14/50  batch:1920/3584  loss:0.01369  acc:78.6%  val_loss:0.01656  val_acc:74.5%
+epoch:14/50  batch:2048/3584  loss:0.01386  acc:78.4%  val_loss:0.01624  val_acc:74.9%  save min loss model
+epoch:14/50  batch:2176/3584  loss:0.01443  acc:77.7%  val_loss:0.01655  val_acc:74.6%
+epoch:14/50  batch:2304/3584  loss:0.01437  acc:77.2%  val_loss:0.01642  val_acc:74.5%
+epoch:14/50  batch:2432/3584  loss:0.01460  acc:77.5%  val_loss:0.01650  val_acc:74.5%
+epoch:14/50  batch:2560/3584  loss:0.01445  acc:77.8%  val_loss:0.01663  val_acc:74.5%
+epoch:14/50  batch:2688/3584  loss:0.01385  acc:78.4%  val_loss:0.01619  val_acc:75.1%  save min loss model
+epoch:14/50  batch:2816/3584  loss:0.01407  acc:78.1%  val_loss:0.01644  val_acc:74.6%
+epoch:14/50  batch:2944/3584  loss:0.01370  acc:78.6%  val_loss:0.01654  val_acc:74.6%
+epoch:14/50  batch:3072/3584  loss:0.01410  acc:78.2%  val_loss:0.01660  val_acc:74.4%
+epoch:14/50  batch:3200/3584  loss:0.01421  acc:77.8%  val_loss:0.01634  val_acc:74.9%
+epoch:14/50  batch:3328/3584  loss:0.01363  acc:79.0%  val_loss:0.01615  val_acc:75.0%  save min loss model
+epoch:14/50  batch:3456/3584  loss:0.01305  acc:79.5%  val_loss:0.01634  val_acc:74.7%
+epoch:15/50  batch:   0/3584  loss:0.01337  acc:78.9%  val_loss:0.01654  val_acc:74.7%
+epoch:15/50  batch: 128/3584  loss:0.01370  acc:79.1%  val_loss:0.01656  val_acc:74.6%
+epoch:15/50  batch: 256/3584  loss:0.01375  acc:78.4%  val_loss:0.01624  val_acc:74.8%
+epoch:15/50  batch: 384/3584  loss:0.01375  acc:79.0%  val_loss:0.01611  val_acc:75.1%  save min loss model
+epoch:15/50  batch: 512/3584  loss:0.01365  acc:78.6%  val_loss:0.01613  val_acc:75.1%
+epoch:15/50  batch: 640/3584  loss:0.01376  acc:78.3%  val_loss:0.01668  val_acc:74.2%
+epoch:15/50  batch: 768/3584  loss:0.01282  acc:80.2%  val_loss:0.01608  val_acc:75.0%  save min loss model
+epoch:15/50  batch: 896/3584  loss:0.01389  acc:78.1%  val_loss:0.01644  val_acc:74.6%
+epoch:15/50  batch:1024/3584  loss:0.01361  acc:78.8%  val_loss:0.01593  val_acc:75.5%  save min loss model
+epoch:15/50  batch:1152/3584  loss:0.01440  acc:77.7%  val_loss:0.01651  val_acc:74.6%
+epoch:15/50  batch:1280/3584  loss:0.01341  acc:79.2%  val_loss:0.01619  val_acc:75.0%
+epoch:15/50  batch:1408/3584  loss:0.01420  acc:77.8%  val_loss:0.01662  val_acc:74.1%
+epoch:15/50  batch:1536/3584  loss:0.01334  acc:79.6%  val_loss:0.01603  val_acc:75.4%
+epoch:15/50  batch:1664/3584  loss:0.01334  acc:79.1%  val_loss:0.01673  val_acc:74.5%
+epoch:15/50  batch:1792/3584  loss:0.01351  acc:78.9%  val_loss:0.01620  val_acc:74.9%
+epoch:15/50  batch:1920/3584  loss:0.01454  acc:77.1%  val_loss:0.01676  val_acc:73.8%
+epoch:15/50  batch:2048/3584  loss:0.01419  acc:78.3%  val_loss:0.01615  val_acc:74.8%
+epoch:15/50  batch:2176/3584  loss:0.01387  acc:78.3%  val_loss:0.01656  val_acc:74.4%
+epoch:15/50  batch:2304/3584  loss:0.01376  acc:79.0%  val_loss:0.01607  val_acc:75.2%
+epoch:15/50  batch:2432/3584  loss:0.01365  acc:78.5%  val_loss:0.01613  val_acc:75.0%
+epoch:15/50  batch:2560/3584  loss:0.01376  acc:78.6%  val_loss:0.01613  val_acc:75.1%
+epoch:15/50  batch:2688/3584  loss:0.01311  acc:79.5%  val_loss:0.01620  val_acc:74.9%
+epoch:15/50  batch:2816/3584  loss:0.01372  acc:78.7%  val_loss:0.01609  val_acc:75.3%
+epoch:15/50  batch:2944/3584  loss:0.01341  acc:79.1%  val_loss:0.01598  val_acc:75.3%
+epoch:15/50  batch:3072/3584  loss:0.01352  acc:78.6%  val_loss:0.01643  val_acc:74.9%
+epoch:15/50  batch:3200/3584  loss:0.01337  acc:79.1%  val_loss:0.01613  val_acc:75.1%
+epoch:15/50  batch:3328/3584  loss:0.01401  acc:77.8%  val_loss:0.01658  val_acc:74.5%
+epoch:15/50  batch:3456/3584  loss:0.01256  acc:80.5%  val_loss:0.01634  val_acc:74.9%
+epoch:16/50  batch:   0/3584  loss:0.01290  acc:80.1%  val_loss:0.01627  val_acc:74.9%
+epoch:16/50  batch: 128/3584  loss:0.01335  acc:79.0%  val_loss:0.01611  val_acc:75.0%
+epoch:16/50  batch: 256/3584  loss:0.01341  acc:79.2%  val_loss:0.01658  val_acc:74.3%
+epoch:16/50  batch: 384/3584  loss:0.01344  acc:79.3%  val_loss:0.01654  val_acc:74.5%
+epoch:16/50  batch: 512/3584  loss:0.01329  acc:79.7%  val_loss:0.01600  val_acc:75.3%
+epoch:16/50  batch: 640/3584  loss:0.01303  acc:79.6%  val_loss:0.01594  val_acc:75.2%
+epoch:16/50  batch: 768/3584  loss:0.01372  acc:78.4%  val_loss:0.01652  val_acc:74.6%
+epoch:16/50  batch: 896/3584  loss:0.01289  acc:80.3%  val_loss:0.01599  val_acc:75.2%
+epoch:16/50  batch:1024/3584  loss:0.01279  acc:80.4%  val_loss:0.01600  val_acc:75.2%
+epoch:16/50  batch:1152/3584  loss:0.01318  acc:79.3%  val_loss:0.01638  val_acc:75.0%
+epoch:16/50  batch:1280/3584  loss:0.01319  acc:79.6%  val_loss:0.01615  val_acc:75.1%
+epoch:16/50  batch:1408/3584  loss:0.01348  acc:79.3%  val_loss:0.01603  val_acc:75.0%
+epoch:16/50  batch:1536/3584  loss:0.01283  acc:80.0%  val_loss:0.01613  val_acc:75.2%
+epoch:16/50  batch:1664/3584  loss:0.01312  acc:79.5%  val_loss:0.01631  val_acc:75.1%
+epoch:16/50  batch:1792/3584  loss:0.01314  acc:79.6%  val_loss:0.01588  val_acc:75.6%  save min loss model
+epoch:16/50  batch:1920/3584  loss:0.01319  acc:79.3%  val_loss:0.01582  val_acc:75.3%  save min loss model
+epoch:16/50  batch:2048/3584  loss:0.01352  acc:79.0%  val_loss:0.01580  val_acc:75.6%  save min loss model
+epoch:16/50  batch:2176/3584  loss:0.01297  acc:79.5%  val_loss:0.01594  val_acc:75.2%
+epoch:16/50  batch:2304/3584  loss:0.01283  acc:80.0%  val_loss:0.01571  val_acc:75.7%  save min loss model
+epoch:16/50  batch:2432/3584  loss:0.01277  acc:79.9%  val_loss:0.01598  val_acc:75.4%
+epoch:16/50  batch:2560/3584  loss:0.01284  acc:79.8%  val_loss:0.01590  val_acc:75.3%
+epoch:16/50  batch:2688/3584  loss:0.01290  acc:79.9%  val_loss:0.01587  val_acc:75.4%
+epoch:16/50  batch:2816/3584  loss:0.01330  acc:79.1%  val_loss:0.01646  val_acc:74.7%
+epoch:16/50  batch:2944/3584  loss:0.01364  acc:78.7%  val_loss:0.01596  val_acc:75.2%
+epoch:16/50  batch:3072/3584  loss:0.01315  acc:79.2%  val_loss:0.01604  val_acc:75.1%
+epoch:16/50  batch:3200/3584  loss:0.01310  acc:79.5%  val_loss:0.01598  val_acc:75.2%
+epoch:16/50  batch:3328/3584  loss:0.01354  acc:78.9%  val_loss:0.01596  val_acc:75.3%
+epoch:16/50  batch:3456/3584  loss:0.01233  acc:80.7%  val_loss:0.01599  val_acc:75.3%
+epoch:17/50  batch:   0/3584  loss:0.01233  acc:80.7%  val_loss:0.01598  val_acc:75.3%
+epoch:17/50  batch: 128/3584  loss:0.01262  acc:80.3%  val_loss:0.01597  val_acc:75.0%
+epoch:17/50  batch: 256/3584  loss:0.01213  acc:81.3%  val_loss:0.01579  val_acc:75.4%
+epoch:17/50  batch: 384/3584  loss:0.01254  acc:80.6%  val_loss:0.01579  val_acc:75.5%
+epoch:17/50  batch: 512/3584  loss:0.01256  acc:80.4%  val_loss:0.01603  val_acc:75.4%
+epoch:17/50  batch: 640/3584  loss:0.01238  acc:81.1%  val_loss:0.01578  val_acc:75.5%
+epoch:17/50  batch: 768/3584  loss:0.01217  acc:81.1%  val_loss:0.01556  val_acc:75.6%  save min loss model
+epoch:17/50  batch: 896/3584  loss:0.01238  acc:80.7%  val_loss:0.01581  val_acc:75.6%
+epoch:17/50  batch:1024/3584  loss:0.01228  acc:81.0%  val_loss:0.01586  val_acc:75.5%
+epoch:17/50  batch:1152/3584  loss:0.01310  acc:79.5%  val_loss:0.01572  val_acc:75.4%
+epoch:17/50  batch:1280/3584  loss:0.01292  acc:79.8%  val_loss:0.01566  val_acc:75.5%
+epoch:17/50  batch:1408/3584  loss:0.01239  acc:80.9%  val_loss:0.01583  val_acc:75.6%
+epoch:17/50  batch:1536/3584  loss:0.01253  acc:80.4%  val_loss:0.01592  val_acc:75.3%
+epoch:17/50  batch:1664/3584  loss:0.01304  acc:79.8%  val_loss:0.01580  val_acc:75.5%
+epoch:17/50  batch:1792/3584  loss:0.01257  acc:80.4%  val_loss:0.01574  val_acc:75.7%
+epoch:17/50  batch:1920/3584  loss:0.01228  acc:80.7%  val_loss:0.01559  val_acc:75.8%
+epoch:17/50  batch:2048/3584  loss:0.01283  acc:79.8%  val_loss:0.01569  val_acc:75.7%
+epoch:17/50  batch:2176/3584  loss:0.01269  acc:79.8%  val_loss:0.01566  val_acc:75.7%
+epoch:17/50  batch:2304/3584  loss:0.01253  acc:80.3%  val_loss:0.01607  val_acc:75.0%
+epoch:17/50  batch:2432/3584  loss:0.01315  acc:79.4%  val_loss:0.01575  val_acc:75.7%
+epoch:17/50  batch:2560/3584  loss:0.01284  acc:79.6%  val_loss:0.01572  val_acc:75.8%
+epoch:17/50  batch:2688/3584  loss:0.01282  acc:80.1%  val_loss:0.01572  val_acc:75.6%
+epoch:17/50  batch:2816/3584  loss:0.01266  acc:80.4%  val_loss:0.01577  val_acc:75.6%
+epoch:17/50  batch:2944/3584  loss:0.01250  acc:80.8%  val_loss:0.01587  val_acc:75.5%
+epoch:17/50  batch:3072/3584  loss:0.01244  acc:80.5%  val_loss:0.01565  val_acc:75.7%
+epoch:17/50  batch:3200/3584  loss:0.01274  acc:80.4%  val_loss:0.01579  val_acc:75.5%
+epoch:17/50  batch:3328/3584  loss:0.01268  acc:80.6%  val_loss:0.01601  val_acc:75.0%
+epoch:17/50  batch:3456/3584  loss:0.01245  acc:80.4%  val_loss:0.01623  val_acc:74.7%
+epoch:18/50  batch:   0/3584  loss:0.01324  acc:79.6%  val_loss:0.01560  val_acc:75.6%
+epoch:18/50  batch: 128/3584  loss:0.01251  acc:80.6%  val_loss:0.01565  val_acc:75.6%
+epoch:18/50  batch: 256/3584  loss:0.01279  acc:80.0%  val_loss:0.01623  val_acc:75.0%
+epoch:18/50  batch: 384/3584  loss:0.01251  acc:80.3%  val_loss:0.01596  val_acc:75.1%
+epoch:18/50  batch: 512/3584  loss:0.01203  acc:81.5%  val_loss:0.01558  val_acc:75.7%
+epoch:18/50  batch: 640/3584  loss:0.01235  acc:80.6%  val_loss:0.01597  val_acc:75.6%
+epoch:18/50  batch: 768/3584  loss:0.01185  acc:81.3%  val_loss:0.01556  val_acc:76.0%
+epoch:18/50  batch: 896/3584  loss:0.01236  acc:81.3%  val_loss:0.01573  val_acc:75.3%
+epoch:18/50  batch:1024/3584  loss:0.01167  acc:82.2%  val_loss:0.01608  val_acc:75.2%
+epoch:18/50  batch:1152/3584  loss:0.01162  acc:81.5%  val_loss:0.01603  val_acc:75.4%
+epoch:18/50  batch:1280/3584  loss:0.01247  acc:80.2%  val_loss:0.01560  val_acc:75.8%
+epoch:18/50  batch:1408/3584  loss:0.01256  acc:80.4%  val_loss:0.01545  val_acc:76.0%  save min loss model
+epoch:18/50  batch:1536/3584  loss:0.01202  acc:81.4%  val_loss:0.01610  val_acc:75.3%
+epoch:18/50  batch:1664/3584  loss:0.01238  acc:80.9%  val_loss:0.01542  val_acc:76.2%  save min loss model
+epoch:18/50  batch:1792/3584  loss:0.01237  acc:80.6%  val_loss:0.01553  val_acc:75.9%
+epoch:18/50  batch:1920/3584  loss:0.01228  acc:80.8%  val_loss:0.01607  val_acc:75.3%
+epoch:18/50  batch:2048/3584  loss:0.01280  acc:80.0%  val_loss:0.01595  val_acc:75.3%
+epoch:18/50  batch:2176/3584  loss:0.01207  acc:81.0%  val_loss:0.01532  val_acc:76.0%  save min loss model
+epoch:18/50  batch:2304/3584  loss:0.01213  acc:81.0%  val_loss:0.01530  val_acc:76.4%  save min loss model
+epoch:18/50  batch:2432/3584  loss:0.01206  acc:81.0%  val_loss:0.01570  val_acc:75.8%
+epoch:18/50  batch:2560/3584  loss:0.01179  acc:81.3%  val_loss:0.01563  val_acc:75.6%
+epoch:18/50  batch:2688/3584  loss:0.01243  acc:80.8%  val_loss:0.01579  val_acc:75.3%
+epoch:18/50  batch:2816/3584  loss:0.01246  acc:80.4%  val_loss:0.01564  val_acc:75.7%
+epoch:18/50  batch:2944/3584  loss:0.01261  acc:80.2%  val_loss:0.01594  val_acc:75.5%
+epoch:18/50  batch:3072/3584  loss:0.01215  acc:80.7%  val_loss:0.01556  val_acc:75.6%
+epoch:18/50  batch:3200/3584  loss:0.01252  acc:80.5%  val_loss:0.01564  val_acc:75.3%
+epoch:18/50  batch:3328/3584  loss:0.01212  acc:81.1%  val_loss:0.01559  val_acc:75.6%
+epoch:18/50  batch:3456/3584  loss:0.01214  acc:81.6%  val_loss:0.01564  val_acc:75.7%
+epoch:19/50  batch:   0/3584  loss:0.01185  acc:81.5%  val_loss:0.01559  val_acc:75.6%
+epoch:19/50  batch: 128/3584  loss:0.01131  acc:82.3%  val_loss:0.01571  val_acc:75.5%
+epoch:19/50  batch: 256/3584  loss:0.01175  acc:81.8%  val_loss:0.01560  val_acc:75.6%
+epoch:19/50  batch: 384/3584  loss:0.01190  acc:81.4%  val_loss:0.01551  val_acc:75.8%
+epoch:19/50  batch: 512/3584  loss:0.01164  acc:81.7%  val_loss:0.01532  val_acc:76.1%
+epoch:19/50  batch: 640/3584  loss:0.01188  acc:81.0%  val_loss:0.01561  val_acc:75.8%
+epoch:19/50  batch: 768/3584  loss:0.01169  acc:81.4%  val_loss:0.01561  val_acc:75.7%
+epoch:19/50  batch: 896/3584  loss:0.01184  acc:81.6%  val_loss:0.01529  val_acc:76.0%  save min loss model
+epoch:19/50  batch:1024/3584  loss:0.01162  acc:81.8%  val_loss:0.01555  val_acc:75.5%
+epoch:19/50  batch:1152/3584  loss:0.01145  acc:82.1%  val_loss:0.01558  val_acc:75.8%
+epoch:19/50  batch:1280/3584  loss:0.01144  acc:82.3%  val_loss:0.01559  val_acc:75.8%
+epoch:19/50  batch:1408/3584  loss:0.01168  acc:82.2%  val_loss:0.01551  val_acc:75.7%
+epoch:19/50  batch:1536/3584  loss:0.01155  acc:81.8%  val_loss:0.01528  val_acc:76.2%  save min loss model
+epoch:19/50  batch:1664/3584  loss:0.01151  acc:82.1%  val_loss:0.01576  val_acc:75.5%
+epoch:19/50  batch:1792/3584  loss:0.01188  acc:81.6%  val_loss:0.01524  val_acc:76.2%  save min loss model
+epoch:19/50  batch:1920/3584  loss:0.01212  acc:81.1%  val_loss:0.01519  val_acc:76.2%  save min loss model
+epoch:19/50  batch:2048/3584  loss:0.01153  acc:81.8%  val_loss:0.01540  val_acc:76.1%
+epoch:19/50  batch:2176/3584  loss:0.01170  acc:81.8%  val_loss:0.01583  val_acc:75.7%
+epoch:19/50  batch:2304/3584  loss:0.01175  acc:81.5%  val_loss:0.01544  val_acc:75.9%
+epoch:19/50  batch:2432/3584  loss:0.01184  acc:81.5%  val_loss:0.01534  val_acc:75.9%
+epoch:19/50  batch:2560/3584  loss:0.01230  acc:81.1%  val_loss:0.01550  val_acc:75.9%
+epoch:19/50  batch:2688/3584  loss:0.01182  acc:81.4%  val_loss:0.01560  val_acc:75.7%
+epoch:19/50  batch:2816/3584  loss:0.01179  acc:81.1%  val_loss:0.01537  val_acc:76.1%
+epoch:19/50  batch:2944/3584  loss:0.01186  acc:81.6%  val_loss:0.01550  val_acc:75.9%
+epoch:19/50  batch:3072/3584  loss:0.01269  acc:80.1%  val_loss:0.01572  val_acc:75.6%
+epoch:19/50  batch:3200/3584  loss:0.01189  acc:81.3%  val_loss:0.01527  val_acc:76.2%
+epoch:19/50  batch:3328/3584  loss:0.01155  acc:82.0%  val_loss:0.01563  val_acc:75.8%
+epoch:19/50  batch:3456/3584  loss:0.01124  acc:82.7%  val_loss:0.01552  val_acc:75.9%
+epoch:20/50  batch:   0/3584  loss:0.01124  acc:82.2%  val_loss:0.01585  val_acc:75.5%
+epoch:20/50  batch: 128/3584  loss:0.01162  acc:81.7%  val_loss:0.01614  val_acc:75.2%
+epoch:20/50  batch: 256/3584  loss:0.01143  acc:82.0%  val_loss:0.01581  val_acc:75.6%
+epoch:20/50  batch: 384/3584  loss:0.01164  acc:81.8%  val_loss:0.01591  val_acc:75.3%
+epoch:20/50  batch: 512/3584  loss:0.01184  acc:81.3%  val_loss:0.01574  val_acc:75.6%
+epoch:20/50  batch: 640/3584  loss:0.01193  acc:81.2%  val_loss:0.01586  val_acc:75.3%
+epoch:20/50  batch: 768/3584  loss:0.01156  acc:82.1%  val_loss:0.01549  val_acc:75.8%
+epoch:20/50  batch: 896/3584  loss:0.01171  acc:82.0%  val_loss:0.01526  val_acc:76.1%
+epoch:20/50  batch:1024/3584  loss:0.01147  acc:82.2%  val_loss:0.01564  val_acc:75.8%
+epoch:20/50  batch:1152/3584  loss:0.01128  acc:82.5%  val_loss:0.01550  val_acc:75.6%
+epoch:20/50  batch:1280/3584  loss:0.01118  acc:82.5%  val_loss:0.01536  val_acc:75.9%
+epoch:20/50  batch:1408/3584  loss:0.01174  acc:81.3%  val_loss:0.01530  val_acc:76.1%
+epoch:20/50  batch:1536/3584  loss:0.01130  acc:82.5%  val_loss:0.01521  val_acc:76.3%
+epoch:20/50  batch:1664/3584  loss:0.01141  acc:82.3%  val_loss:0.01524  val_acc:76.0%
+epoch:20/50  batch:1792/3584  loss:0.01139  acc:81.8%  val_loss:0.01549  val_acc:75.8%
+epoch:20/50  batch:1920/3584  loss:0.01125  acc:82.6%  val_loss:0.01548  val_acc:75.8%
+epoch:20/50  batch:2048/3584  loss:0.01116  acc:82.7%  val_loss:0.01531  val_acc:76.2%
+epoch:20/50  batch:2176/3584  loss:0.01173  acc:81.5%  val_loss:0.01545  val_acc:76.0%
+epoch:20/50  batch:2304/3584  loss:0.01131  acc:82.4%  val_loss:0.01532  val_acc:76.1%
+epoch:20/50  batch:2432/3584  loss:0.01188  acc:81.4%  val_loss:0.01574  val_acc:75.6%
+epoch:20/50  batch:2560/3584  loss:0.01167  acc:81.8%  val_loss:0.01522  val_acc:76.3%
+epoch:20/50  batch:2688/3584  loss:0.01211  acc:81.2%  val_loss:0.01524  val_acc:76.1%
+epoch:20/50  batch:2816/3584  loss:0.01098  acc:82.9%  val_loss:0.01539  val_acc:76.0%
+epoch:20/50  batch:2944/3584  loss:0.01146  acc:81.8%  val_loss:0.01562  val_acc:75.8%
+epoch:20/50  batch:3072/3584  loss:0.01099  acc:82.7%  val_loss:0.01520  val_acc:76.4%
+epoch:20/50  batch:3200/3584  loss:0.01156  acc:81.8%  val_loss:0.01519  val_acc:76.3%  save min loss model
+epoch:20/50  batch:3328/3584  loss:0.01137  acc:82.2%  val_loss:0.01533  val_acc:76.3%
+epoch:20/50  batch:3456/3584  loss:0.01140  acc:82.3%  val_loss:0.01569  val_acc:75.9%
+epoch:21/50  batch:   0/3584  loss:0.01103  acc:83.2%  val_loss:0.01528  val_acc:76.0%
+epoch:21/50  batch: 128/3584  loss:0.01110  acc:82.8%  val_loss:0.01531  val_acc:76.0%
+epoch:21/50  batch: 256/3584  loss:0.01117  acc:82.2%  val_loss:0.01567  val_acc:75.6%
+epoch:21/50  batch: 384/3584  loss:0.01107  acc:82.8%  val_loss:0.01533  val_acc:76.2%
+epoch:21/50  batch: 512/3584  loss:0.01121  acc:82.4%  val_loss:0.01531  val_acc:76.2%
+epoch:21/50  batch: 640/3584  loss:0.01110  acc:82.5%  val_loss:0.01567  val_acc:75.8%
+epoch:21/50  batch: 768/3584  loss:0.01151  acc:81.7%  val_loss:0.01568  val_acc:75.8%
+epoch:21/50  batch: 896/3584  loss:0.01149  acc:82.0%  val_loss:0.01579  val_acc:75.6%
+epoch:21/50  batch:1024/3584  loss:0.01131  acc:82.6%  val_loss:0.01534  val_acc:76.3%
+epoch:21/50  batch:1152/3584  loss:0.01127  acc:82.3%  val_loss:0.01537  val_acc:76.3%
+epoch:21/50  batch:1280/3584  loss:0.01125  acc:81.9%  val_loss:0.01549  val_acc:76.0%
+epoch:21/50  batch:1408/3584  loss:0.01104  acc:82.8%  val_loss:0.01528  val_acc:76.0%
+epoch:21/50  batch:1536/3584  loss:0.01112  acc:82.8%  val_loss:0.01560  val_acc:75.9%
+epoch:21/50  batch:1664/3584  loss:0.01086  acc:83.1%  val_loss:0.01558  val_acc:75.8%
+epoch:21/50  batch:1792/3584  loss:0.01108  acc:82.7%  val_loss:0.01536  val_acc:76.0%
+epoch:21/50  batch:1920/3584  loss:0.01027  acc:84.0%  val_loss:0.01515  val_acc:76.6%  save min loss model
+epoch:21/50  batch:2048/3584  loss:0.01126  acc:82.4%  val_loss:0.01534  val_acc:76.3%
+epoch:21/50  batch:2176/3584  loss:0.01076  acc:83.1%  val_loss:0.01524  val_acc:76.3%
+epoch:21/50  batch:2304/3584  loss:0.01084  acc:83.2%  val_loss:0.01507  val_acc:76.5%  save min loss model
+epoch:21/50  batch:2432/3584  loss:0.01108  acc:82.6%  val_loss:0.01520  val_acc:76.2%
+epoch:21/50  batch:2560/3584  loss:0.01116  acc:82.5%  val_loss:0.01534  val_acc:76.1%
+epoch:21/50  batch:2688/3584  loss:0.01111  acc:82.5%  val_loss:0.01538  val_acc:76.1%
+epoch:21/50  batch:2816/3584  loss:0.01105  acc:82.6%  val_loss:0.01549  val_acc:76.0%
+epoch:21/50  batch:2944/3584  loss:0.01154  acc:82.0%  val_loss:0.01509  val_acc:76.5%
+epoch:21/50  batch:3072/3584  loss:0.01151  acc:82.3%  val_loss:0.01525  val_acc:76.4%
+epoch:21/50  batch:3200/3584  loss:0.01144  acc:81.9%  val_loss:0.01535  val_acc:76.4%
+epoch:21/50  batch:3328/3584  loss:0.01117  acc:82.8%  val_loss:0.01521  val_acc:76.2%
+epoch:21/50  batch:3456/3584  loss:0.01191  acc:81.2%  val_loss:0.01513  val_acc:76.3%
+epoch:22/50  batch:   0/3584  loss:0.01113  acc:82.2%  val_loss:0.01541  val_acc:76.2%
+epoch:22/50  batch: 128/3584  loss:0.01073  acc:83.3%  val_loss:0.01565  val_acc:75.8%
+epoch:22/50  batch: 256/3584  loss:0.01054  acc:83.6%  val_loss:0.01525  val_acc:76.2%
+epoch:22/50  batch: 384/3584  loss:0.01114  acc:82.7%  val_loss:0.01535  val_acc:75.8%
+epoch:22/50  batch: 512/3584  loss:0.01085  acc:83.0%  val_loss:0.01539  val_acc:76.1%
+epoch:22/50  batch: 640/3584  loss:0.01088  acc:83.3%  val_loss:0.01543  val_acc:76.2%
+epoch:22/50  batch: 768/3584  loss:0.01104  acc:82.4%  val_loss:0.01544  val_acc:76.0%
+epoch:22/50  batch: 896/3584  loss:0.01077  acc:83.0%  val_loss:0.01570  val_acc:75.6%
+epoch:22/50  batch:1024/3584  loss:0.01092  acc:83.0%  val_loss:0.01584  val_acc:75.5%
+epoch:22/50  batch:1152/3584  loss:0.01096  acc:82.7%  val_loss:0.01535  val_acc:76.3%
+epoch:22/50  batch:1280/3584  loss:0.01085  acc:83.1%  val_loss:0.01532  val_acc:76.3%
+epoch:22/50  batch:1408/3584  loss:0.01050  acc:83.3%  val_loss:0.01559  val_acc:75.7%
+epoch:22/50  batch:1536/3584  loss:0.01079  acc:82.8%  val_loss:0.01543  val_acc:75.9%
+epoch:22/50  batch:1664/3584  loss:0.01130  acc:82.7%  val_loss:0.01559  val_acc:75.9%
+epoch:22/50  batch:1792/3584  loss:0.01029  acc:84.1%  val_loss:0.01496  val_acc:76.7%  save min loss model
+epoch:22/50  batch:1920/3584  loss:0.01162  acc:81.1%  val_loss:0.01589  val_acc:75.2%
+epoch:22/50  batch:2048/3584  loss:0.01093  acc:83.0%  val_loss:0.01560  val_acc:75.8%
+epoch:22/50  batch:2176/3584  loss:0.01084  acc:83.2%  val_loss:0.01521  val_acc:76.4%
+epoch:22/50  batch:2304/3584  loss:0.01144  acc:81.9%  val_loss:0.01518  val_acc:76.2%
+epoch:22/50  batch:2432/3584  loss:0.01048  acc:83.7%  val_loss:0.01549  val_acc:76.0%
+epoch:22/50  batch:2560/3584  loss:0.01064  acc:83.2%  val_loss:0.01526  val_acc:76.4%
+epoch:22/50  batch:2688/3584  loss:0.01141  acc:81.9%  val_loss:0.01561  val_acc:76.0%
+epoch:22/50  batch:2816/3584  loss:0.01086  acc:82.8%  val_loss:0.01497  val_acc:76.8%
+epoch:22/50  batch:2944/3584  loss:0.01126  acc:82.0%  val_loss:0.01527  val_acc:76.2%
+epoch:22/50  batch:3072/3584  loss:0.01073  acc:83.1%  val_loss:0.01555  val_acc:75.8%
+epoch:22/50  batch:3200/3584  loss:0.01081  acc:82.9%  val_loss:0.01524  val_acc:76.1%
+epoch:22/50  batch:3328/3584  loss:0.01064  acc:83.2%  val_loss:0.01509  val_acc:76.5%
+epoch:22/50  batch:3456/3584  loss:0.01038  acc:84.3%  val_loss:0.01544  val_acc:76.1%
+epoch:23/50  batch:   0/3584  loss:0.01018  acc:84.2%  val_loss:0.01521  val_acc:76.3%
+epoch:23/50  batch: 128/3584  loss:0.01033  acc:84.1%  val_loss:0.01502  val_acc:76.3%
+epoch:23/50  batch: 256/3584  loss:0.01040  acc:83.9%  val_loss:0.01514  val_acc:76.2%
+epoch:23/50  batch: 384/3584  loss:0.01054  acc:83.6%  val_loss:0.01522  val_acc:76.3%
+epoch:23/50  batch: 512/3584  loss:0.01025  acc:83.7%  val_loss:0.01513  val_acc:76.4%
+epoch:23/50  batch: 640/3584  loss:0.00979  acc:84.7%  val_loss:0.01507  val_acc:76.3%
+epoch:23/50  batch: 768/3584  loss:0.01022  acc:83.8%  val_loss:0.01549  val_acc:75.8%
+epoch:23/50  batch: 896/3584  loss:0.01024  acc:84.2%  val_loss:0.01531  val_acc:76.1%
+epoch:23/50  batch:1024/3584  loss:0.01025  acc:83.8%  val_loss:0.01542  val_acc:76.1%
+epoch:23/50  batch:1152/3584  loss:0.01029  acc:83.5%  val_loss:0.01507  val_acc:76.4%
+epoch:23/50  batch:1280/3584  loss:0.01115  acc:82.8%  val_loss:0.01525  val_acc:76.4%
+epoch:23/50  batch:1408/3584  loss:0.01045  acc:83.7%  val_loss:0.01524  val_acc:76.4%
+epoch:23/50  batch:1536/3584  loss:0.01015  acc:83.9%  val_loss:0.01497  val_acc:76.8%
+epoch:23/50  batch:1664/3584  loss:0.01016  acc:84.0%  val_loss:0.01509  val_acc:76.6%
+epoch:23/50  batch:1792/3584  loss:0.01035  acc:83.8%  val_loss:0.01528  val_acc:76.5%
+epoch:23/50  batch:1920/3584  loss:0.01042  acc:84.1%  val_loss:0.01521  val_acc:76.4%
+epoch:23/50  batch:2048/3584  loss:0.01034  acc:83.7%  val_loss:0.01498  val_acc:76.5%
+epoch:23/50  batch:2176/3584  loss:0.01063  acc:83.5%  val_loss:0.01494  val_acc:76.8%  save min loss model
+epoch:23/50  batch:2304/3584  loss:0.00988  acc:84.7%  val_loss:0.01519  val_acc:76.5%
+epoch:23/50  batch:2432/3584  loss:0.01043  acc:84.1%  val_loss:0.01526  val_acc:76.4%
+epoch:23/50  batch:2560/3584  loss:0.01016  acc:84.2%  val_loss:0.01499  val_acc:76.8%
+epoch:23/50  batch:2688/3584  loss:0.01005  acc:84.5%  val_loss:0.01499  val_acc:76.8%
+epoch:23/50  batch:2816/3584  loss:0.01065  acc:83.4%  val_loss:0.01509  val_acc:76.7%
+epoch:23/50  batch:2944/3584  loss:0.01041  acc:84.0%  val_loss:0.01512  val_acc:76.5%
+epoch:23/50  batch:3072/3584  loss:0.01029  acc:83.5%  val_loss:0.01509  val_acc:76.5%
+epoch:23/50  batch:3200/3584  loss:0.01026  acc:84.0%  val_loss:0.01503  val_acc:76.6%
+epoch:23/50  batch:3328/3584  loss:0.01079  acc:83.0%  val_loss:0.01505  val_acc:76.6%
+epoch:23/50  batch:3456/3584  loss:0.01018  acc:84.4%  val_loss:0.01583  val_acc:75.4%
+epoch:24/50  batch:   0/3584  loss:0.01013  acc:84.0%  val_loss:0.01544  val_acc:75.9%
+epoch:24/50  batch: 128/3584  loss:0.00991  acc:84.4%  val_loss:0.01509  val_acc:76.4%
+epoch:24/50  batch: 256/3584  loss:0.01031  acc:84.0%  val_loss:0.01532  val_acc:76.0%
+epoch:24/50  batch: 384/3584  loss:0.00988  acc:84.7%  val_loss:0.01527  val_acc:76.0%
+epoch:24/50  batch: 512/3584  loss:0.01000  acc:84.4%  val_loss:0.01521  val_acc:76.1%
+epoch:24/50  batch: 640/3584  loss:0.00988  acc:84.6%  val_loss:0.01494  val_acc:76.5%  save min loss model
+epoch:24/50  batch: 768/3584  loss:0.01058  acc:83.6%  val_loss:0.01516  val_acc:76.5%
+epoch:24/50  batch: 896/3584  loss:0.01033  acc:84.1%  val_loss:0.01516  val_acc:76.4%
+epoch:24/50  batch:1024/3584  loss:0.01003  acc:84.6%  val_loss:0.01506  val_acc:76.4%
+epoch:24/50  batch:1152/3584  loss:0.00997  acc:84.4%  val_loss:0.01513  val_acc:76.3%
+epoch:24/50  batch:1280/3584  loss:0.00998  acc:84.4%  val_loss:0.01536  val_acc:76.2%
+epoch:24/50  batch:1408/3584  loss:0.00997  acc:84.3%  val_loss:0.01549  val_acc:75.9%
+epoch:24/50  batch:1536/3584  loss:0.01006  acc:84.4%  val_loss:0.01516  val_acc:76.4%
+epoch:24/50  batch:1664/3584  loss:0.00978  acc:84.8%  val_loss:0.01482  val_acc:76.7%  save min loss model
+epoch:24/50  batch:1792/3584  loss:0.01027  acc:84.2%  val_loss:0.01533  val_acc:76.0%
+epoch:24/50  batch:1920/3584  loss:0.01018  acc:84.0%  val_loss:0.01509  val_acc:76.4%
+epoch:24/50  batch:2048/3584  loss:0.01028  acc:83.9%  val_loss:0.01521  val_acc:76.4%
+epoch:24/50  batch:2176/3584  loss:0.00971  acc:84.8%  val_loss:0.01498  val_acc:76.7%
+epoch:24/50  batch:2304/3584  loss:0.01032  acc:83.6%  val_loss:0.01528  val_acc:76.4%
+epoch:24/50  batch:2432/3584  loss:0.01065  acc:83.1%  val_loss:0.01497  val_acc:76.7%
+epoch:24/50  batch:2560/3584  loss:0.00997  acc:84.5%  val_loss:0.01490  val_acc:76.7%
+epoch:24/50  batch:2688/3584  loss:0.00949  acc:85.3%  val_loss:0.01494  val_acc:76.9%
+epoch:24/50  batch:2816/3584  loss:0.01065  acc:83.4%  val_loss:0.01513  val_acc:76.4%
+epoch:24/50  batch:2944/3584  loss:0.00997  acc:84.3%  val_loss:0.01482  val_acc:76.9%
+epoch:24/50  batch:3072/3584  loss:0.00994  acc:84.4%  val_loss:0.01481  val_acc:76.8%  save min loss model
+epoch:24/50  batch:3200/3584  loss:0.01027  acc:83.6%  val_loss:0.01500  val_acc:76.7%
+epoch:24/50  batch:3328/3584  loss:0.00966  acc:84.8%  val_loss:0.01517  val_acc:76.7%
+epoch:24/50  batch:3456/3584  loss:0.00952  acc:84.9%  val_loss:0.01506  val_acc:76.4%
+epoch:25/50  batch:   0/3584  loss:0.00991  acc:84.6%  val_loss:0.01500  val_acc:76.5%
+epoch:25/50  batch: 128/3584  loss:0.00965  acc:85.1%  val_loss:0.01528  val_acc:76.4%
+epoch:25/50  batch: 256/3584  loss:0.00973  acc:84.8%  val_loss:0.01510  val_acc:76.7%
+epoch:25/50  batch: 384/3584  loss:0.00951  acc:85.4%  val_loss:0.01502  val_acc:76.5%
+epoch:25/50  batch: 512/3584  loss:0.00947  acc:85.1%  val_loss:0.01513  val_acc:76.5%
+epoch:25/50  batch: 640/3584  loss:0.00963  acc:84.7%  val_loss:0.01491  val_acc:76.8%
+epoch:25/50  batch: 768/3584  loss:0.00985  acc:84.9%  val_loss:0.01501  val_acc:76.8%
+epoch:25/50  batch: 896/3584  loss:0.00990  acc:84.7%  val_loss:0.01524  val_acc:76.5%
+epoch:25/50  batch:1024/3584  loss:0.00955  acc:85.6%  val_loss:0.01523  val_acc:76.3%
+epoch:25/50  batch:1152/3584  loss:0.00965  acc:84.7%  val_loss:0.01504  val_acc:76.5%
+epoch:25/50  batch:1280/3584  loss:0.00937  acc:85.2%  val_loss:0.01493  val_acc:76.9%
+epoch:25/50  batch:1408/3584  loss:0.00947  acc:85.1%  val_loss:0.01516  val_acc:76.8%
+epoch:25/50  batch:1536/3584  loss:0.00969  acc:84.7%  val_loss:0.01504  val_acc:76.6%
+epoch:25/50  batch:1664/3584  loss:0.00991  acc:84.5%  val_loss:0.01500  val_acc:76.5%
+epoch:25/50  batch:1792/3584  loss:0.00976  acc:84.8%  val_loss:0.01502  val_acc:76.4%
+epoch:25/50  batch:1920/3584  loss:0.00975  acc:84.6%  val_loss:0.01499  val_acc:76.7%
+epoch:25/50  batch:2048/3584  loss:0.00954  acc:85.0%  val_loss:0.01503  val_acc:76.6%
+epoch:25/50  batch:2176/3584  loss:0.01000  acc:84.5%  val_loss:0.01497  val_acc:76.8%
+epoch:25/50  batch:2304/3584  loss:0.00961  acc:84.9%  val_loss:0.01479  val_acc:77.1%  save min loss model
+epoch:25/50  batch:2432/3584  loss:0.00983  acc:84.9%  val_loss:0.01488  val_acc:76.9%
+epoch:25/50  batch:2560/3584  loss:0.01020  acc:84.1%  val_loss:0.01524  val_acc:76.3%
+epoch:25/50  batch:2688/3584  loss:0.00975  acc:84.6%  val_loss:0.01497  val_acc:76.6%
+epoch:25/50  batch:2816/3584  loss:0.00910  acc:85.6%  val_loss:0.01490  val_acc:76.8%
+epoch:25/50  batch:2944/3584  loss:0.00985  acc:84.2%  val_loss:0.01500  val_acc:76.6%
+epoch:25/50  batch:3072/3584  loss:0.00979  acc:84.5%  val_loss:0.01520  val_acc:76.4%
+epoch:25/50  batch:3200/3584  loss:0.00996  acc:84.6%  val_loss:0.01543  val_acc:76.1%
+epoch:25/50  batch:3328/3584  loss:0.00934  acc:85.3%  val_loss:0.01520  val_acc:76.4%
+epoch:25/50  batch:3456/3584  loss:0.00968  acc:84.5%  val_loss:0.01554  val_acc:76.2%
+epoch:26/50  batch:   0/3584  loss:0.00933  acc:85.7%  val_loss:0.01538  val_acc:76.2%
+epoch:26/50  batch: 128/3584  loss:0.00932  acc:85.7%  val_loss:0.01527  val_acc:76.3%
+epoch:26/50  batch: 256/3584  loss:0.00907  acc:85.9%  val_loss:0.01516  val_acc:76.3%
+epoch:26/50  batch: 384/3584  loss:0.00930  acc:85.4%  val_loss:0.01509  val_acc:76.7%
+epoch:26/50  batch: 512/3584  loss:0.00957  acc:84.9%  val_loss:0.01488  val_acc:77.0%
+epoch:26/50  batch: 640/3584  loss:0.00938  acc:85.6%  val_loss:0.01505  val_acc:76.6%
+epoch:26/50  batch: 768/3584  loss:0.00964  acc:85.1%  val_loss:0.01510  val_acc:76.4%
+epoch:26/50  batch: 896/3584  loss:0.00926  acc:85.6%  val_loss:0.01512  val_acc:76.5%
+epoch:26/50  batch:1024/3584  loss:0.00921  acc:85.6%  val_loss:0.01508  val_acc:76.7%
+epoch:26/50  batch:1152/3584  loss:0.00908  acc:85.8%  val_loss:0.01476  val_acc:76.9%  save min loss model
+epoch:26/50  batch:1280/3584  loss:0.00905  acc:86.0%  val_loss:0.01490  val_acc:76.8%
+epoch:26/50  batch:1408/3584  loss:0.00904  acc:86.0%  val_loss:0.01505  val_acc:76.8%
+epoch:26/50  batch:1536/3584  loss:0.00937  acc:85.3%  val_loss:0.01498  val_acc:76.6%
+epoch:26/50  batch:1664/3584  loss:0.00912  acc:85.5%  val_loss:0.01507  val_acc:76.3%
+epoch:26/50  batch:1792/3584  loss:0.00915  acc:85.7%  val_loss:0.01494  val_acc:76.7%
+epoch:26/50  batch:1920/3584  loss:0.00947  acc:85.0%  val_loss:0.01512  val_acc:76.6%
+epoch:26/50  batch:2048/3584  loss:0.00888  acc:86.2%  val_loss:0.01500  val_acc:76.7%
+epoch:26/50  batch:2176/3584  loss:0.00992  acc:84.4%  val_loss:0.01502  val_acc:76.5%
+epoch:26/50  batch:2304/3584  loss:0.00931  acc:85.6%  val_loss:0.01514  val_acc:76.4%
+epoch:26/50  batch:2432/3584  loss:0.00950  acc:85.2%  val_loss:0.01516  val_acc:76.5%
+epoch:26/50  batch:2560/3584  loss:0.00973  acc:84.8%  val_loss:0.01500  val_acc:76.6%
+epoch:26/50  batch:2688/3584  loss:0.00953  acc:85.0%  val_loss:0.01502  val_acc:76.8%
+epoch:26/50  batch:2816/3584  loss:0.00945  acc:85.1%  val_loss:0.01520  val_acc:76.5%
+epoch:26/50  batch:2944/3584  loss:0.00956  acc:85.2%  val_loss:0.01501  val_acc:76.7%
+epoch:26/50  batch:3072/3584  loss:0.00935  acc:85.2%  val_loss:0.01522  val_acc:76.4%
+epoch:26/50  batch:3200/3584  loss:0.00963  acc:84.8%  val_loss:0.01522  val_acc:76.5%
+epoch:26/50  batch:3328/3584  loss:0.00985  acc:84.6%  val_loss:0.01500  val_acc:76.8%
+epoch:26/50  batch:3456/3584  loss:0.00863  acc:86.5%  val_loss:0.01514  val_acc:76.6%
+epoch:27/50  batch:   0/3584  loss:0.00933  acc:85.4%  val_loss:0.01539  val_acc:76.4%
+epoch:27/50  batch: 128/3584  loss:0.00903  acc:86.0%  val_loss:0.01521  val_acc:76.4%
+epoch:27/50  batch: 256/3584  loss:0.00876  acc:86.4%  val_loss:0.01516  val_acc:76.6%
+epoch:27/50  batch: 384/3584  loss:0.00936  acc:85.2%  val_loss:0.01529  val_acc:76.7%
+epoch:27/50  batch: 512/3584  loss:0.00897  acc:85.7%  val_loss:0.01533  val_acc:76.5%
+epoch:27/50  batch: 640/3584  loss:0.00940  acc:85.3%  val_loss:0.01511  val_acc:76.4%
+epoch:27/50  batch: 768/3584  loss:0.00874  acc:86.3%  val_loss:0.01490  val_acc:76.6%
+epoch:27/50  batch: 896/3584  loss:0.00898  acc:85.7%  val_loss:0.01528  val_acc:76.4%
+epoch:27/50  batch:1024/3584  loss:0.00887  acc:85.8%  val_loss:0.01504  val_acc:76.7%
+epoch:27/50  batch:1152/3584  loss:0.00885  acc:85.9%  val_loss:0.01504  val_acc:76.6%
+epoch:27/50  batch:1280/3584  loss:0.00949  acc:84.9%  val_loss:0.01529  val_acc:76.4%
+epoch:27/50  batch:1408/3584  loss:0.00873  acc:86.4%  val_loss:0.01479  val_acc:77.2%
+epoch:27/50  batch:1536/3584  loss:0.00925  acc:85.4%  val_loss:0.01508  val_acc:76.7%
+epoch:27/50  batch:1664/3584  loss:0.00893  acc:86.2%  val_loss:0.01503  val_acc:76.6%
+epoch:27/50  batch:1792/3584  loss:0.00921  acc:85.9%  val_loss:0.01521  val_acc:76.6%
+epoch:27/50  batch:1920/3584  loss:0.00916  acc:85.5%  val_loss:0.01496  val_acc:76.9%
+epoch:27/50  batch:2048/3584  loss:0.00931  acc:85.5%  val_loss:0.01488  val_acc:77.1%
+epoch:27/50  batch:2176/3584  loss:0.00902  acc:85.8%  val_loss:0.01506  val_acc:76.9%
+epoch:27/50  batch:2304/3584  loss:0.00897  acc:86.1%  val_loss:0.01482  val_acc:76.9%
+epoch:27/50  batch:2432/3584  loss:0.00916  acc:85.6%  val_loss:0.01510  val_acc:76.4%
+epoch:27/50  batch:2560/3584  loss:0.00895  acc:86.1%  val_loss:0.01503  val_acc:76.7%
+epoch:27/50  batch:2688/3584  loss:0.00970  acc:84.7%  val_loss:0.01526  val_acc:76.8%
+epoch:27/50  batch:2816/3584  loss:0.00932  acc:85.6%  val_loss:0.01497  val_acc:77.1%
+epoch:27/50  batch:2944/3584  loss:0.00919  acc:85.5%  val_loss:0.01512  val_acc:76.7%
+epoch:27/50  batch:3072/3584  loss:0.00920  acc:85.6%  val_loss:0.01522  val_acc:76.7%
+epoch:27/50  batch:3200/3584  loss:0.00906  acc:85.5%  val_loss:0.01518  val_acc:76.7%
+epoch:27/50  batch:3328/3584  loss:0.00934  acc:85.5%  val_loss:0.01511  val_acc:76.6%
+epoch:27/50  batch:3456/3584  loss:0.00817  acc:87.5%  val_loss:0.01548  val_acc:76.1%
+epoch:28/50  batch:   0/3584  loss:0.00892  acc:86.4%  val_loss:0.01518  val_acc:76.8%
+epoch:28/50  batch: 128/3584  loss:0.00897  acc:86.0%  val_loss:0.01527  val_acc:76.9%
+epoch:28/50  batch: 256/3584  loss:0.00905  acc:85.7%  val_loss:0.01528  val_acc:76.5%
+epoch:28/50  batch: 384/3584  loss:0.00865  acc:86.3%  val_loss:0.01531  val_acc:76.4%
+epoch:28/50  batch: 512/3584  loss:0.00880  acc:86.2%  val_loss:0.01513  val_acc:76.5%
+epoch:28/50  batch: 640/3584  loss:0.00875  acc:86.4%  val_loss:0.01498  val_acc:76.7%
+epoch:28/50  batch: 768/3584  loss:0.00852  acc:86.6%  val_loss:0.01506  val_acc:76.6%
+epoch:28/50  batch: 896/3584  loss:0.00838  acc:87.1%  val_loss:0.01483  val_acc:77.4%
+epoch:28/50  batch:1024/3584  loss:0.00870  acc:86.6%  val_loss:0.01490  val_acc:77.3%
+epoch:28/50  batch:1152/3584  loss:0.00867  acc:86.5%  val_loss:0.01512  val_acc:77.0%
+epoch:28/50  batch:1280/3584  loss:0.00866  acc:86.6%  val_loss:0.01531  val_acc:76.5%
+epoch:28/50  batch:1408/3584  loss:0.00883  acc:86.2%  val_loss:0.01529  val_acc:76.6%
+epoch:28/50  batch:1536/3584  loss:0.00892  acc:86.2%  val_loss:0.01502  val_acc:77.0%
+epoch:28/50  batch:1664/3584  loss:0.00895  acc:86.0%  val_loss:0.01498  val_acc:77.1%
+epoch:28/50  batch:1792/3584  loss:0.00862  acc:86.4%  val_loss:0.01503  val_acc:76.8%
+epoch:28/50  batch:1920/3584  loss:0.00867  acc:86.7%  val_loss:0.01515  val_acc:76.7%
+epoch:28/50  batch:2048/3584  loss:0.00905  acc:85.8%  val_loss:0.01514  val_acc:76.7%
+epoch:28/50  batch:2176/3584  loss:0.00919  acc:85.7%  val_loss:0.01511  val_acc:76.7%
+epoch:28/50  batch:2304/3584  loss:0.00877  acc:86.2%  val_loss:0.01518  val_acc:76.4%
+epoch:28/50  batch:2432/3584  loss:0.00895  acc:86.2%  val_loss:0.01507  val_acc:76.6%
+epoch:28/50  batch:2560/3584  loss:0.00887  acc:86.2%  val_loss:0.01501  val_acc:76.9%
+epoch:28/50  batch:2688/3584  loss:0.00887  acc:86.4%  val_loss:0.01513  val_acc:76.7%
+epoch:28/50  batch:2816/3584  loss:0.00883  acc:86.2%  val_loss:0.01505  val_acc:76.8%
+epoch:28/50  batch:2944/3584  loss:0.00869  acc:86.3%  val_loss:0.01498  val_acc:76.7%
+epoch:28/50  batch:3072/3584  loss:0.00888  acc:86.2%  val_loss:0.01501  val_acc:76.8%
+epoch:28/50  batch:3200/3584  loss:0.00855  acc:86.6%  val_loss:0.01491  val_acc:77.0%
+epoch:28/50  batch:3328/3584  loss:0.00850  acc:86.5%  val_loss:0.01501  val_acc:77.0%
+epoch:28/50  batch:3456/3584  loss:0.00768  acc:88.1%  val_loss:0.01519  val_acc:76.8%
+epoch:29/50  batch:   0/3584  loss:0.00884  acc:86.1%  val_loss:0.01522  val_acc:76.6%
+epoch:29/50  batch: 128/3584  loss:0.00839  acc:87.1%  val_loss:0.01511  val_acc:76.7%
+epoch:29/50  batch: 256/3584  loss:0.00813  acc:87.1%  val_loss:0.01498  val_acc:76.8%
+epoch:29/50  batch: 384/3584  loss:0.00847  acc:86.8%  val_loss:0.01529  val_acc:76.5%
+epoch:29/50  batch: 512/3584  loss:0.00828  acc:87.1%  val_loss:0.01533  val_acc:76.5%
+epoch:29/50  batch: 640/3584  loss:0.00855  acc:87.0%  val_loss:0.01510  val_acc:76.4%
+epoch:29/50  batch: 768/3584  loss:0.00845  acc:86.6%  val_loss:0.01544  val_acc:75.9%
+epoch:29/50  batch: 896/3584  loss:0.00860  acc:86.5%  val_loss:0.01516  val_acc:76.6%
+epoch:29/50  batch:1024/3584  loss:0.00816  acc:87.1%  val_loss:0.01481  val_acc:77.2%
+epoch:29/50  batch:1152/3584  loss:0.00859  acc:86.6%  val_loss:0.01480  val_acc:77.1%
+epoch:29/50  batch:1280/3584  loss:0.00810  acc:87.5%  val_loss:0.01505  val_acc:76.5%
+epoch:29/50  batch:1408/3584  loss:0.00815  acc:87.3%  val_loss:0.01511  val_acc:76.5%
+epoch:29/50  batch:1536/3584  loss:0.00875  acc:86.5%  val_loss:0.01502  val_acc:76.7%
+epoch:29/50  batch:1664/3584  loss:0.00866  acc:86.3%  val_loss:0.01496  val_acc:76.9%
+epoch:29/50  batch:1792/3584  loss:0.00841  acc:87.2%  val_loss:0.01503  val_acc:76.9%
+epoch:29/50  batch:1920/3584  loss:0.00867  acc:86.1%  val_loss:0.01489  val_acc:76.9%
+epoch:29/50  batch:2048/3584  loss:0.00868  acc:86.3%  val_loss:0.01503  val_acc:76.8%
+epoch:29/50  batch:2176/3584  loss:0.00815  acc:87.3%  val_loss:0.01493  val_acc:77.1%
+epoch:29/50  batch:2304/3584  loss:0.00875  acc:86.2%  val_loss:0.01487  val_acc:77.2%
+epoch:29/50  batch:2432/3584  loss:0.00888  acc:85.8%  val_loss:0.01479  val_acc:77.2%
+epoch:29/50  batch:2560/3584  loss:0.00854  acc:86.7%  val_loss:0.01496  val_acc:77.1%
+epoch:29/50  batch:2688/3584  loss:0.00830  acc:87.1%  val_loss:0.01482  val_acc:77.2%
+epoch:29/50  batch:2816/3584  loss:0.00845  acc:87.0%  val_loss:0.01477  val_acc:77.1%
+epoch:29/50  batch:2944/3584  loss:0.00808  acc:87.4%  val_loss:0.01473  val_acc:77.3%  save min loss model
+epoch:29/50  batch:3072/3584  loss:0.00857  acc:86.8%  val_loss:0.01513  val_acc:77.0%
+epoch:29/50  batch:3200/3584  loss:0.00810  acc:87.1%  val_loss:0.01518  val_acc:76.8%
+epoch:29/50  batch:3328/3584  loss:0.00885  acc:86.2%  val_loss:0.01501  val_acc:76.8%
+epoch:29/50  batch:3456/3584  loss:0.00801  acc:87.6%  val_loss:0.01498  val_acc:76.7%
+epoch:30/50  batch:   0/3584  loss:0.00797  acc:87.7%  val_loss:0.01508  val_acc:76.6%
+epoch:30/50  batch: 128/3584  loss:0.00826  acc:87.3%  val_loss:0.01512  val_acc:76.6%
+epoch:30/50  batch: 256/3584  loss:0.00815  acc:87.2%  val_loss:0.01498  val_acc:76.9%
+epoch:30/50  batch: 384/3584  loss:0.00813  acc:87.4%  val_loss:0.01496  val_acc:77.0%
+epoch:30/50  batch: 512/3584  loss:0.00789  acc:87.8%  val_loss:0.01490  val_acc:77.1%
+epoch:30/50  batch: 640/3584  loss:0.00801  acc:87.6%  val_loss:0.01523  val_acc:76.8%
+epoch:30/50  batch: 768/3584  loss:0.00825  acc:87.0%  val_loss:0.01513  val_acc:76.9%
+epoch:30/50  batch: 896/3584  loss:0.00855  acc:86.8%  val_loss:0.01509  val_acc:76.8%
+epoch:30/50  batch:1024/3584  loss:0.00818  acc:87.4%  val_loss:0.01549  val_acc:76.4%
+epoch:30/50  batch:1152/3584  loss:0.00832  acc:87.2%  val_loss:0.01517  val_acc:76.9%
+epoch:30/50  batch:1280/3584  loss:0.00816  acc:87.2%  val_loss:0.01537  val_acc:76.6%
+epoch:30/50  batch:1408/3584  loss:0.00800  acc:87.5%  val_loss:0.01494  val_acc:77.1%
+epoch:30/50  batch:1536/3584  loss:0.00881  acc:86.3%  val_loss:0.01507  val_acc:76.7%
+epoch:30/50  batch:1664/3584  loss:0.00871  acc:86.4%  val_loss:0.01504  val_acc:76.8%
+epoch:30/50  batch:1792/3584  loss:0.00845  acc:86.7%  val_loss:0.01500  val_acc:76.7%
+epoch:30/50  batch:1920/3584  loss:0.00832  acc:87.0%  val_loss:0.01495  val_acc:76.9%
+epoch:30/50  batch:2048/3584  loss:0.00816  acc:87.3%  val_loss:0.01494  val_acc:76.9%
+epoch:30/50  batch:2176/3584  loss:0.00775  acc:87.9%  val_loss:0.01494  val_acc:77.0%
+epoch:30/50  batch:2304/3584  loss:0.00819  acc:87.2%  val_loss:0.01490  val_acc:77.1%
+epoch:30/50  batch:2432/3584  loss:0.00795  acc:87.7%  val_loss:0.01513  val_acc:76.7%
+epoch:30/50  batch:2560/3584  loss:0.00817  acc:87.3%  val_loss:0.01518  val_acc:76.5%
+epoch:30/50  batch:2688/3584  loss:0.00843  acc:86.9%  val_loss:0.01513  val_acc:76.7%
+epoch:30/50  batch:2816/3584  loss:0.00813  acc:87.2%  val_loss:0.01513  val_acc:76.7%
+epoch:30/50  batch:2944/3584  loss:0.00823  acc:87.2%  val_loss:0.01517  val_acc:76.8%
+epoch:30/50  batch:3072/3584  loss:0.00815  acc:87.3%  val_loss:0.01511  val_acc:77.0%
+epoch:30/50  batch:3200/3584  loss:0.00809  acc:87.2%  val_loss:0.01495  val_acc:77.1%
+epoch:30/50  batch:3328/3584  loss:0.00814  acc:87.2%  val_loss:0.01506  val_acc:76.8%
+epoch:30/50  batch:3456/3584  loss:0.00734  acc:89.1%  val_loss:0.01529  val_acc:76.6%
+epoch:31/50  batch:   0/3584  loss:0.00795  acc:87.5%  val_loss:0.01511  val_acc:76.7%
+epoch:31/50  batch: 128/3584  loss:0.00814  acc:87.4%  val_loss:0.01503  val_acc:76.9%
+epoch:31/50  batch: 256/3584  loss:0.00780  acc:87.6%  val_loss:0.01507  val_acc:76.9%
+epoch:31/50  batch: 384/3584  loss:0.00764  acc:88.2%  val_loss:0.01508  val_acc:76.9%
+epoch:31/50  batch: 512/3584  loss:0.00804  acc:87.4%  val_loss:0.01503  val_acc:77.0%
+epoch:31/50  batch: 640/3584  loss:0.00792  acc:87.7%  val_loss:0.01506  val_acc:76.9%
+epoch:31/50  batch: 768/3584  loss:0.00785  acc:87.9%  val_loss:0.01523  val_acc:76.6%
+epoch:31/50  batch: 896/3584  loss:0.00784  acc:87.7%  val_loss:0.01520  val_acc:76.6%
+epoch:31/50  batch:1024/3584  loss:0.00826  acc:87.2%  val_loss:0.01520  val_acc:76.7%
+epoch:31/50  batch:1152/3584  loss:0.00751  acc:88.2%  val_loss:0.01506  val_acc:76.9%
+epoch:31/50  batch:1280/3584  loss:0.00830  acc:86.9%  val_loss:0.01526  val_acc:76.7%
+epoch:31/50  batch:1408/3584  loss:0.00814  acc:87.2%  val_loss:0.01514  val_acc:76.7%
+epoch:31/50  batch:1536/3584  loss:0.00831  acc:86.8%  val_loss:0.01538  val_acc:76.2%
+epoch:31/50  batch:1664/3584  loss:0.00793  acc:87.6%  val_loss:0.01558  val_acc:76.3%
+epoch:31/50  batch:1792/3584  loss:0.00813  acc:87.2%  val_loss:0.01562  val_acc:76.4%
+epoch:31/50  batch:1920/3584  loss:0.00848  acc:86.5%  val_loss:0.01507  val_acc:77.0%
+epoch:31/50  batch:2048/3584  loss:0.00799  acc:87.5%  val_loss:0.01499  val_acc:77.0%
+epoch:31/50  batch:2176/3584  loss:0.00825  acc:87.1%  val_loss:0.01532  val_acc:76.5%
+epoch:31/50  batch:2304/3584  loss:0.00800  acc:87.5%  val_loss:0.01513  val_acc:76.7%
+epoch:31/50  batch:2432/3584  loss:0.00864  acc:86.3%  val_loss:0.01510  val_acc:76.8%
+epoch:31/50  batch:2560/3584  loss:0.00777  acc:87.9%  val_loss:0.01531  val_acc:76.6%
+epoch:31/50  batch:2688/3584  loss:0.00801  acc:87.1%  val_loss:0.01557  val_acc:76.3%
+epoch:31/50  batch:2816/3584  loss:0.00838  acc:86.9%  val_loss:0.01525  val_acc:76.7%
+epoch:31/50  batch:2944/3584  loss:0.00819  acc:87.4%  val_loss:0.01508  val_acc:76.9%
+epoch:31/50  batch:3072/3584  loss:0.00817  acc:87.5%  val_loss:0.01497  val_acc:76.9%
+epoch:31/50  batch:3200/3584  loss:0.00792  acc:87.6%  val_loss:0.01519  val_acc:76.6%
+epoch:31/50  batch:3328/3584  loss:0.00799  acc:87.5%  val_loss:0.01505  val_acc:77.0%
+epoch:31/50  batch:3456/3584  loss:0.00828  acc:87.4%  val_loss:0.01509  val_acc:77.0%
+epoch:32/50  batch:   0/3584  loss:0.00801  acc:87.5%  val_loss:0.01525  val_acc:76.6%
+epoch:32/50  batch: 128/3584  loss:0.00784  acc:87.9%  val_loss:0.01571  val_acc:76.2%
+epoch:32/50  batch: 256/3584  loss:0.00824  acc:87.0%  val_loss:0.01542  val_acc:76.7%
+epoch:32/50  batch: 384/3584  loss:0.00784  acc:87.6%  val_loss:0.01529  val_acc:77.0%
+epoch:32/50  batch: 512/3584  loss:0.00784  acc:87.8%  val_loss:0.01563  val_acc:76.4%
+epoch:32/50  batch: 640/3584  loss:0.00742  acc:88.0%  val_loss:0.01518  val_acc:76.8%
+epoch:32/50  batch: 768/3584  loss:0.00796  acc:87.5%  val_loss:0.01556  val_acc:76.4%
+epoch:32/50  batch: 896/3584  loss:0.00765  acc:88.1%  val_loss:0.01530  val_acc:76.7%
+epoch:32/50  batch:1024/3584  loss:0.00812  acc:87.1%  val_loss:0.01543  val_acc:76.3%
+epoch:32/50  batch:1152/3584  loss:0.00779  acc:87.8%  val_loss:0.01499  val_acc:77.1%
+epoch:32/50  batch:1280/3584  loss:0.00821  acc:87.1%  val_loss:0.01509  val_acc:77.0%
+epoch:32/50  batch:1408/3584  loss:0.00787  acc:87.5%  val_loss:0.01524  val_acc:76.7%
+epoch:32/50  batch:1536/3584  loss:0.00821  acc:87.2%  val_loss:0.01564  val_acc:76.2%
+epoch:32/50  batch:1664/3584  loss:0.00759  acc:88.2%  val_loss:0.01535  val_acc:76.7%
+epoch:32/50  batch:1792/3584  loss:0.00790  acc:87.7%  val_loss:0.01530  val_acc:76.8%
+epoch:32/50  batch:1920/3584  loss:0.00802  acc:87.3%  val_loss:0.01548  val_acc:76.4%
+epoch:32/50  batch:2048/3584  loss:0.00832  acc:87.0%  val_loss:0.01578  val_acc:76.2%
+epoch:32/50  batch:2176/3584  loss:0.00779  acc:87.6%  val_loss:0.01541  val_acc:76.7%
+epoch:32/50  batch:2304/3584  loss:0.00806  acc:87.4%  val_loss:0.01504  val_acc:77.0%
+epoch:32/50  batch:2432/3584  loss:0.00792  acc:87.6%  val_loss:0.01503  val_acc:77.1%
+epoch:32/50  batch:2560/3584  loss:0.00784  acc:87.6%  val_loss:0.01545  val_acc:76.4%
+epoch:32/50  batch:2688/3584  loss:0.00791  acc:87.5%  val_loss:0.01521  val_acc:76.8%
+epoch:32/50  batch:2816/3584  loss:0.00795  acc:87.6%  val_loss:0.01502  val_acc:77.1%
+epoch:32/50  batch:2944/3584  loss:0.00774  acc:87.5%  val_loss:0.01548  val_acc:76.5%
+epoch:32/50  batch:3072/3584  loss:0.00756  acc:88.1%  val_loss:0.01545  val_acc:76.6%
+epoch:32/50  batch:3200/3584  loss:0.00810  acc:87.3%  val_loss:0.01537  val_acc:76.7%
+epoch:32/50  batch:3328/3584  loss:0.00790  acc:87.7%  val_loss:0.01515  val_acc:77.0%
+epoch:32/50  batch:3456/3584  loss:0.00744  acc:88.7%  val_loss:0.01504  val_acc:76.9%
+epoch:33/50  batch:   0/3584  loss:0.00728  acc:88.4%  val_loss:0.01517  val_acc:76.6%
+epoch:33/50  batch: 128/3584  loss:0.00786  acc:87.6%  val_loss:0.01534  val_acc:76.4%
+epoch:33/50  batch: 256/3584  loss:0.00762  acc:88.1%  val_loss:0.01515  val_acc:76.5%
+epoch:33/50  batch: 384/3584  loss:0.00781  acc:88.0%  val_loss:0.01520  val_acc:76.7%
+epoch:33/50  batch: 512/3584  loss:0.00742  acc:88.4%  val_loss:0.01530  val_acc:76.7%
+epoch:33/50  batch: 640/3584  loss:0.00757  acc:88.3%  val_loss:0.01511  val_acc:76.9%
+epoch:33/50  batch: 768/3584  loss:0.00731  acc:88.7%  val_loss:0.01522  val_acc:76.8%
+epoch:33/50  batch: 896/3584  loss:0.00761  acc:88.0%  val_loss:0.01521  val_acc:76.9%
+epoch:33/50  batch:1024/3584  loss:0.00718  acc:88.9%  val_loss:0.01508  val_acc:77.0%
+epoch:33/50  batch:1152/3584  loss:0.00748  acc:88.5%  val_loss:0.01516  val_acc:76.8%
+epoch:33/50  batch:1280/3584  loss:0.00745  acc:88.2%  val_loss:0.01527  val_acc:76.6%
+epoch:33/50  batch:1408/3584  loss:0.00726  acc:88.9%  val_loss:0.01512  val_acc:76.9%
+epoch:33/50  batch:1536/3584  loss:0.00752  acc:88.1%  val_loss:0.01537  val_acc:76.6%
+epoch:33/50  batch:1664/3584  loss:0.00739  acc:88.6%  val_loss:0.01526  val_acc:76.7%
+epoch:33/50  batch:1792/3584  loss:0.00750  acc:88.4%  val_loss:0.01519  val_acc:76.9%
+epoch:33/50  batch:1920/3584  loss:0.00763  acc:87.9%  val_loss:0.01505  val_acc:77.0%
+epoch:33/50  batch:2048/3584  loss:0.00775  acc:88.0%  val_loss:0.01519  val_acc:76.8%
+epoch:33/50  batch:2176/3584  loss:0.00742  acc:88.5%  val_loss:0.01528  val_acc:76.9%
+epoch:33/50  batch:2304/3584  loss:0.00789  acc:87.8%  val_loss:0.01531  val_acc:76.8%
+epoch:33/50  batch:2432/3584  loss:0.00727  acc:88.7%  val_loss:0.01506  val_acc:77.1%
+epoch:33/50  batch:2560/3584  loss:0.00765  acc:88.0%  val_loss:0.01499  val_acc:77.1%
+epoch:33/50  batch:2688/3584  loss:0.00765  acc:88.0%  val_loss:0.01507  val_acc:77.2%
+epoch:33/50  batch:2816/3584  loss:0.00746  acc:88.4%  val_loss:0.01504  val_acc:77.1%
+epoch:33/50  batch:2944/3584  loss:0.00745  acc:88.2%  val_loss:0.01508  val_acc:77.1%
+epoch:33/50  batch:3072/3584  loss:0.00758  acc:88.3%  val_loss:0.01488  val_acc:77.3%
+epoch:33/50  batch:3200/3584  loss:0.00792  acc:87.4%  val_loss:0.01535  val_acc:76.7%
+epoch:33/50  batch:3328/3584  loss:0.00730  acc:88.4%  val_loss:0.01520  val_acc:77.0%
+epoch:33/50  batch:3456/3584  loss:0.00717  acc:88.7%  val_loss:0.01525  val_acc:76.7%
+epoch:34/50  batch:   0/3584  loss:0.00758  acc:88.0%  val_loss:0.01536  val_acc:76.7%
+epoch:34/50  batch: 128/3584  loss:0.00736  acc:88.4%  val_loss:0.01546  val_acc:76.5%
+epoch:34/50  batch: 256/3584  loss:0.00705  acc:89.1%  val_loss:0.01551  val_acc:76.4%
+epoch:34/50  batch: 384/3584  loss:0.00707  acc:89.0%  val_loss:0.01511  val_acc:76.9%
+epoch:34/50  batch: 512/3584  loss:0.00715  acc:88.8%  val_loss:0.01539  val_acc:76.6%
+epoch:34/50  batch: 640/3584  loss:0.00728  acc:88.6%  val_loss:0.01538  val_acc:76.8%
+epoch:34/50  batch: 768/3584  loss:0.00700  acc:88.9%  val_loss:0.01540  val_acc:76.6%
+epoch:34/50  batch: 896/3584  loss:0.00730  acc:88.5%  val_loss:0.01546  val_acc:76.5%
+epoch:34/50  batch:1024/3584  loss:0.00740  acc:88.6%  val_loss:0.01514  val_acc:76.8%
+epoch:34/50  batch:1152/3584  loss:0.00748  acc:88.1%  val_loss:0.01518  val_acc:76.9%
+epoch:34/50  batch:1280/3584  loss:0.00720  acc:88.6%  val_loss:0.01518  val_acc:76.9%
+epoch:34/50  batch:1408/3584  loss:0.00721  acc:88.7%  val_loss:0.01502  val_acc:77.2%
+epoch:34/50  batch:1536/3584  loss:0.00751  acc:88.3%  val_loss:0.01515  val_acc:77.1%
+epoch:34/50  batch:1664/3584  loss:0.00730  acc:88.6%  val_loss:0.01536  val_acc:76.7%
+epoch:34/50  batch:1792/3584  loss:0.00687  acc:89.3%  val_loss:0.01517  val_acc:77.1%
+epoch:34/50  batch:1920/3584  loss:0.00749  acc:88.2%  val_loss:0.01495  val_acc:77.3%
+epoch:34/50  batch:2048/3584  loss:0.00715  acc:88.8%  val_loss:0.01513  val_acc:77.1%
+epoch:34/50  batch:2176/3584  loss:0.00724  acc:88.8%  val_loss:0.01526  val_acc:76.8%
+epoch:34/50  batch:2304/3584  loss:0.00753  acc:88.1%  val_loss:0.01527  val_acc:76.9%
+epoch:34/50  batch:2432/3584  loss:0.00747  acc:88.4%  val_loss:0.01516  val_acc:77.1%
+epoch:34/50  batch:2560/3584  loss:0.00712  acc:88.8%  val_loss:0.01528  val_acc:77.0%
+epoch:34/50  batch:2688/3584  loss:0.00724  acc:88.6%  val_loss:0.01545  val_acc:76.6%
+epoch:34/50  batch:2816/3584  loss:0.00690  acc:89.1%  val_loss:0.01514  val_acc:77.0%
+epoch:34/50  batch:2944/3584  loss:0.00725  acc:88.5%  val_loss:0.01515  val_acc:77.0%
+epoch:34/50  batch:3072/3584  loss:0.00707  acc:88.9%  val_loss:0.01541  val_acc:76.8%
+epoch:34/50  batch:3200/3584  loss:0.00762  acc:88.4%  val_loss:0.01532  val_acc:76.8%
+epoch:34/50  batch:3328/3584  loss:0.00703  acc:88.8%  val_loss:0.01525  val_acc:76.8%
+epoch:34/50  batch:3456/3584  loss:0.00722  acc:88.9%  val_loss:0.01559  val_acc:76.6%
+epoch:35/50  batch:   0/3584  loss:0.00663  acc:89.7%  val_loss:0.01538  val_acc:76.6%
+epoch:35/50  batch: 128/3584  loss:0.00707  acc:89.2%  val_loss:0.01554  val_acc:76.5%
+epoch:35/50  batch: 256/3584  loss:0.00707  acc:89.0%  val_loss:0.01548  val_acc:76.7%
+epoch:35/50  batch: 384/3584  loss:0.00687  acc:89.6%  val_loss:0.01532  val_acc:76.9%
+epoch:35/50  batch: 512/3584  loss:0.00719  acc:88.7%  val_loss:0.01536  val_acc:76.7%
+epoch:35/50  batch: 640/3584  loss:0.00681  acc:89.5%  val_loss:0.01521  val_acc:76.8%
+epoch:35/50  batch: 768/3584  loss:0.00717  acc:88.9%  val_loss:0.01536  val_acc:76.7%
+epoch:35/50  batch: 896/3584  loss:0.00698  acc:89.2%  val_loss:0.01545  val_acc:76.8%
+epoch:35/50  batch:1024/3584  loss:0.00690  acc:89.3%  val_loss:0.01558  val_acc:76.6%
+epoch:35/50  batch:1152/3584  loss:0.00712  acc:88.8%  val_loss:0.01516  val_acc:77.0%
+epoch:35/50  batch:1280/3584  loss:0.00693  acc:88.9%  val_loss:0.01515  val_acc:77.2%
+epoch:35/50  batch:1408/3584  loss:0.00708  acc:89.1%  val_loss:0.01530  val_acc:76.9%
+epoch:35/50  batch:1536/3584  loss:0.00658  acc:89.5%  val_loss:0.01536  val_acc:76.7%
+epoch:35/50  batch:1664/3584  loss:0.00683  acc:89.5%  val_loss:0.01520  val_acc:76.9%
+epoch:35/50  batch:1792/3584  loss:0.00692  acc:89.4%  val_loss:0.01515  val_acc:77.0%
+epoch:35/50  batch:1920/3584  loss:0.00675  acc:89.4%  val_loss:0.01522  val_acc:76.9%
+epoch:35/50  batch:2048/3584  loss:0.00674  acc:89.5%  val_loss:0.01524  val_acc:76.8%
+epoch:35/50  batch:2176/3584  loss:0.00692  acc:89.1%  val_loss:0.01535  val_acc:76.6%
+epoch:35/50  batch:2304/3584  loss:0.00733  acc:88.6%  val_loss:0.01537  val_acc:76.6%
+epoch:35/50  batch:2432/3584  loss:0.00647  acc:89.9%  val_loss:0.01509  val_acc:76.9%
+epoch:35/50  batch:2560/3584  loss:0.00700  acc:88.9%  val_loss:0.01503  val_acc:77.3%
+epoch:35/50  batch:2688/3584  loss:0.00707  acc:89.0%  val_loss:0.01520  val_acc:77.1%
+epoch:35/50  batch:2816/3584  loss:0.00715  acc:88.6%  val_loss:0.01553  val_acc:76.7%
+epoch:35/50  batch:2944/3584  loss:0.00741  acc:88.3%  val_loss:0.01539  val_acc:76.8%
+epoch:35/50  batch:3072/3584  loss:0.00696  acc:89.1%  val_loss:0.01529  val_acc:76.9%
+epoch:35/50  batch:3200/3584  loss:0.00713  acc:88.6%  val_loss:0.01526  val_acc:77.2%
+epoch:35/50  batch:3328/3584  loss:0.00694  acc:89.1%  val_loss:0.01527  val_acc:77.2%
+epoch:35/50  batch:3456/3584  loss:0.00702  acc:89.3%  val_loss:0.01546  val_acc:76.8%
+epoch:36/50  batch:   0/3584  loss:0.00658  acc:89.8%  val_loss:0.01538  val_acc:76.7%
+epoch:36/50  batch: 128/3584  loss:0.00652  acc:90.0%  val_loss:0.01542  val_acc:76.7%
+epoch:36/50  batch: 256/3584  loss:0.00665  acc:89.6%  val_loss:0.01559  val_acc:76.7%
+epoch:36/50  batch: 384/3584  loss:0.00678  acc:89.6%  val_loss:0.01566  val_acc:76.5%
+epoch:36/50  batch: 512/3584  loss:0.00668  acc:89.7%  val_loss:0.01536  val_acc:76.9%
+epoch:36/50  batch: 640/3584  loss:0.00671  acc:89.5%  val_loss:0.01540  val_acc:76.9%
+epoch:36/50  batch: 768/3584  loss:0.00689  acc:89.2%  val_loss:0.01552  val_acc:76.8%
+epoch:36/50  batch: 896/3584  loss:0.00667  acc:89.4%  val_loss:0.01555  val_acc:76.7%
+epoch:36/50  batch:1024/3584  loss:0.00682  acc:89.4%  val_loss:0.01545  val_acc:76.9%
+epoch:36/50  batch:1152/3584  loss:0.00677  acc:89.5%  val_loss:0.01527  val_acc:77.0%
+epoch:36/50  batch:1280/3584  loss:0.00664  acc:89.8%  val_loss:0.01529  val_acc:77.0%
+epoch:36/50  batch:1408/3584  loss:0.00677  acc:89.4%  val_loss:0.01543  val_acc:76.8%
+epoch:36/50  batch:1536/3584  loss:0.00687  acc:89.2%  val_loss:0.01538  val_acc:76.7%
+epoch:36/50  batch:1664/3584  loss:0.00677  acc:89.2%  val_loss:0.01529  val_acc:76.9%
+epoch:36/50  batch:1792/3584  loss:0.00645  acc:89.7%  val_loss:0.01537  val_acc:77.0%
+epoch:36/50  batch:1920/3584  loss:0.00643  acc:90.2%  val_loss:0.01545  val_acc:76.7%
+epoch:36/50  batch:2048/3584  loss:0.00691  acc:89.3%  val_loss:0.01554  val_acc:76.5%
+epoch:36/50  batch:2176/3584  loss:0.00675  acc:89.5%  val_loss:0.01536  val_acc:76.8%
+epoch:36/50  batch:2304/3584  loss:0.00676  acc:89.5%  val_loss:0.01546  val_acc:76.7%
+epoch:36/50  batch:2432/3584  loss:0.00636  acc:90.0%  val_loss:0.01540  val_acc:76.8%
+epoch:36/50  batch:2560/3584  loss:0.00693  acc:89.1%  val_loss:0.01573  val_acc:76.3%
+epoch:36/50  batch:2688/3584  loss:0.00648  acc:89.9%  val_loss:0.01546  val_acc:76.7%
+epoch:36/50  batch:2816/3584  loss:0.00677  acc:89.3%  val_loss:0.01550  val_acc:76.8%
+epoch:36/50  batch:2944/3584  loss:0.00701  acc:89.0%  val_loss:0.01580  val_acc:76.6%
+epoch:36/50  batch:3072/3584  loss:0.00705  acc:88.9%  val_loss:0.01556  val_acc:76.6%
+epoch:36/50  batch:3200/3584  loss:0.00706  acc:88.9%  val_loss:0.01554  val_acc:76.4%
+epoch:36/50  batch:3328/3584  loss:0.00705  acc:89.0%  val_loss:0.01548  val_acc:76.7%
+epoch:36/50  batch:3456/3584  loss:0.00696  acc:88.9%  val_loss:0.01583  val_acc:76.7%
+epoch:37/50  batch:   0/3584  loss:0.00652  acc:89.7%  val_loss:0.01540  val_acc:77.1%
+epoch:37/50  batch: 128/3584  loss:0.00649  acc:90.0%  val_loss:0.01525  val_acc:77.1%
+epoch:37/50  batch: 256/3584  loss:0.00656  acc:89.7%  val_loss:0.01556  val_acc:76.7%
+epoch:37/50  batch: 384/3584  loss:0.00629  acc:89.9%  val_loss:0.01576  val_acc:76.5%
+epoch:37/50  batch: 512/3584  loss:0.00666  acc:89.6%  val_loss:0.01565  val_acc:76.6%
+epoch:37/50  batch: 640/3584  loss:0.00667  acc:89.5%  val_loss:0.01531  val_acc:77.0%
+epoch:37/50  batch: 768/3584  loss:0.00684  acc:89.3%  val_loss:0.01553  val_acc:76.8%
+epoch:37/50  batch: 896/3584  loss:0.00650  acc:89.7%  val_loss:0.01562  val_acc:76.7%
+epoch:37/50  batch:1024/3584  loss:0.00656  acc:89.7%  val_loss:0.01553  val_acc:76.8%
+epoch:37/50  batch:1152/3584  loss:0.00691  acc:89.4%  val_loss:0.01543  val_acc:77.0%
+epoch:37/50  batch:1280/3584  loss:0.00668  acc:89.6%  val_loss:0.01545  val_acc:76.8%
+epoch:37/50  batch:1408/3584  loss:0.00665  acc:89.8%  val_loss:0.01550  val_acc:76.7%
+epoch:37/50  batch:1536/3584  loss:0.00658  acc:89.6%  val_loss:0.01558  val_acc:76.8%
+epoch:37/50  batch:1664/3584  loss:0.00674  acc:89.5%  val_loss:0.01552  val_acc:76.9%
+epoch:37/50  batch:1792/3584  loss:0.00680  acc:89.3%  val_loss:0.01546  val_acc:77.0%
+epoch:37/50  batch:1920/3584  loss:0.00644  acc:90.0%  val_loss:0.01551  val_acc:77.0%
+epoch:37/50  batch:2048/3584  loss:0.00661  acc:89.3%  val_loss:0.01572  val_acc:76.5%
+epoch:37/50  batch:2176/3584  loss:0.00686  acc:89.1%  val_loss:0.01574  val_acc:76.5%
+epoch:37/50  batch:2304/3584  loss:0.00654  acc:89.5%  val_loss:0.01547  val_acc:76.9%
+epoch:37/50  batch:2432/3584  loss:0.00689  acc:89.0%  val_loss:0.01542  val_acc:77.1%
+epoch:37/50  batch:2560/3584  loss:0.00664  acc:89.7%  val_loss:0.01543  val_acc:76.9%
+epoch:37/50  batch:2688/3584  loss:0.00658  acc:89.6%  val_loss:0.01561  val_acc:76.6%
+epoch:37/50  batch:2816/3584  loss:0.00709  acc:89.0%  val_loss:0.01563  val_acc:76.5%
+epoch:37/50  batch:2944/3584  loss:0.00669  acc:89.3%  val_loss:0.01547  val_acc:76.8%
+epoch:37/50  batch:3072/3584  loss:0.00668  acc:89.5%  val_loss:0.01540  val_acc:77.0%
+epoch:37/50  batch:3200/3584  loss:0.00686  acc:89.4%  val_loss:0.01531  val_acc:77.1%
+epoch:37/50  batch:3328/3584  loss:0.00681  acc:89.4%  val_loss:0.01523  val_acc:77.1%
+epoch:37/50  batch:3456/3584  loss:0.00644  acc:89.9%  val_loss:0.01556  val_acc:76.6%
+epoch:38/50  batch:   0/3584  loss:0.00633  acc:90.2%  val_loss:0.01557  val_acc:76.5%
+epoch:38/50  batch: 128/3584  loss:0.00641  acc:90.2%  val_loss:0.01546  val_acc:76.7%
+epoch:38/50  batch: 256/3584  loss:0.00651  acc:90.1%  val_loss:0.01547  val_acc:76.9%
+epoch:38/50  batch: 384/3584  loss:0.00624  acc:90.3%  val_loss:0.01549  val_acc:77.0%
+epoch:38/50  batch: 512/3584  loss:0.00647  acc:90.2%  val_loss:0.01552  val_acc:76.9%
+epoch:38/50  batch: 640/3584  loss:0.00604  acc:90.5%  val_loss:0.01555  val_acc:76.9%
+epoch:38/50  batch: 768/3584  loss:0.00652  acc:89.8%  val_loss:0.01545  val_acc:76.9%
+epoch:38/50  batch: 896/3584  loss:0.00649  acc:89.9%  val_loss:0.01536  val_acc:77.0%
+epoch:38/50  batch:1024/3584  loss:0.00652  acc:89.7%  val_loss:0.01540  val_acc:77.0%
+epoch:38/50  batch:1152/3584  loss:0.00638  acc:90.2%  val_loss:0.01544  val_acc:76.9%
+epoch:38/50  batch:1280/3584  loss:0.00640  acc:89.9%  val_loss:0.01547  val_acc:77.0%
+epoch:38/50  batch:1408/3584  loss:0.00629  acc:90.2%  val_loss:0.01543  val_acc:77.0%
+epoch:38/50  batch:1536/3584  loss:0.00612  acc:90.4%  val_loss:0.01552  val_acc:77.0%
+epoch:38/50  batch:1664/3584  loss:0.00624  acc:90.2%  val_loss:0.01556  val_acc:77.1%
+epoch:38/50  batch:1792/3584  loss:0.00631  acc:90.4%  val_loss:0.01547  val_acc:77.1%
+epoch:38/50  batch:1920/3584  loss:0.00614  acc:90.5%  val_loss:0.01546  val_acc:77.1%
+epoch:38/50  batch:2048/3584  loss:0.00632  acc:90.2%  val_loss:0.01536  val_acc:77.4%
+epoch:38/50  batch:2176/3584  loss:0.00596  acc:90.7%  val_loss:0.01538  val_acc:77.4%
+epoch:38/50  batch:2304/3584  loss:0.00626  acc:90.2%  val_loss:0.01538  val_acc:77.2%
+epoch:38/50  batch:2432/3584  loss:0.00615  acc:90.4%  val_loss:0.01527  val_acc:77.5%
+epoch:38/50  batch:2560/3584  loss:0.00632  acc:90.2%  val_loss:0.01540  val_acc:77.3%
+epoch:38/50  batch:2688/3584  loss:0.00669  acc:89.5%  val_loss:0.01575  val_acc:76.8%
+epoch:38/50  batch:2816/3584  loss:0.00639  acc:89.9%  val_loss:0.01556  val_acc:76.7%
+epoch:38/50  batch:2944/3584  loss:0.00648  acc:89.7%  val_loss:0.01551  val_acc:76.8%
+epoch:38/50  batch:3072/3584  loss:0.00658  acc:89.6%  val_loss:0.01533  val_acc:77.1%
+epoch:38/50  batch:3200/3584  loss:0.00639  acc:90.0%  val_loss:0.01541  val_acc:77.1%
+epoch:38/50  batch:3328/3584  loss:0.00622  acc:90.2%  val_loss:0.01542  val_acc:77.0%
+epoch:38/50  batch:3456/3584  loss:0.00616  acc:90.3%  val_loss:0.01571  val_acc:76.6%
+epoch:39/50  batch:   0/3584  loss:0.00598  acc:90.8%  val_loss:0.01556  val_acc:76.8%
+epoch:39/50  batch: 128/3584  loss:0.00649  acc:89.7%  val_loss:0.01569  val_acc:76.6%
+epoch:39/50  batch: 256/3584  loss:0.00640  acc:89.9%  val_loss:0.01551  val_acc:76.7%
+epoch:39/50  batch: 384/3584  loss:0.00621  acc:90.3%  val_loss:0.01548  val_acc:76.9%
+epoch:39/50  batch: 512/3584  loss:0.00617  acc:90.4%  val_loss:0.01564  val_acc:76.8%
+epoch:39/50  batch: 640/3584  loss:0.00604  acc:90.4%  val_loss:0.01602  val_acc:76.4%
+epoch:39/50  batch: 768/3584  loss:0.00622  acc:90.5%  val_loss:0.01563  val_acc:76.8%
+epoch:39/50  batch: 896/3584  loss:0.00604  acc:90.5%  val_loss:0.01545  val_acc:76.9%
+epoch:39/50  batch:1024/3584  loss:0.00627  acc:90.1%  val_loss:0.01555  val_acc:76.9%
+epoch:39/50  batch:1152/3584  loss:0.00622  acc:90.6%  val_loss:0.01556  val_acc:76.8%
+epoch:39/50  batch:1280/3584  loss:0.00604  acc:90.5%  val_loss:0.01556  val_acc:76.9%
+epoch:39/50  batch:1408/3584  loss:0.00587  acc:90.8%  val_loss:0.01571  val_acc:76.9%
+epoch:39/50  batch:1536/3584  loss:0.00592  acc:90.6%  val_loss:0.01571  val_acc:76.8%
+epoch:39/50  batch:1664/3584  loss:0.00609  acc:90.4%  val_loss:0.01580  val_acc:76.6%
+epoch:39/50  batch:1792/3584  loss:0.00632  acc:90.3%  val_loss:0.01576  val_acc:76.9%
+epoch:39/50  batch:1920/3584  loss:0.00601  acc:90.7%  val_loss:0.01578  val_acc:76.8%
+epoch:39/50  batch:2048/3584  loss:0.00629  acc:90.1%  val_loss:0.01578  val_acc:76.8%
+epoch:39/50  batch:2176/3584  loss:0.00605  acc:90.7%  val_loss:0.01571  val_acc:76.7%
+epoch:39/50  batch:2304/3584  loss:0.00616  acc:90.4%  val_loss:0.01575  val_acc:76.7%
+epoch:39/50  batch:2432/3584  loss:0.00611  acc:90.6%  val_loss:0.01582  val_acc:76.7%
+epoch:39/50  batch:2560/3584  loss:0.00589  acc:90.9%  val_loss:0.01567  val_acc:76.9%
+epoch:39/50  batch:2688/3584  loss:0.00650  acc:90.0%  val_loss:0.01566  val_acc:76.8%
+epoch:39/50  batch:2816/3584  loss:0.00654  acc:89.8%  val_loss:0.01556  val_acc:76.8%
+epoch:39/50  batch:2944/3584  loss:0.00629  acc:90.0%  val_loss:0.01544  val_acc:76.9%
+epoch:39/50  batch:3072/3584  loss:0.00603  acc:90.5%  val_loss:0.01531  val_acc:77.1%
+epoch:39/50  batch:3200/3584  loss:0.00609  acc:90.4%  val_loss:0.01552  val_acc:77.0%
+epoch:39/50  batch:3328/3584  loss:0.00618  acc:90.3%  val_loss:0.01559  val_acc:77.0%
+epoch:39/50  batch:3456/3584  loss:0.00575  acc:91.1%  val_loss:0.01570  val_acc:76.9%
+epoch:40/50  batch:   0/3584  loss:0.00578  acc:91.0%  val_loss:0.01561  val_acc:77.2%
+epoch:40/50  batch: 128/3584  loss:0.00608  acc:90.6%  val_loss:0.01543  val_acc:77.2%
+epoch:40/50  batch: 256/3584  loss:0.00579  acc:90.9%  val_loss:0.01543  val_acc:77.3%
+epoch:40/50  batch: 384/3584  loss:0.00594  acc:91.0%  val_loss:0.01546  val_acc:77.2%
+epoch:40/50  batch: 512/3584  loss:0.00564  acc:91.3%  val_loss:0.01562  val_acc:77.1%
+epoch:40/50  batch: 640/3584  loss:0.00596  acc:90.8%  val_loss:0.01579  val_acc:76.7%
+epoch:40/50  batch: 768/3584  loss:0.00582  acc:90.9%  val_loss:0.01559  val_acc:77.0%
+epoch:40/50  batch: 896/3584  loss:0.00588  acc:90.7%  val_loss:0.01546  val_acc:77.0%
+epoch:40/50  batch:1024/3584  loss:0.00557  acc:91.2%  val_loss:0.01542  val_acc:77.2%
+epoch:40/50  batch:1152/3584  loss:0.00571  acc:91.0%  val_loss:0.01547  val_acc:77.2%
+epoch:40/50  batch:1280/3584  loss:0.00543  acc:91.6%  val_loss:0.01556  val_acc:77.3%
+epoch:40/50  batch:1408/3584  loss:0.00579  acc:91.0%  val_loss:0.01563  val_acc:77.2%
+epoch:40/50  batch:1536/3584  loss:0.00572  acc:91.4%  val_loss:0.01564  val_acc:77.1%
+epoch:40/50  batch:1664/3584  loss:0.00605  acc:90.6%  val_loss:0.01564  val_acc:77.0%
+epoch:40/50  batch:1792/3584  loss:0.00581  acc:91.0%  val_loss:0.01552  val_acc:77.0%
+epoch:40/50  batch:1920/3584  loss:0.00566  acc:91.0%  val_loss:0.01566  val_acc:76.8%
+epoch:40/50  batch:2048/3584  loss:0.00583  acc:91.0%  val_loss:0.01565  val_acc:76.8%
+epoch:40/50  batch:2176/3584  loss:0.00610  acc:90.6%  val_loss:0.01562  val_acc:76.9%
+epoch:40/50  batch:2304/3584  loss:0.00600  acc:90.5%  val_loss:0.01550  val_acc:77.2%
+epoch:40/50  batch:2432/3584  loss:0.00587  acc:91.0%  val_loss:0.01573  val_acc:76.9%
+epoch:40/50  batch:2560/3584  loss:0.00594  acc:90.8%  val_loss:0.01589  val_acc:76.7%
+epoch:40/50  batch:2688/3584  loss:0.00607  acc:90.5%  val_loss:0.01562  val_acc:77.0%
+epoch:40/50  batch:2816/3584  loss:0.00609  acc:90.6%  val_loss:0.01549  val_acc:77.3%
+epoch:40/50  batch:2944/3584  loss:0.00571  acc:91.1%  val_loss:0.01549  val_acc:77.2%
+epoch:40/50  batch:3072/3584  loss:0.00595  acc:90.8%  val_loss:0.01561  val_acc:76.9%
+epoch:40/50  batch:3200/3584  loss:0.00585  acc:90.7%  val_loss:0.01567  val_acc:77.0%
+epoch:40/50  batch:3328/3584  loss:0.00597  acc:90.7%  val_loss:0.01556  val_acc:77.1%
+epoch:40/50  batch:3456/3584  loss:0.00522  acc:92.4%  val_loss:0.01563  val_acc:77.2%
+epoch:41/50  batch:   0/3584  loss:0.00531  acc:91.9%  val_loss:0.01569  val_acc:77.0%
+epoch:41/50  batch: 128/3584  loss:0.00553  acc:91.6%  val_loss:0.01557  val_acc:76.9%
+epoch:41/50  batch: 256/3584  loss:0.00526  acc:91.8%  val_loss:0.01583  val_acc:76.6%
+epoch:41/50  batch: 384/3584  loss:0.00560  acc:91.2%  val_loss:0.01588  val_acc:76.7%
+epoch:41/50  batch: 512/3584  loss:0.00575  acc:90.9%  val_loss:0.01571  val_acc:76.9%
+epoch:41/50  batch: 640/3584  loss:0.00598  acc:90.7%  val_loss:0.01567  val_acc:77.0%
+epoch:41/50  batch: 768/3584  loss:0.00548  acc:91.4%  val_loss:0.01574  val_acc:76.9%
+epoch:41/50  batch: 896/3584  loss:0.00574  acc:91.1%  val_loss:0.01598  val_acc:76.7%
+epoch:41/50  batch:1024/3584  loss:0.00598  acc:90.6%  val_loss:0.01571  val_acc:77.1%
+epoch:41/50  batch:1152/3584  loss:0.00559  acc:91.3%  val_loss:0.01569  val_acc:76.9%
+epoch:41/50  batch:1280/3584  loss:0.00554  acc:91.3%  val_loss:0.01603  val_acc:76.5%
+epoch:41/50  batch:1408/3584  loss:0.00589  acc:90.7%  val_loss:0.01609  val_acc:76.6%
+epoch:41/50  batch:1536/3584  loss:0.00553  acc:91.4%  val_loss:0.01578  val_acc:76.9%
+epoch:41/50  batch:1664/3584  loss:0.00596  acc:90.6%  val_loss:0.01591  val_acc:76.8%
+epoch:41/50  batch:1792/3584  loss:0.00544  acc:91.7%  val_loss:0.01569  val_acc:76.9%
+epoch:41/50  batch:1920/3584  loss:0.00573  acc:91.0%  val_loss:0.01577  val_acc:76.8%
+epoch:41/50  batch:2048/3584  loss:0.00574  acc:90.9%  val_loss:0.01585  val_acc:76.8%
+epoch:41/50  batch:2176/3584  loss:0.00567  acc:91.2%  val_loss:0.01598  val_acc:76.7%
+epoch:41/50  batch:2304/3584  loss:0.00613  acc:90.6%  val_loss:0.01584  val_acc:76.6%
+epoch:41/50  batch:2432/3584  loss:0.00572  acc:90.9%  val_loss:0.01585  val_acc:76.8%
+epoch:41/50  batch:2560/3584  loss:0.00589  acc:90.7%  val_loss:0.01602  val_acc:76.8%
+epoch:41/50  batch:2688/3584  loss:0.00579  acc:91.0%  val_loss:0.01575  val_acc:77.0%
+epoch:41/50  batch:2816/3584  loss:0.00600  acc:90.8%  val_loss:0.01588  val_acc:76.8%
+epoch:41/50  batch:2944/3584  loss:0.00572  acc:90.8%  val_loss:0.01587  val_acc:77.0%
+epoch:41/50  batch:3072/3584  loss:0.00607  acc:90.5%  val_loss:0.01584  val_acc:77.1%
+epoch:41/50  batch:3200/3584  loss:0.00614  acc:90.4%  val_loss:0.01579  val_acc:76.9%
+epoch:41/50  batch:3328/3584  loss:0.00576  acc:91.1%  val_loss:0.01579  val_acc:76.9%
+epoch:41/50  batch:3456/3584  loss:0.00534  acc:91.9%  val_loss:0.01603  val_acc:76.7%
+epoch:42/50  batch:   0/3584  loss:0.00539  acc:91.6%  val_loss:0.01574  val_acc:77.1%
+epoch:42/50  batch: 128/3584  loss:0.00554  acc:91.5%  val_loss:0.01583  val_acc:76.9%
+epoch:42/50  batch: 256/3584  loss:0.00576  acc:91.0%  val_loss:0.01570  val_acc:77.1%
+epoch:42/50  batch: 384/3584  loss:0.00552  acc:91.5%  val_loss:0.01604  val_acc:76.7%
+epoch:42/50  batch: 512/3584  loss:0.00563  acc:91.2%  val_loss:0.01607  val_acc:76.6%
+epoch:42/50  batch: 640/3584  loss:0.00593  acc:90.9%  val_loss:0.01620  val_acc:76.3%
+epoch:42/50  batch: 768/3584  loss:0.00577  acc:91.0%  val_loss:0.01596  val_acc:76.7%
+epoch:42/50  batch: 896/3584  loss:0.00545  acc:91.7%  val_loss:0.01580  val_acc:76.9%
+epoch:42/50  batch:1024/3584  loss:0.00543  acc:91.7%  val_loss:0.01577  val_acc:77.0%
+epoch:42/50  batch:1152/3584  loss:0.00549  acc:91.3%  val_loss:0.01581  val_acc:76.8%
+epoch:42/50  batch:1280/3584  loss:0.00543  acc:91.7%  val_loss:0.01569  val_acc:77.0%
+epoch:42/50  batch:1408/3584  loss:0.00538  acc:91.7%  val_loss:0.01559  val_acc:77.2%
+epoch:42/50  batch:1536/3584  loss:0.00564  acc:91.1%  val_loss:0.01572  val_acc:76.9%
+epoch:42/50  batch:1664/3584  loss:0.00550  acc:91.5%  val_loss:0.01586  val_acc:76.7%
+epoch:42/50  batch:1792/3584  loss:0.00528  acc:91.8%  val_loss:0.01578  val_acc:76.9%
+epoch:42/50  batch:1920/3584  loss:0.00547  acc:91.4%  val_loss:0.01566  val_acc:77.1%
+epoch:42/50  batch:2048/3584  loss:0.00532  acc:91.7%  val_loss:0.01580  val_acc:76.9%
+epoch:42/50  batch:2176/3584  loss:0.00559  acc:91.5%  val_loss:0.01591  val_acc:76.7%
+epoch:42/50  batch:2304/3584  loss:0.00556  acc:91.2%  val_loss:0.01608  val_acc:76.6%
+epoch:42/50  batch:2432/3584  loss:0.00550  acc:91.6%  val_loss:0.01602  val_acc:76.9%
+epoch:42/50  batch:2560/3584  loss:0.00567  acc:91.2%  val_loss:0.01597  val_acc:77.0%
+epoch:42/50  batch:2688/3584  loss:0.00551  acc:91.4%  val_loss:0.01576  val_acc:77.2%
+epoch:42/50  batch:2816/3584  loss:0.00553  acc:91.4%  val_loss:0.01592  val_acc:76.9%
+epoch:42/50  batch:2944/3584  loss:0.00557  acc:91.3%  val_loss:0.01605  val_acc:76.8%
+epoch:42/50  batch:3072/3584  loss:0.00561  acc:90.9%  val_loss:0.01605  val_acc:76.5%
+epoch:42/50  batch:3200/3584  loss:0.00570  acc:91.1%  val_loss:0.01608  val_acc:76.6%
+epoch:42/50  batch:3328/3584  loss:0.00554  acc:91.3%  val_loss:0.01589  val_acc:77.0%
+epoch:42/50  batch:3456/3584  loss:0.00516  acc:92.1%  val_loss:0.01581  val_acc:77.0%
+epoch:43/50  batch:   0/3584  loss:0.00543  acc:91.5%  val_loss:0.01572  val_acc:77.0%
+epoch:43/50  batch: 128/3584  loss:0.00530  acc:91.9%  val_loss:0.01574  val_acc:76.9%
+epoch:43/50  batch: 256/3584  loss:0.00526  acc:91.8%  val_loss:0.01578  val_acc:76.9%
+epoch:43/50  batch: 384/3584  loss:0.00522  acc:92.0%  val_loss:0.01593  val_acc:76.9%
+epoch:43/50  batch: 512/3584  loss:0.00538  acc:91.6%  val_loss:0.01584  val_acc:76.9%
+epoch:43/50  batch: 640/3584  loss:0.00531  acc:91.8%  val_loss:0.01587  val_acc:76.8%
+epoch:43/50  batch: 768/3584  loss:0.00536  acc:91.7%  val_loss:0.01597  val_acc:76.7%
+epoch:43/50  batch: 896/3584  loss:0.00543  acc:91.5%  val_loss:0.01590  val_acc:76.7%
+epoch:43/50  batch:1024/3584  loss:0.00525  acc:91.7%  val_loss:0.01586  val_acc:76.9%
+epoch:43/50  batch:1152/3584  loss:0.00525  acc:91.9%  val_loss:0.01588  val_acc:76.9%
+epoch:43/50  batch:1280/3584  loss:0.00546  acc:91.6%  val_loss:0.01598  val_acc:76.7%
+epoch:43/50  batch:1408/3584  loss:0.00522  acc:91.8%  val_loss:0.01597  val_acc:76.8%
+epoch:43/50  batch:1536/3584  loss:0.00550  acc:91.4%  val_loss:0.01585  val_acc:77.2%
+epoch:43/50  batch:1664/3584  loss:0.00538  acc:91.5%  val_loss:0.01590  val_acc:76.9%
+epoch:43/50  batch:1792/3584  loss:0.00545  acc:91.4%  val_loss:0.01588  val_acc:77.0%
+epoch:43/50  batch:1920/3584  loss:0.00522  acc:91.9%  val_loss:0.01603  val_acc:76.8%
+epoch:43/50  batch:2048/3584  loss:0.00495  acc:92.3%  val_loss:0.01607  val_acc:76.9%
+epoch:43/50  batch:2176/3584  loss:0.00540  acc:91.6%  val_loss:0.01595  val_acc:76.9%
+epoch:43/50  batch:2304/3584  loss:0.00547  acc:91.3%  val_loss:0.01608  val_acc:76.7%
+epoch:43/50  batch:2432/3584  loss:0.00550  acc:91.4%  val_loss:0.01595  val_acc:77.0%
+epoch:43/50  batch:2560/3584  loss:0.00521  acc:91.9%  val_loss:0.01593  val_acc:77.0%
+epoch:43/50  batch:2688/3584  loss:0.00532  acc:91.7%  val_loss:0.01606  val_acc:76.8%
+epoch:43/50  batch:2816/3584  loss:0.00523  acc:91.9%  val_loss:0.01618  val_acc:76.6%
+epoch:43/50  batch:2944/3584  loss:0.00542  acc:91.5%  val_loss:0.01604  val_acc:76.7%
+epoch:43/50  batch:3072/3584  loss:0.00548  acc:91.4%  val_loss:0.01596  val_acc:76.7%
+epoch:43/50  batch:3200/3584  loss:0.00549  acc:91.3%  val_loss:0.01602  val_acc:76.7%
+epoch:43/50  batch:3328/3584  loss:0.00568  acc:91.3%  val_loss:0.01608  val_acc:76.6%
+epoch:43/50  batch:3456/3584  loss:0.00509  acc:92.2%  val_loss:0.01625  val_acc:76.5%
+epoch:44/50  batch:   0/3584  loss:0.00519  acc:92.0%  val_loss:0.01596  val_acc:76.8%
+epoch:44/50  batch: 128/3584  loss:0.00518  acc:91.8%  val_loss:0.01598  val_acc:76.9%
+epoch:44/50  batch: 256/3584  loss:0.00518  acc:92.0%  val_loss:0.01594  val_acc:76.9%
+epoch:44/50  batch: 384/3584  loss:0.00514  acc:92.0%  val_loss:0.01608  val_acc:76.6%
+epoch:44/50  batch: 512/3584  loss:0.00503  acc:92.4%  val_loss:0.01608  val_acc:76.8%
+epoch:44/50  batch: 640/3584  loss:0.00507  acc:92.0%  val_loss:0.01610  val_acc:76.8%
+epoch:44/50  batch: 768/3584  loss:0.00513  acc:92.1%  val_loss:0.01592  val_acc:76.9%
+epoch:44/50  batch: 896/3584  loss:0.00511  acc:91.9%  val_loss:0.01601  val_acc:76.8%
+epoch:44/50  batch:1024/3584  loss:0.00538  acc:91.6%  val_loss:0.01624  val_acc:76.7%
+epoch:44/50  batch:1152/3584  loss:0.00479  acc:92.6%  val_loss:0.01595  val_acc:76.8%
+epoch:44/50  batch:1280/3584  loss:0.00505  acc:92.1%  val_loss:0.01585  val_acc:77.0%
+epoch:44/50  batch:1408/3584  loss:0.00501  acc:92.2%  val_loss:0.01589  val_acc:77.1%
+epoch:44/50  batch:1536/3584  loss:0.00494  acc:92.2%  val_loss:0.01614  val_acc:76.8%
+epoch:44/50  batch:1664/3584  loss:0.00525  acc:91.7%  val_loss:0.01610  val_acc:76.7%
+epoch:44/50  batch:1792/3584  loss:0.00530  acc:92.0%  val_loss:0.01615  val_acc:76.7%
+epoch:44/50  batch:1920/3584  loss:0.00527  acc:91.6%  val_loss:0.01611  val_acc:76.7%
+epoch:44/50  batch:2048/3584  loss:0.00523  acc:91.7%  val_loss:0.01610  val_acc:76.6%
+epoch:44/50  batch:2176/3584  loss:0.00506  acc:92.2%  val_loss:0.01600  val_acc:76.8%
+epoch:44/50  batch:2304/3584  loss:0.00523  acc:91.8%  val_loss:0.01590  val_acc:76.9%
+epoch:44/50  batch:2432/3584  loss:0.00515  acc:92.1%  val_loss:0.01600  val_acc:76.9%
+epoch:44/50  batch:2560/3584  loss:0.00517  acc:92.0%  val_loss:0.01602  val_acc:76.8%
+epoch:44/50  batch:2688/3584  loss:0.00539  acc:91.5%  val_loss:0.01616  val_acc:76.8%
+epoch:44/50  batch:2816/3584  loss:0.00531  acc:91.8%  val_loss:0.01616  val_acc:76.8%
+epoch:44/50  batch:2944/3584  loss:0.00517  acc:92.0%  val_loss:0.01628  val_acc:76.5%
+epoch:44/50  batch:3072/3584  loss:0.00531  acc:91.8%  val_loss:0.01618  val_acc:76.7%
+epoch:44/50  batch:3200/3584  loss:0.00520  acc:91.9%  val_loss:0.01599  val_acc:76.9%
+epoch:44/50  batch:3328/3584  loss:0.00522  acc:91.9%  val_loss:0.01607  val_acc:76.8%
+epoch:44/50  batch:3456/3584  loss:0.00509  acc:91.8%  val_loss:0.01663  val_acc:76.0%
+epoch:45/50  batch:   0/3584  loss:0.00502  acc:92.1%  val_loss:0.01655  val_acc:76.3%
+epoch:45/50  batch: 128/3584  loss:0.00526  acc:91.6%  val_loss:0.01674  val_acc:76.2%
+epoch:45/50  batch: 256/3584  loss:0.00569  acc:91.0%  val_loss:0.01656  val_acc:76.3%
+epoch:45/50  batch: 384/3584  loss:0.00520  acc:91.8%  val_loss:0.01620  val_acc:76.4%
+epoch:45/50  batch: 512/3584  loss:0.00563  acc:91.1%  val_loss:0.01649  val_acc:76.4%
+epoch:45/50  batch: 640/3584  loss:0.00494  acc:92.2%  val_loss:0.01625  val_acc:76.6%
+epoch:45/50  batch: 768/3584  loss:0.00542  acc:91.3%  val_loss:0.01635  val_acc:76.4%
+epoch:45/50  batch: 896/3584  loss:0.00532  acc:91.5%  val_loss:0.01656  val_acc:75.9%
+epoch:45/50  batch:1024/3584  loss:0.00504  acc:92.2%  val_loss:0.01679  val_acc:76.2%
+epoch:45/50  batch:1152/3584  loss:0.00542  acc:91.4%  val_loss:0.01672  val_acc:76.2%
+epoch:45/50  batch:1280/3584  loss:0.00541  acc:91.4%  val_loss:0.01631  val_acc:76.5%
+epoch:45/50  batch:1408/3584  loss:0.00576  acc:90.8%  val_loss:0.01667  val_acc:76.3%
+epoch:45/50  batch:1536/3584  loss:0.00594  acc:90.6%  val_loss:0.01654  val_acc:76.5%
+epoch:45/50  batch:1664/3584  loss:0.00556  acc:91.3%  val_loss:0.01649  val_acc:76.4%
+epoch:45/50  batch:1792/3584  loss:0.00599  acc:90.2%  val_loss:0.01699  val_acc:75.8%
+epoch:45/50  batch:1920/3584  loss:0.00533  acc:91.7%  val_loss:0.01653  val_acc:76.4%
+epoch:45/50  batch:2048/3584  loss:0.00573  acc:90.8%  val_loss:0.01654  val_acc:76.3%
+epoch:45/50  batch:2176/3584  loss:0.00560  acc:91.1%  val_loss:0.01631  val_acc:76.6%
+epoch:45/50  batch:2304/3584  loss:0.00550  acc:91.2%  val_loss:0.01653  val_acc:76.2%
+epoch:45/50  batch:2432/3584  loss:0.00620  acc:90.1%  val_loss:0.01663  val_acc:76.3%
+epoch:45/50  batch:2560/3584  loss:0.00545  acc:91.4%  val_loss:0.01604  val_acc:76.7%
+epoch:45/50  batch:2688/3584  loss:0.00598  acc:90.7%  val_loss:0.01612  val_acc:76.5%
+epoch:45/50  batch:2816/3584  loss:0.00565  acc:91.0%  val_loss:0.01610  val_acc:76.6%
+epoch:45/50  batch:2944/3584  loss:0.00569  acc:90.9%  val_loss:0.01646  val_acc:76.2%
+epoch:45/50  batch:3072/3584  loss:0.00570  acc:91.0%  val_loss:0.01619  val_acc:76.7%
+epoch:45/50  batch:3200/3584  loss:0.00581  acc:90.8%  val_loss:0.01626  val_acc:76.6%
+epoch:45/50  batch:3328/3584  loss:0.00553  acc:91.4%  val_loss:0.01623  val_acc:76.7%
+epoch:45/50  batch:3456/3584  loss:0.00514  acc:92.1%  val_loss:0.01619  val_acc:76.5%
+epoch:46/50  batch:   0/3584  loss:0.00529  acc:91.6%  val_loss:0.01627  val_acc:76.3%
+epoch:46/50  batch: 128/3584  loss:0.00548  acc:91.4%  val_loss:0.01616  val_acc:76.6%
+epoch:46/50  batch: 256/3584  loss:0.00584  acc:90.8%  val_loss:0.01681  val_acc:76.0%
+epoch:46/50  batch: 384/3584  loss:0.00539  acc:91.5%  val_loss:0.01655  val_acc:76.2%
+epoch:46/50  batch: 512/3584  loss:0.00537  acc:91.4%  val_loss:0.01630  val_acc:76.7%
+epoch:46/50  batch: 640/3584  loss:0.00547  acc:91.4%  val_loss:0.01631  val_acc:76.7%
+epoch:46/50  batch: 768/3584  loss:0.00572  acc:90.9%  val_loss:0.01652  val_acc:76.4%
+epoch:46/50  batch: 896/3584  loss:0.00558  acc:91.1%  val_loss:0.01620  val_acc:76.5%
+epoch:46/50  batch:1024/3584  loss:0.00528  acc:91.6%  val_loss:0.01626  val_acc:76.4%
+epoch:46/50  batch:1152/3584  loss:0.00532  acc:91.3%  val_loss:0.01626  val_acc:76.8%
+epoch:46/50  batch:1280/3584  loss:0.00556  acc:91.1%  val_loss:0.01637  val_acc:76.5%
+epoch:46/50  batch:1408/3584  loss:0.00545  acc:91.4%  val_loss:0.01606  val_acc:76.8%
+epoch:46/50  batch:1536/3584  loss:0.00528  acc:91.7%  val_loss:0.01624  val_acc:76.4%
+epoch:46/50  batch:1664/3584  loss:0.00535  acc:91.5%  val_loss:0.01655  val_acc:76.3%
+epoch:46/50  batch:1792/3584  loss:0.00541  acc:91.3%  val_loss:0.01656  val_acc:76.3%
+epoch:46/50  batch:1920/3584  loss:0.00536  acc:91.4%  val_loss:0.01624  val_acc:76.6%
+epoch:46/50  batch:2048/3584  loss:0.00526  acc:91.8%  val_loss:0.01615  val_acc:76.6%
+epoch:46/50  batch:2176/3584  loss:0.00543  acc:91.1%  val_loss:0.01655  val_acc:76.3%
+epoch:46/50  batch:2304/3584  loss:0.00541  acc:91.3%  val_loss:0.01645  val_acc:76.3%
+epoch:46/50  batch:2432/3584  loss:0.00555  acc:91.2%  val_loss:0.01644  val_acc:76.3%
+epoch:46/50  batch:2560/3584  loss:0.00549  acc:91.4%  val_loss:0.01651  val_acc:76.4%
+epoch:46/50  batch:2688/3584  loss:0.00547  acc:91.2%  val_loss:0.01656  val_acc:76.4%
+epoch:46/50  batch:2816/3584  loss:0.00541  acc:91.4%  val_loss:0.01646  val_acc:76.3%
+epoch:46/50  batch:2944/3584  loss:0.00560  acc:91.1%  val_loss:0.01604  val_acc:76.9%
+epoch:46/50  batch:3072/3584  loss:0.00558  acc:91.1%  val_loss:0.01632  val_acc:76.6%
+epoch:46/50  batch:3200/3584  loss:0.00526  acc:91.3%  val_loss:0.01624  val_acc:76.6%
+epoch:46/50  batch:3328/3584  loss:0.00557  acc:91.1%  val_loss:0.01647  val_acc:76.4%
+epoch:46/50  batch:3456/3584  loss:0.00487  acc:92.2%  val_loss:0.01625  val_acc:76.8%
+epoch:47/50  batch:   0/3584  loss:0.00507  acc:92.0%  val_loss:0.01624  val_acc:76.8%
+epoch:47/50  batch: 128/3584  loss:0.00512  acc:91.8%  val_loss:0.01604  val_acc:77.0%
+epoch:47/50  batch: 256/3584  loss:0.00504  acc:92.0%  val_loss:0.01617  val_acc:76.8%
+epoch:47/50  batch: 384/3584  loss:0.00514  acc:91.9%  val_loss:0.01646  val_acc:76.6%
+epoch:47/50  batch: 512/3584  loss:0.00494  acc:92.2%  val_loss:0.01637  val_acc:76.6%
+epoch:47/50  batch: 640/3584  loss:0.00504  acc:92.0%  val_loss:0.01627  val_acc:76.6%
+epoch:47/50  batch: 768/3584  loss:0.00496  acc:92.3%  val_loss:0.01626  val_acc:76.8%
+epoch:47/50  batch: 896/3584  loss:0.00476  acc:92.5%  val_loss:0.01620  val_acc:76.8%
+epoch:47/50  batch:1024/3584  loss:0.00494  acc:92.2%  val_loss:0.01617  val_acc:76.8%
+epoch:47/50  batch:1152/3584  loss:0.00507  acc:92.2%  val_loss:0.01621  val_acc:76.7%
+epoch:47/50  batch:1280/3584  loss:0.00503  acc:92.3%  val_loss:0.01606  val_acc:76.8%
+epoch:47/50  batch:1408/3584  loss:0.00505  acc:92.1%  val_loss:0.01587  val_acc:77.2%
+epoch:47/50  batch:1536/3584  loss:0.00522  acc:91.9%  val_loss:0.01583  val_acc:77.1%
+epoch:47/50  batch:1664/3584  loss:0.00494  acc:92.1%  val_loss:0.01589  val_acc:77.0%
+epoch:47/50  batch:1792/3584  loss:0.00490  acc:92.3%  val_loss:0.01613  val_acc:76.9%
+epoch:47/50  batch:1920/3584  loss:0.00488  acc:92.4%  val_loss:0.01620  val_acc:77.0%
+epoch:47/50  batch:2048/3584  loss:0.00491  acc:92.1%  val_loss:0.01631  val_acc:76.8%
+epoch:47/50  batch:2176/3584  loss:0.00482  acc:92.5%  val_loss:0.01615  val_acc:77.1%
+epoch:47/50  batch:2304/3584  loss:0.00497  acc:92.1%  val_loss:0.01628  val_acc:76.8%
+epoch:47/50  batch:2432/3584  loss:0.00491  acc:92.1%  val_loss:0.01623  val_acc:76.8%
+epoch:47/50  batch:2560/3584  loss:0.00504  acc:92.0%  val_loss:0.01629  val_acc:76.6%
+epoch:47/50  batch:2688/3584  loss:0.00471  acc:92.5%  val_loss:0.01609  val_acc:77.0%
+epoch:47/50  batch:2816/3584  loss:0.00518  acc:91.9%  val_loss:0.01614  val_acc:77.0%
+epoch:47/50  batch:2944/3584  loss:0.00489  acc:92.4%  val_loss:0.01622  val_acc:76.8%
+epoch:47/50  batch:3072/3584  loss:0.00513  acc:92.1%  val_loss:0.01630  val_acc:76.7%
+epoch:47/50  batch:3200/3584  loss:0.00505  acc:92.2%  val_loss:0.01616  val_acc:76.7%
+epoch:47/50  batch:3328/3584  loss:0.00491  acc:92.3%  val_loss:0.01612  val_acc:77.0%
+epoch:47/50  batch:3456/3584  loss:0.00462  acc:92.8%  val_loss:0.01650  val_acc:76.5%
+epoch:48/50  batch:   0/3584  loss:0.00461  acc:92.9%  val_loss:0.01629  val_acc:76.8%
+epoch:48/50  batch: 128/3584  loss:0.00474  acc:92.5%  val_loss:0.01639  val_acc:76.7%
+epoch:48/50  batch: 256/3584  loss:0.00484  acc:92.5%  val_loss:0.01638  val_acc:76.6%
+epoch:48/50  batch: 384/3584  loss:0.00454  acc:93.0%  val_loss:0.01634  val_acc:76.7%
+epoch:48/50  batch: 512/3584  loss:0.00466  acc:92.8%  val_loss:0.01631  val_acc:76.7%
+epoch:48/50  batch: 640/3584  loss:0.00489  acc:92.4%  val_loss:0.01633  val_acc:76.7%
+epoch:48/50  batch: 768/3584  loss:0.00474  acc:92.5%  val_loss:0.01641  val_acc:76.6%
+epoch:48/50  batch: 896/3584  loss:0.00471  acc:92.7%  val_loss:0.01649  val_acc:76.5%
+epoch:48/50  batch:1024/3584  loss:0.00465  acc:92.7%  val_loss:0.01655  val_acc:76.4%
+epoch:48/50  batch:1152/3584  loss:0.00476  acc:92.6%  val_loss:0.01643  val_acc:76.4%
+epoch:48/50  batch:1280/3584  loss:0.00456  acc:92.8%  val_loss:0.01638  val_acc:76.6%
+epoch:48/50  batch:1408/3584  loss:0.00463  acc:92.9%  val_loss:0.01633  val_acc:76.8%
+epoch:48/50  batch:1536/3584  loss:0.00476  acc:92.8%  val_loss:0.01643  val_acc:76.8%
+epoch:48/50  batch:1664/3584  loss:0.00457  acc:92.8%  val_loss:0.01652  val_acc:76.9%
+epoch:48/50  batch:1792/3584  loss:0.00437  acc:93.1%  val_loss:0.01652  val_acc:76.7%
+epoch:48/50  batch:1920/3584  loss:0.00480  acc:92.4%  val_loss:0.01654  val_acc:76.6%
+epoch:48/50  batch:2048/3584  loss:0.00464  acc:92.8%  val_loss:0.01652  val_acc:76.7%
+epoch:48/50  batch:2176/3584  loss:0.00461  acc:92.7%  val_loss:0.01639  val_acc:76.7%
+epoch:48/50  batch:2304/3584  loss:0.00472  acc:92.7%  val_loss:0.01627  val_acc:76.7%
+epoch:48/50  batch:2432/3584  loss:0.00493  acc:92.2%  val_loss:0.01651  val_acc:76.6%
+epoch:48/50  batch:2560/3584  loss:0.00502  acc:92.1%  val_loss:0.01673  val_acc:76.6%
+epoch:48/50  batch:2688/3584  loss:0.00471  acc:92.8%  val_loss:0.01640  val_acc:76.7%
+epoch:48/50  batch:2816/3584  loss:0.00493  acc:92.2%  val_loss:0.01640  val_acc:76.7%
+epoch:48/50  batch:2944/3584  loss:0.00483  acc:92.3%  val_loss:0.01662  val_acc:76.7%
+epoch:48/50  batch:3072/3584  loss:0.00464  acc:92.7%  val_loss:0.01645  val_acc:76.8%
+epoch:48/50  batch:3200/3584  loss:0.00496  acc:92.1%  val_loss:0.01623  val_acc:77.0%
+epoch:48/50  batch:3328/3584  loss:0.00442  acc:93.0%  val_loss:0.01619  val_acc:77.0%
+epoch:48/50  batch:3456/3584  loss:0.00444  acc:93.2%  val_loss:0.01628  val_acc:76.8%
+epoch:49/50  batch:   0/3584  loss:0.00429  acc:93.3%  val_loss:0.01637  val_acc:76.6%
+epoch:49/50  batch: 128/3584  loss:0.00446  acc:93.2%  val_loss:0.01644  val_acc:76.6%
+epoch:49/50  batch: 256/3584  loss:0.00448  acc:92.9%  val_loss:0.01647  val_acc:76.6%
+epoch:49/50  batch: 384/3584  loss:0.00445  acc:93.0%  val_loss:0.01641  val_acc:76.7%
+epoch:49/50  batch: 512/3584  loss:0.00452  acc:92.9%  val_loss:0.01651  val_acc:76.5%
+epoch:49/50  batch: 640/3584  loss:0.00449  acc:93.1%  val_loss:0.01655  val_acc:76.5%
+epoch:49/50  batch: 768/3584  loss:0.00440  acc:93.2%  val_loss:0.01635  val_acc:77.0%
+epoch:49/50  batch: 896/3584  loss:0.00444  acc:93.2%  val_loss:0.01629  val_acc:77.1%
+epoch:49/50  batch:1024/3584  loss:0.00452  acc:93.0%  val_loss:0.01661  val_acc:76.7%
+epoch:49/50  batch:1152/3584  loss:0.00440  acc:93.1%  val_loss:0.01661  val_acc:76.8%
+epoch:49/50  batch:1280/3584  loss:0.00466  acc:92.7%  val_loss:0.01640  val_acc:76.8%
+epoch:49/50  batch:1408/3584  loss:0.00450  acc:93.0%  val_loss:0.01628  val_acc:77.0%
+epoch:49/50  batch:1536/3584  loss:0.00441  acc:93.1%  val_loss:0.01635  val_acc:77.0%
+epoch:49/50  batch:1664/3584  loss:0.00440  acc:93.1%  val_loss:0.01641  val_acc:76.8%
+epoch:49/50  batch:1792/3584  loss:0.00436  acc:93.4%  val_loss:0.01648  val_acc:76.6%
+epoch:49/50  batch:1920/3584  loss:0.00450  acc:93.0%  val_loss:0.01662  val_acc:76.5%
+epoch:49/50  batch:2048/3584  loss:0.00475  acc:92.6%  val_loss:0.01665  val_acc:76.4%
+epoch:49/50  batch:2176/3584  loss:0.00446  acc:93.0%  val_loss:0.01668  val_acc:76.5%
+epoch:49/50  batch:2304/3584  loss:0.00472  acc:92.7%  val_loss:0.01667  val_acc:76.7%
+epoch:49/50  batch:2432/3584  loss:0.00449  acc:93.0%  val_loss:0.01657  val_acc:76.7%
+epoch:49/50  batch:2560/3584  loss:0.00447  acc:93.0%  val_loss:0.01642  val_acc:76.6%
+epoch:49/50  batch:2688/3584  loss:0.00457  acc:92.8%  val_loss:0.01667  val_acc:76.4%
+epoch:49/50  batch:2816/3584  loss:0.00453  acc:92.9%  val_loss:0.01673  val_acc:76.3%
+epoch:49/50  batch:2944/3584  loss:0.00439  acc:93.0%  val_loss:0.01669  val_acc:76.5%
+epoch:49/50  batch:3072/3584  loss:0.00457  acc:92.8%  val_loss:0.01652  val_acc:76.6%
+epoch:49/50  batch:3200/3584  loss:0.00439  acc:93.2%  val_loss:0.01642  val_acc:76.7%
+epoch:49/50  batch:3328/3584  loss:0.00468  acc:92.5%  val_loss:0.01668  val_acc:76.4%
+epoch:49/50  batch:3456/3584  loss:0.00418  acc:93.4%  val_loss:0.01657  val_acc:76.6%
+epoch:50/50  batch:   0/3584  loss:0.00439  acc:93.3%  val_loss:0.01658  val_acc:76.7%
+epoch:50/50  batch: 128/3584  loss:0.00436  acc:93.1%  val_loss:0.01670  val_acc:76.4%
+epoch:50/50  batch: 256/3584  loss:0.00469  acc:92.7%  val_loss:0.01684  val_acc:76.3%
+epoch:50/50  batch: 384/3584  loss:0.00432  acc:93.1%  val_loss:0.01663  val_acc:76.6%
+epoch:50/50  batch: 512/3584  loss:0.00421  acc:93.5%  val_loss:0.01646  val_acc:76.7%
+epoch:50/50  batch: 640/3584  loss:0.00440  acc:93.3%  val_loss:0.01636  val_acc:77.1%
+epoch:50/50  batch: 768/3584  loss:0.00401  acc:93.9%  val_loss:0.01638  val_acc:76.9%
+epoch:50/50  batch: 896/3584  loss:0.00430  acc:93.3%  val_loss:0.01658  val_acc:76.7%
+epoch:50/50  batch:1024/3584  loss:0.00413  acc:93.7%  val_loss:0.01659  val_acc:76.6%
+epoch:50/50  batch:1152/3584  loss:0.00416  acc:93.6%  val_loss:0.01655  val_acc:76.5%
+epoch:50/50  batch:1280/3584  loss:0.00417  acc:93.6%  val_loss:0.01657  val_acc:76.5%
+epoch:50/50  batch:1408/3584  loss:0.00438  acc:93.1%  val_loss:0.01657  val_acc:76.7%
+epoch:50/50  batch:1536/3584  loss:0.00424  acc:93.3%  val_loss:0.01644  val_acc:76.7%
+epoch:50/50  batch:1664/3584  loss:0.00435  acc:93.3%  val_loss:0.01647  val_acc:76.9%
+epoch:50/50  batch:1792/3584  loss:0.00437  acc:93.1%  val_loss:0.01676  val_acc:76.7%
+epoch:50/50  batch:1920/3584  loss:0.00446  acc:93.0%  val_loss:0.01664  val_acc:76.7%
+epoch:50/50  batch:2048/3584  loss:0.00448  acc:93.0%  val_loss:0.01659  val_acc:76.7%
+epoch:50/50  batch:2176/3584  loss:0.00411  acc:93.5%  val_loss:0.01669  val_acc:76.8%
+epoch:50/50  batch:2304/3584  loss:0.00438  acc:93.1%  val_loss:0.01673  val_acc:76.6%
+epoch:50/50  batch:2432/3584  loss:0.00429  acc:93.2%  val_loss:0.01654  val_acc:76.8%
+epoch:50/50  batch:2560/3584  loss:0.00448  acc:93.0%  val_loss:0.01646  val_acc:76.9%
+epoch:50/50  batch:2688/3584  loss:0.00437  acc:93.1%  val_loss:0.01655  val_acc:76.8%
+epoch:50/50  batch:2816/3584  loss:0.00451  acc:92.9%  val_loss:0.01644  val_acc:76.8%
+epoch:50/50  batch:2944/3584  loss:0.00436  acc:93.3%  val_loss:0.01658  val_acc:76.8%
+epoch:50/50  batch:3072/3584  loss:0.00455  acc:92.8%  val_loss:0.01665  val_acc:76.9%
+epoch:50/50  batch:3200/3584  loss:0.00420  acc:93.4%  val_loss:0.01654  val_acc:76.8%
+epoch:50/50  batch:3328/3584  loss:0.00444  acc:93.0%  val_loss:0.01645  val_acc:76.7%
+epoch:50/50  batch:3456/3584  loss:0.00404  acc:93.7%  val_loss:0.01664  val_acc:76.6%

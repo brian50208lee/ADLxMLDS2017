@@ -271,8 +271,8 @@ def output_result(f_output, model, datas, instanse_id, frame_wise=False):
 
 model.load('./models/best.ckpt')
 output_result(f_output, model, test_X, test_X_id)
-output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
-output_result('train_out.csv', model, data_X, data_X_id)
+#output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
+#output_result('train_out.csv', model, data_X, data_X_id)
 
 
 

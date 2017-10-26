@@ -1,1 +1,1 @@
-python rnn.py "$@"
+python model_rnn.py "$@"
