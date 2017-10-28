@@ -1,1 +1,1 @@
-python model_cnn.py "$@"
+python model_best.py "$@"

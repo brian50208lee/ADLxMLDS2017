@@ -24,15 +24,8 @@ data_X, data_X_id = load_data(f_fbank_train, delimiter=' ', dtype='float32')
 data_Y, data_Y_id = load_data(f_train_label, delimiter=',', dtype='str')
 data_X, data_X_id = rearrange(data_X, data_X_id, data_Y_id)
 
-# load mfcc train
-mfcc_X, mfcc_X_id = load_data(f_mfcc_train, delimiter=' ', dtype='float32')
-mfcc_X, mfcc_X_id = rearrange(mfcc_X, mfcc_X_id, data_Y_id)
-data_X = [np.hstack([f,m]) for f, m in zip(data_X, mfcc_X)]
-
 # load test
-fbank_test_X, test_X_id = load_data(f_fbank_test, delimiter=' ', dtype='float32')
-mfcc_test_X, _ = load_data(f_mfcc_test, delimiter=' ', dtype='float32')
-test_X = [np.hstack([f,m]) for f, m in zip(fbank_test_X, mfcc_test_X)]
+test_X, test_X_id = load_data(f_fbank_test, delimiter=' ', dtype='float32')
 
 # to 39 phone to idx to one-hot
 for idx in range(len(data_Y)):
@@ -141,9 +134,7 @@ class SequenceLabelling(object):
                                       kernel_size=[kernel_size, kernel_size],
                                       padding="SAME",
                                       activation=act)
-            x = tf.nn.max_pool(x, ksize=[1,1,4,1], strides=[1,1,4,1], padding = 'SAME')
-            shape = x.get_shape().as_list()
-            x = tf.reshape(x, [-1, self._max_squ_len, shape[-1] * shape[-2]])
+            x = tf.reshape(x, [-1, self._max_squ_len, num_filters*inputs.get_shape().as_list()[-1]])
             return x
         # Recurrent network.
         def bidirectional_lstm(inputs, num_units, num_layers, act=lambda x: x):
@@ -166,7 +157,7 @@ class SequenceLabelling(object):
             return act(tf.matmul(x, weight) + bias)
         # build
         output = self.data
-        output = conv2d(output, 20, 5, act=tf.nn.relu)
+        output = conv2d(output, 10, 5, act=tf.nn.relu)
         output = bidirectional_lstm(output, self._num_hidden, self._num_layers, act=tf.nn.tanh)
         # Flatten
         output = tf.reshape(output, [-1, self._num_hidden])
@@ -237,7 +228,7 @@ valid_size = 200
 valid_X, valid_Y = data_X[:valid_size], data_Y[:valid_size]
 train_X, train_Y = data_X[valid_size:], data_Y[valid_size:]
 
-model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.5, num_epochs=50, batch_size=64, eval_every=1, shuffle=True, save_min_loss=True)
+#model.fit(train=[train_X, train_Y], valid=[valid_X, valid_Y], dropout=0.5, num_epochs=50, batch_size=64, eval_every=1, shuffle=True, save_min_loss=True)
 
 # output
 def output_result(f_output, model, datas, instanse_id, frame_wise=False):
@@ -273,7 +264,7 @@ def output_result(f_output, model, datas, instanse_id, frame_wise=False):
                 result_str = re.sub(r'([a-zA-Z0-9])\1+', r'\1', result_str) # trim
             _ = out.write('{},{}\n'.format(instanse_id[data_idx], result_str))
 
-model.load('./models/best.ckpt')
+model.load('./models/cnn_8_65536/best.ckpt')
 output_result(f_output, model, test_X, test_X_id)
 #output_result('train_out_frame_wise.csv', model, data_X, data_X_id, frame_wise=True)
 #output_result('train_out.csv', model, data_X, data_X_id)
