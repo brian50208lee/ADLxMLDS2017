@@ -1,5 +1,5 @@
-
-# load dataimport os, sys, json, time
+# load data
+import os, sys, json, time
 import numpy as np
 import tensorflow as tf
 
@@ -213,7 +213,9 @@ class Seq2seq(object):
                 print('loss:{:<3.5f}  acc:{:>3.1f}%  '.format(loss, 100*acc), end='')
                 # evaluation
                 if step % eval_every == 0 and valid is not None:
-                    valid_x, valid_y = valid
+                    valid_x = np.array(valid[0], dtype='float32')
+                    valid_y = np.array(valid[1])
+                    valid_y = np.array([y[np.random.randint(len(y), size=1)[0]] for y in valid_y], dtype='int32')
                     val_loss, val_acc = self.evaluate(valid_x, valid_y, batch_size=batch_size)
                     print('val_loss:{:<3.5f}  val_acc:{:>3.1f}%  '.format(val_loss, 100*val_acc), end='')
                     # save_min_loss
@@ -269,9 +271,9 @@ class Seq2seq(object):
         print('='*50)
         print('Total Parameters: {:,}'.format(total_parms))
 
-model = Seq2seq(feature_dim, vocab_size, 100, max_frame_len, max_sent_len)
+model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len)
 model.summary()
-model.fit(train=[train_X, train_Ys], valid=None, num_epochs=1000, batch_size=32, shuffle=True, save_min_loss=True)
+model.fit(train=[train_X[:-100], train_Ys[:-100]], valid=[train_X[-100:], train_Ys[-100:]], num_epochs=1000, batch_size=32, shuffle=True, save_min_loss=False)
 
 
 
