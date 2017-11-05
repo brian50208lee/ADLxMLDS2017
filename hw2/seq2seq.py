@@ -324,9 +324,9 @@ model.fit(train=[train_X[:-100], train_Ys[:-100]],
           num_epochs=1000, 
           batch_size=32,
           ground_truth_prob=1., 
-          ground_truth_prob_decay=0.95,
+          ground_truth_prob_decay=0.99,
           shuffle=True, 
-          save_min_loss=False,
+          save_min_loss=True,
           id2word=id2word)
 
 
