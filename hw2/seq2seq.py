@@ -68,6 +68,7 @@ def load_test_data(fpath_data, fpath_test_ids):
 
 
 train_X, train_Ys, train_video_ids, word2id = load_train_data(fpath_train_data, fpath_train_label)
+id2word = dict(zip(word2id.values(), word2id))
 
 # params
 feature_dim = train_X[0].shape[1]
@@ -99,18 +100,19 @@ class Seq2seq(object):
         tf.reset_default_graph()
         self.inputs = tf.placeholder(tf.float32, [None, self._encode_steps, self._input_dim]) # (batch_size, video_steps, features)
         self.caption = tf.placeholder(tf.int32, [None, self._decode_steps]) # (batch_size, caption_steps)
-        self.batch_size = tf.placeholder(tf.int32)
+        self.batch_size = tf.placeholder(tf.int32) # number of videos
+        self.ground_truth_prob = tf.placeholder(tf.float32) # feed truth/predict word. 0.~1. if train, 0. if test
         # variables
         self.encode_image_W = tf.Variable(tf.truncated_normal([self._input_dim, self._hidden_dim], stddev=0.1), name='encode_image_W')
         self.encode_image_B = tf.Variable(tf.zeros([self._hidden_dim]), name='encode_image_B')
         self.word_emb = tf.Variable(tf.truncated_normal([self._vocab_size, self._hidden_dim], stddev=0.1), name='word_emb')
-        self.lstm1 = tf.nn.rnn_cell.BasicLSTMCell(self._hidden_dim, state_is_tuple=True)
-        self.lstm2 = tf.nn.rnn_cell.BasicLSTMCell(self._hidden_dim, state_is_tuple=True)
+        self.lstm1 = tf.nn.rnn_cell.BasicLSTMCell(self._hidden_dim, state_is_tuple=True) # encode
+        self.lstm2 = tf.nn.rnn_cell.BasicLSTMCell(self._hidden_dim, state_is_tuple=True) # decode
         self.decode_word_W = tf.Variable(tf.truncated_normal([self._hidden_dim, self._vocab_size], stddev=0.1), name='decode_word_W')
         self.decode_word_B = tf.Variable(tf.zeros([self._vocab_size]), name='decode_word_B')
         self.optimizer = tf.train.AdamOptimizer(learning_rate=0.001, name='Adam')
         # models
-        self.predict = self._build_predict()
+        self.pred = self._build_predict()
         self.loss = self._build_loss()
         self.optimize = self._build_optimize()
         self.accuracy = self._build_accuracy()
@@ -149,11 +151,20 @@ class Seq2seq(object):
         output_captions = []
         for step in range(0, self._decode_steps+1):
             with tf.variable_scope(tf.get_variable_scope()):
+                # random select from ground truth or predict by self.ground_truth_prob
+                previous_word_gt = caption[:, step] # ground truth
+                previous_word_pred = tf.cast(tf.argmax(output2, axis=1), tf.int32) # predict
+                indice = tf.multinomial(tf.log([[self.ground_truth_prob, 1-self.ground_truth_prob]]), 1)
+                indice = tf.squeeze(indice, [0])
+                previous_word = tf.gather(tf.stack([previous_word_gt, previous_word_pred]), indice)
+                previous_word = tf.squeeze(previous_word, [0])
+                # word embedding
                 with tf.device("/cpu:0"):
-                    current_word_embed = tf.nn.embedding_lookup(self.word_emb, caption[:, step])
+                    previous_word_embed = tf.nn.embedding_lookup(self.word_emb, previous_word)
+                # feed
                 tf.get_variable_scope().reuse_variables()
                 output1, (state1_c, state1_h) = self.lstm1(padding, (state1_c, state1_h), scope='lstm1')
-                output2, (state2_c, state2_h) = self.lstm2(tf.concat([current_word_embed, output1], 1), (state2_c, state2_h), scope='lstm2')
+                output2, (state2_c, state2_h) = self.lstm2(tf.concat([previous_word_embed, output1], 1), (state2_c, state2_h), scope='lstm2')
             output_captions.append(output2)
         output = tf.stack(output_captions[:-1], axis=1) # stack with step, ignore last padding step
         # dense 
@@ -166,7 +177,7 @@ class Seq2seq(object):
     def _build_loss(self):
         print('build loss')
         caption = tf.one_hot(self.caption, depth=self._vocab_size, axis=2)
-        cross_entropy = caption * tf.log(self.predict)
+        cross_entropy = caption * tf.log(self.pred)
         cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
         mask = tf.cast(tf.not_equal(self.caption, 0), tf.float32)
         mask /= tf.reduce_mean(tf.reduce_mean(mask))
@@ -183,14 +194,14 @@ class Seq2seq(object):
     
     def _build_accuracy(self):
         print('build accuracy')
-        correct = tf.equal(self.caption, tf.cast(tf.argmax(self.predict, 2), tf.int32))
+        correct = tf.equal(self.caption, tf.cast(tf.argmax(self.pred, 2), tf.int32))
         correct = tf.cast(correct, tf.float32)
         mask = tf.cast(tf.not_equal(self.caption, 0), tf.float32)
         mask /= tf.reduce_mean(tf.reduce_mean(mask))
         correct *= mask
         return tf.reduce_mean(tf.reduce_mean(correct))
     
-    def fit(self, train, valid=None, num_epochs=10, batch_size=32, eval_every=1, shuffle=False, save_min_loss=False):
+    def fit(self, train, valid=None, ground_truth_prob=1., ground_truth_prob_decay=0.95 ,num_epochs=10, batch_size=32, eval_every=1, shuffle=False, save_min_loss=False, id2word=None):
         train_X = np.array(train[0], dtype='float32')
         train_Y = np.array(train[1])
         min_loss = 0.
@@ -207,9 +218,17 @@ class Seq2seq(object):
                 batch_y = train_Y[step*batch_size : step*batch_size+batch_size]
                 batch_y = np.array([y[np.random.randint(len(y), size=1)[0]] for y in batch_y], dtype='int32')
                 # run
-                self.sess.run(self.optimize, feed_dict={self.inputs: batch_x, self.caption: batch_y, self.batch_size: len(batch_x)})
+                self.sess.run(self.optimize, feed_dict={self.inputs: batch_x, 
+                                                        self.caption: batch_y, 
+                                                        self.batch_size: len(batch_x), 
+                                                        self.ground_truth_prob: ground_truth_prob})
                 loss, acc = self.evaluate(batch_x, batch_y, batch_size=batch_size)
-                print('epoch:{:>2d}/{:<2d}  batch:{:>4d}/{:<4d}  '.format(epoch+1, num_epochs, step*batch_size, num_steps*batch_size), end='')
+                print('epoch:{:>2d}/{:<2d}  batch:{:>4d}/{:<4d}  gt_prob:{:<.3f}  '.format(epoch+1, 
+                                                                                      num_epochs, 
+                                                                                      step*batch_size, 
+                                                                                      num_steps*batch_size, 
+                                                                                      ground_truth_prob), 
+                                                                                      end='')
                 print('loss:{:<3.5f}  acc:{:>3.1f}%  '.format(loss, 100*acc), end='')
                 # evaluation
                 if step % eval_every == 0 and valid is not None:
@@ -223,7 +242,17 @@ class Seq2seq(object):
                         min_loss = val_loss
                         self.save('./models/best.ckpt', verbose=False)
                         print('save min loss model  '.format(min_loss), end='')
+                    # visaul
+                    if id2word is not None:
+                        sample_idx = np.random.randint(len(valid_x))
+                        visual_x = self.predict(valid_x[sample_idx:sample_idx+1])
+                        visual_y = valid_y[sample_idx:sample_idx+1]
+                        print()
+                        print('    visual_model:{}'.format(self.visual(visual_x, id2word)[0]))
+                        print('    visual_truth:{}  '.format(self.visual(visual_y, id2word)[0]), end='')
                 print()
+            # update prob
+            ground_truth_prob *= ground_truth_prob_decay
     
     def evaluate(self, x, y, batch_size=32):
         losses, accs = [], []
@@ -231,7 +260,10 @@ class Seq2seq(object):
         while offset < len(x):
             batch_x = x[offset : offset+batch_size]
             batch_y = y[offset : offset+batch_size]
-            loss, acc = self.sess.run([self.loss, self.accuracy], feed_dict={self.inputs: batch_x, self.caption: batch_y, self.batch_size: len(batch_x)})
+            loss, acc = self.sess.run([self.loss, self.accuracy], feed_dict={self.inputs: batch_x, 
+                                                                             self.caption: batch_y, 
+                                                                             self.batch_size: len(batch_x), 
+                                                                             self.ground_truth_prob: 0.})
             losses += [loss] * len(batch_x)
             accs += [acc] * len(batch_x)
             offset += batch_size
@@ -242,10 +274,23 @@ class Seq2seq(object):
         offset = 0
         while offset < len(x):
             batch_x = x[offset : offset+batch_size]
-            pred = self.sess.run(self.prediction, feed_dict={self.inputs: batch_x, self.dropout: 0.})
+            batch_y = np.zeros([len(batch_x), self._decode_steps], dtype='int32')
+            pred = self.sess.run(self.pred, feed_dict={self.inputs: batch_x, 
+                                                          self.caption: batch_y, 
+                                                          self.batch_size: len(batch_x), 
+                                                          self.ground_truth_prob: 0.})
             preds.append(np.argmax(pred, axis=2))
             offset += batch_size
         return np.vstack(preds)
+    
+    def visual(self, ys, id2word):
+        results = []
+        for pred in ys:
+            pred_words = np.vectorize(id2word.get)(pred)
+            statr_idx = np.where(pred_words=='<bos>')[0][0] if '<bos>' in pred_words else 0
+            end_idx = np.where(pred_words=='<eos>')[0][0] if '<eos>' in pred_words else len(pred_words)
+            results.append(' '.join(pred_words[statr_idx:end_idx+1]))
+        return results
     
     def save(self, checkpoint_file_path, verbose=True):
         if not os.path.exists(os.path.dirname(checkpoint_file_path)):
@@ -273,7 +318,15 @@ class Seq2seq(object):
 
 model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len)
 model.summary()
-model.fit(train=[train_X[:-100], train_Ys[:-100]], valid=[train_X[-100:], train_Ys[-100:]], num_epochs=1000, batch_size=32, shuffle=True, save_min_loss=False)
 
+model.fit(train=[train_X[:-100], train_Ys[:-100]], 
+          valid=[train_X[-100:], train_Ys[-100:]], 
+          num_epochs=1000, 
+          batch_size=32,
+          ground_truth_prob=1., 
+          ground_truth_prob_decay=0.95,
+          shuffle=True, 
+          save_min_loss=False,
+          id2word=id2word)
 
 
