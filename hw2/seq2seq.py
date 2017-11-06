@@ -331,6 +331,7 @@ if run_train:
               shuffle=True, 
               save_min_loss=False,
               id2word=id2word)
+    model.save('./tmp/finish')
 
 # output test
 test_X, test_video_ids = load_test_data(fpath_test_data, fpath_test_ids)
