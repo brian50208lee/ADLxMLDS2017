@@ -252,8 +252,8 @@ class Seq2seq(object):
                         visual_x = self.predict(valid_x[sample_idx:sample_idx+1])
                         visual_y = valid_y[sample_idx:sample_idx+1]
                         print()
-                        print('    visual_model:{}'.format(self.visual(visual_x, id2word)[0]))
-                        print('    visual_truth:{}  '.format(self.visual(visual_y, id2word)[0]), end='')
+                        print('    visual_model: {}'.format(self.visual(visual_x, id2word)[0]))
+                        print('    visual_truth: {}  '.format(self.visual(visual_y, id2word)[0]), end='')
                 print()
             # update prob
             ground_truth_prob = max(ground_truth_prob*ground_truth_prob_decay, 0.5)
