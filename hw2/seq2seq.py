@@ -180,11 +180,11 @@ class Seq2seq(object):
         print('build loss')
         caption = tf.pad(self.caption, [[0,0],[0,1]]) # padding one more step
         caption = caption[:,1:]
+        mask = tf.cast(tf.not_equal(caption, 0), tf.float32)
+        mask /= tf.reduce_mean(tf.reduce_mean(mask))
         caption = tf.one_hot(caption, depth=self._vocab_size, axis=2)
         cross_entropy = caption * tf.log(self.pred)
         cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
-        mask = tf.cast(tf.not_equal(caption, 0), tf.float32)
-        mask /= tf.reduce_mean(tf.reduce_mean(mask))
         cross_entropy *= mask
         cross_entropy = tf.reduce_mean(cross_entropy, axis=1)
         return tf.reduce_mean(cross_entropy)
@@ -333,7 +333,7 @@ if run_train:
               num_epochs=1000, 
               batch_size=128,
               ground_truth_prob=1., 
-              ground_truth_prob_decay=0.99,
+              ground_truth_prob_decay=0.999,
               shuffle=True,
               eval_every=1,
               save_min_loss=False,
