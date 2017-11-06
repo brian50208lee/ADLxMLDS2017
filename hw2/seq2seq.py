@@ -15,7 +15,7 @@ fpath_test_data = fpath_data_dir + 'testing_data/feat/'
 fpath_test_ids = fpath_data_dir + 'testing_id.txt'
 
 # train
-run_train = False
+run_train = True
 
 def load_train_data(fpath_data, fpath_label, word2id=None):
     """Load Training Data"""
@@ -328,11 +328,12 @@ if run_train:
     model.fit(train=[train_X[:-100], train_Ys[:-100]], 
               valid=[train_X[-100:], train_Ys[-100:]], 
               num_epochs=300, 
-              batch_size=64,
+              batch_size=128,
               ground_truth_prob=1., 
               ground_truth_prob_decay=0.99,
-              shuffle=True, 
-              save_min_loss=False,
+              shuffle=True,
+              eval_every=10,
+              save_min_loss=True,
               id2word=id2word)
     model.save('./tmp/finish')
 
