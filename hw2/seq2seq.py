@@ -178,7 +178,9 @@ class Seq2seq(object):
     
     def _build_loss(self):
         print('build loss')
-        caption = tf.one_hot(self.caption, depth=self._vocab_size, axis=2)
+        caption = tf.pad(self.caption, [[0,0],[0,1]]) # padding one more step
+        caption = caption[:,1:]
+        caption = tf.one_hot(caption, depth=self._vocab_size, axis=2)
         cross_entropy = caption * tf.log(self.pred)
         cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
         mask = tf.cast(tf.not_equal(self.caption, 0), tf.float32)
@@ -203,7 +205,7 @@ class Seq2seq(object):
         correct *= mask
         return tf.reduce_mean(tf.reduce_mean(correct))
     
-    def fit(self, train, valid=None, ground_truth_prob=1., ground_truth_prob_decay=0.95 ,num_epochs=10, batch_size=32, eval_every=1, shuffle=False, save_min_loss=False, id2word=None):
+    def fit(self, train, valid=None, ground_truth_prob=1., ground_truth_prob_decay=0.99 ,num_epochs=10, batch_size=32, eval_every=1, shuffle=False, save_min_loss=False, id2word=None):
         train_X = np.array(train[0], dtype='float32')
         train_Y = np.array(train[1])
         min_loss = 0.
@@ -291,7 +293,8 @@ class Seq2seq(object):
             pred_words = np.vectorize(id2word.get)(pred)
             statr_idx = np.where(pred_words=='<bos>')[0][0] if '<bos>' in pred_words else 0
             end_idx = np.where(pred_words=='<eos>')[0][0] if '<eos>' in pred_words else len(pred_words)
-            results.append(' '.join(pred_words[statr_idx:end_idx+1]))
+            sentence = ' '.join(pred_words[statr_idx:end_idx+1])
+            results.append(sentence)
         return results
     
     def save(self, checkpoint_file_path, verbose=True):
@@ -318,14 +321,14 @@ class Seq2seq(object):
         print('='*50)
         print('Total Parameters: {:,}'.format(total_parms))
 
-model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len, load_model_path='./tmp/finish')
+model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len, load_model_path=None)
 model.summary()
 
 if run_train:
     model.fit(train=[train_X[:-100], train_Ys[:-100]], 
               valid=[train_X[-100:], train_Ys[-100:]], 
-              num_epochs=1000, 
-              batch_size=32,
+              num_epochs=300, 
+              batch_size=64,
               ground_truth_prob=1., 
               ground_truth_prob_decay=0.99,
               shuffle=True, 
