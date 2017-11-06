@@ -14,6 +14,8 @@ fpath_train_label = fpath_data_dir + 'training_label.json'
 fpath_test_data = fpath_data_dir + 'testing_data/feat/'
 fpath_test_ids = fpath_data_dir + 'testing_id.txt'
 
+# train
+run_train = False
 
 def load_train_data(fpath_data, fpath_label, word2id=None):
     """Load Training Data"""
@@ -316,17 +318,26 @@ class Seq2seq(object):
         print('='*50)
         print('Total Parameters: {:,}'.format(total_parms))
 
-model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len)
+model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len, load_model_path='./tmp/finish')
 model.summary()
 
-model.fit(train=[train_X[:-100], train_Ys[:-100]], 
-          valid=[train_X[-100:], train_Ys[-100:]], 
-          num_epochs=1000, 
-          batch_size=32,
-          ground_truth_prob=1., 
-          ground_truth_prob_decay=0.99,
-          shuffle=True, 
-          save_min_loss=True,
-          id2word=id2word)
+if run_train:
+    model.fit(train=[train_X[:-100], train_Ys[:-100]], 
+              valid=[train_X[-100:], train_Ys[-100:]], 
+              num_epochs=1000, 
+              batch_size=32,
+              ground_truth_prob=1., 
+              ground_truth_prob_decay=0.99,
+              shuffle=True, 
+              save_min_loss=False,
+              id2word=id2word)
 
+# output test
+test_X, test_video_ids = load_test_data(fpath_test_data, fpath_test_ids)
+preds = model.predict(test_X)
+preds = model.visual(preds, id2word)
+with open(fpath_test_output, 'w') as o:
+    for sent, video_id in zip(preds, test_video_ids):
+        sent = sent.replace('<bos>','').replace('<eos>','').strip()
+        _ = o.write('{},{}\n'.format(video_id, sent))
 
