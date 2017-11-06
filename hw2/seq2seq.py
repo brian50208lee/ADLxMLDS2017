@@ -183,7 +183,7 @@ class Seq2seq(object):
         caption = tf.one_hot(caption, depth=self._vocab_size, axis=2)
         cross_entropy = caption * tf.log(self.pred)
         cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
-        mask = tf.cast(tf.not_equal(self.caption, 0), tf.float32)
+        mask = tf.cast(tf.not_equal(caption, 0), tf.float32)
         mask /= tf.reduce_mean(tf.reduce_mean(mask))
         cross_entropy *= mask
         cross_entropy = tf.reduce_mean(cross_entropy, axis=1)
@@ -198,9 +198,11 @@ class Seq2seq(object):
     
     def _build_accuracy(self):
         print('build accuracy')
-        correct = tf.equal(self.caption, tf.cast(tf.argmax(self.pred, 2), tf.int32))
+        caption = tf.pad(self.caption, [[0,0],[0,1]]) # padding one more step
+        caption = caption[:,1:]
+        correct = tf.equal(caption, tf.cast(tf.argmax(self.pred, 2), tf.int32))
         correct = tf.cast(correct, tf.float32)
-        mask = tf.cast(tf.not_equal(self.caption, 0), tf.float32)
+        mask = tf.cast(tf.not_equal(caption, 0), tf.float32)
         mask /= tf.reduce_mean(tf.reduce_mean(mask))
         correct *= mask
         return tf.reduce_mean(tf.reduce_mean(correct))
