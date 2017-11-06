@@ -256,7 +256,7 @@ class Seq2seq(object):
                         print('    visual_truth:{}  '.format(self.visual(visual_y, id2word)[0]), end='')
                 print()
             # update prob
-            ground_truth_prob *= ground_truth_prob_decay
+            ground_truth_prob = max(ground_truth_prob*ground_truth_prob_decay, 0.5)
     
     def evaluate(self, x, y, batch_size=32):
         losses, accs = [], []
@@ -294,6 +294,7 @@ class Seq2seq(object):
             statr_idx = np.where(pred_words=='<bos>')[0][0] if '<bos>' in pred_words else 0
             end_idx = np.where(pred_words=='<eos>')[0][0] if '<eos>' in pred_words else len(pred_words)
             sentence = ' '.join(pred_words[statr_idx:end_idx+1])
+            sentence = sentence.replace('<bos>','').replace('<eos>','').strip()
             results.append(sentence)
         return results
     
@@ -327,13 +328,13 @@ model.summary()
 if run_train:
     model.fit(train=[train_X[:-100], train_Ys[:-100]], 
               valid=[train_X[-100:], train_Ys[-100:]], 
-              num_epochs=300, 
+              num_epochs=1000, 
               batch_size=128,
               ground_truth_prob=1., 
               ground_truth_prob_decay=0.99,
               shuffle=True,
-              eval_every=10,
-              save_min_loss=True,
+              eval_every=1,
+              save_min_loss=False,
               id2word=id2word)
     model.save('./tmp/finish')
 
@@ -343,6 +344,5 @@ preds = model.predict(test_X)
 preds = model.visual(preds, id2word)
 with open(fpath_test_output, 'w') as o:
     for sent, video_id in zip(preds, test_video_ids):
-        sent = sent.replace('<bos>','').replace('<eos>','').strip()
         _ = o.write('{},{}\n'.format(video_id, sent))
 
