@@ -324,22 +324,22 @@ class Seq2seq(object):
         print('='*50)
         print('Total Parameters: {:,}'.format(total_parms))
 
-model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len, load_model_path=None)
+model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len, load_model_path='./tmp/finish')
 model.summary()
 
 if run_train:
-    model.fit(train=[train_X[:-100], train_Ys[:-100]], 
-              valid=[train_X[-100:], train_Ys[-100:]], 
-              num_epochs=1000, 
+    model.fit(train=[train_X[:], train_Ys[:]], 
+              valid=[train_X[-50:], train_Ys[-50:]], 
+              num_epochs=500, 
               batch_size=128,
               ground_truth_prob=1., 
-              ground_truth_prob_decay=0.999,
+              ground_truth_prob_decay=0.95,
               shuffle=True,
               eval_every=1,
-              save_min_loss=False,
+              save_min_loss=True,
               id2word=id2word)
     model.save('./tmp/finish')
-
+ 
 # output test
 test_X, test_video_ids = load_test_data(fpath_test_data, fpath_test_ids)
 preds = model.predict(test_X)
