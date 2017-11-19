@@ -114,8 +114,8 @@ class Seq2seq(object):
         self.decode_word_B = tf.Variable(tf.zeros([self._vocab_size]), name='decode_word_B')
         self.optimizer = tf.train.AdamOptimizer(learning_rate=0.001, name='Adam')
         # models
-        self.pred = self._build_predict()
-        self.loss = self._build_loss()
+        self.pred, att_alphas = self._build_predict()
+        self.loss = self._build_loss(att_alphas)
         self.optimize = self._build_optimize()
         self.accuracy = self._build_accuracy()
         # vars
@@ -162,10 +162,11 @@ class Seq2seq(object):
             alphas = tf.nn.softmax(alphas, 1)
             contex = tf.multiply(encode_hs, alphas)
             contex = tf.reduce_sum(contex, axis=1)
-            return contex
+            return contex, alphas
         # lstm decode
         caption = tf.pad(self.caption, [[0,0],[0,1]]) # padding one more step
         output_captions = []
+        att_alphas = []
         for step in range(0, self._decode_steps+1):
             with tf.variable_scope(tf.get_variable_scope()):
                 # random select from ground truth or predict by self.ground_truth_prob
@@ -182,7 +183,8 @@ class Seq2seq(object):
                 tf.get_variable_scope().reuse_variables()
                 output1, (state1_c, state1_h) = self.lstm1(tf.concat([previous_word_embed, padding], 1), (state1_c, state1_h), scope='lstm1')
                 # attention
-                context = attention_context(encode_hs, output1)
+                context, alphas = attention_context(encode_hs, output1)
+                att_alphas.append(alphas)
                 output2, (state2_c, state2_h) = self.lstm2(tf.concat([context, output1], 1), (state2_c, state2_h), scope='lstm2')
             output_captions.append(output2)
         output = tf.stack(output_captions[:-1], axis=1) # stack with step, ignore last padding step
@@ -191,9 +193,11 @@ class Seq2seq(object):
         output = tf.nn.xw_plus_b(output, self.decode_word_W, self.decode_word_B)
         output = tf.nn.softmax(output)  
         output = tf.reshape(output, [-1, self._decode_steps, self._vocab_size]) 
-        return output
+        # alphas
+        att_alphas = tf.stack(att_alphas, axis=0) # t, b, v, 1
+        return output, att_alphas
     
-    def _build_loss(self):
+    def _build_loss(self, att_alphas):
         print('build loss')
         caption = tf.pad(self.caption, [[0,0],[0,1]]) # padding one more step
         caption = caption[:,1:]
@@ -204,7 +208,13 @@ class Seq2seq(object):
         cross_entropy = -tf.reduce_mean(cross_entropy, axis=2)
         cross_entropy *= mask
         cross_entropy = tf.reduce_mean(cross_entropy, axis=1)
-        return tf.reduce_mean(cross_entropy)
+        loss = tf.reduce_mean(cross_entropy)
+        # attention reg.
+        reg = 1. - tf.reduce_sum(att_alphas, axis=0)
+        reg = tf.pow(reg, 2)
+        reg = tf.reduce_mean(tf.reduce_mean(tf.reduce_mean(reg)))
+        loss += reg
+        return loss
     
     def _build_optimize(self):
         print('build optimize')
@@ -263,7 +273,7 @@ class Seq2seq(object):
                     # save_min_loss
                     if save_min_loss and (min_loss == 0. or val_loss < min_loss):
                         min_loss = val_loss
-                        self.save('./models/att_best.ckpt', verbose=False)
+                        self.save('./models/att_reg_best', verbose=False)
                         print('save min loss model  '.format(min_loss), end='')
                     # visaul
                     if id2word is not None:
@@ -341,21 +351,24 @@ class Seq2seq(object):
         print('='*50)
         print('Total Parameters: {:,}'.format(total_parms))
 
-model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len, load_model_path=None)
+model = Seq2seq(feature_dim, vocab_size, 256, max_frame_len, max_sent_len, load_model_path=None)
 model.summary()
 
 if run_train:
-    model.fit(train=[train_X[:], train_Ys[:]], 
-              valid=[train_X[-50:], train_Ys[-50:]], 
-              num_epochs=500, 
-              batch_size=64,
-              ground_truth_prob=1., 
-              ground_truth_prob_decay=0.99,
-              shuffle=True,
-              eval_every=1,
-              save_min_loss=False,
-              id2word=id2word)
-    model.save('./tmp/att_finish')
+    try:
+        model.fit(train=[train_X[:], train_Ys[:]], 
+                  valid=[train_X[-50:], train_Ys[-50:]], 
+                  num_epochs=200, 
+                  batch_size=64,
+                  ground_truth_prob=1., 
+                  ground_truth_prob_decay=0.997,
+                  shuffle=True,
+                  eval_every=1,
+                  save_min_loss=False,
+                  id2word=id2word)
+    except KeyboardInterrupt: # ctrl + c
+        pass
+    model.save('./tmp/att_reg_finish')
  
 # output test
 test_X, test_video_ids = load_test_data(fpath_test_data, fpath_test_ids)
