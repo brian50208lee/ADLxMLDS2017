@@ -5,7 +5,7 @@ import tensorflow as tf
 
 # argv
 fpath_data_dir = sys.argv[1] + os.sep if len(sys.argv) > 1 else './data/MLDS_hw2_data/'
-fpath_test_output = sys.argv[2] if len(sys.argv) > 2 else 'test.csv'
+fpath_test_output = sys.argv[2] if len(sys.argv) > 2 else 'test_atten.csv'
 fpath_peer_output = sys.argv[3] if len(sys.argv) > 3 else 'peer.csv'
 
 # file path
