@@ -351,15 +351,15 @@ class Seq2seq(object):
         print('='*50)
         print('Total Parameters: {:,}'.format(total_parms))
 
-model = Seq2seq(feature_dim, vocab_size, 256, max_frame_len, max_sent_len, load_model_path=None)
+model = Seq2seq(feature_dim, vocab_size, 512, max_frame_len, max_sent_len, load_model_path=None)
 model.summary()
 
 if run_train:
     try:
         model.fit(train=[train_X[:], train_Ys[:]], 
                   valid=[train_X[-50:], train_Ys[-50:]], 
-                  num_epochs=200, 
-                  batch_size=64,
+                  num_epochs=100, 
+                  batch_size=128,
                   ground_truth_prob=1., 
                   ground_truth_prob_decay=0.997,
                   shuffle=True,
