@@ -5,7 +5,7 @@ import tensorflow as tf
 
 # argv
 fpath_data_dir = sys.argv[1] + os.sep if len(sys.argv) > 1 else './data/MLDS_hw2_data/'
-fpath_test_output = sys.argv[2] if len(sys.argv) > 2 else 'test_atten.csv'
+fpath_test_output = sys.argv[2] if len(sys.argv) > 2 else 'test.csv'
 fpath_peer_output = sys.argv[3] if len(sys.argv) > 3 else 'peer.csv'
 
 # file path
@@ -13,6 +13,8 @@ fpath_train_data = fpath_data_dir + 'training_data/feat/'
 fpath_train_label = fpath_data_dir + 'training_label.json'
 fpath_test_data = fpath_data_dir + 'testing_data/feat/'
 fpath_test_ids = fpath_data_dir + 'testing_id.txt'
+fpath_peer_data = fpath_data_dir + 'peer_review/feat/'
+fpath_peer_ids = fpath_data_dir + 'peer_review_id.txt'
 
 # train
 run_train = True
@@ -142,27 +144,12 @@ class Seq2seq(object):
         state2_c = tf.zeros([self.batch_size, self.lstm2.state_size[0]])
         state2_h = tf.zeros([self.batch_size, self.lstm2.state_size[1]])
         padding = tf.zeros([self.batch_size, self._hidden_dim])
-        encode_hs = []
         for step in range(0, self._encode_steps):
             with tf.variable_scope(tf.get_variable_scope()):
                 if step > 0:
                     tf.get_variable_scope().reuse_variables()
-                output1, (state1_c, state1_h) = self.lstm1(tf.concat([padding, image_emb[:,step,:]], 1), (state1_c, state1_h), scope='lstm1')
+                output1, (state1_c, state1_h) = self.lstm1(image_emb[:,step,:], (state1_c, state1_h), scope='lstm1')
                 output2, (state2_c, state2_h) = self.lstm2(tf.concat([padding, output1], 1), (state2_c, state2_h), scope='lstm2')
-                encode_hs.append(output1)
-        # attension
-        encode_hs = tf.stack(encode_hs, axis=0) # t x b x h
-        encode_hs = tf.transpose(encode_hs, [1,0,2]) # b x t x h 
-        def attention_context(encode_hs, decode_h):
-            # encode_hs -> b x t x h
-            # alpha
-            alphas = tf.multiply(encode_hs, tf.expand_dims(decode_h, 1))
-            alphas = tf.reduce_sum(alphas, 2, keep_dims=True)
-            # weighted sum
-            alphas = tf.nn.softmax(alphas, 1)
-            contex = tf.multiply(encode_hs, alphas)
-            contex = tf.reduce_sum(contex, axis=1)
-            return contex
         # lstm decode
         caption = tf.pad(self.caption, [[0,0],[0,1]]) # padding one more step
         output_captions = []
@@ -180,10 +167,8 @@ class Seq2seq(object):
                     previous_word_embed = tf.nn.embedding_lookup(self.word_emb, previous_word)
                 # feed
                 tf.get_variable_scope().reuse_variables()
-                output1, (state1_c, state1_h) = self.lstm1(tf.concat([previous_word_embed, padding], 1), (state1_c, state1_h), scope='lstm1')
-                # attention
-                context = attention_context(encode_hs, output1)
-                output2, (state2_c, state2_h) = self.lstm2(tf.concat([context, output1], 1), (state2_c, state2_h), scope='lstm2')
+                output1, (state1_c, state1_h) = self.lstm1(padding, (state1_c, state1_h), scope='lstm1')
+                output2, (state2_c, state2_h) = self.lstm2(tf.concat([previous_word_embed, output1], 1), (state2_c, state2_h), scope='lstm2')
             output_captions.append(output2)
         output = tf.stack(output_captions[:-1], axis=1) # stack with step, ignore last padding step
         # dense 
@@ -263,7 +248,7 @@ class Seq2seq(object):
                     # save_min_loss
                     if save_min_loss and (min_loss == 0. or val_loss < min_loss):
                         min_loss = val_loss
-                        self.save('./models/atten_best', verbose=False)
+                        self.save('./models/best', verbose=False)
                         print('save min loss model  '.format(min_loss), end='')
                     # visaul
                     if id2word is not None:
@@ -341,25 +326,24 @@ class Seq2seq(object):
         print('='*50)
         print('Total Parameters: {:,}'.format(total_parms))
 
-model = Seq2seq(feature_dim, vocab_size, 512, max_frame_len, max_sent_len, load_model_path=None)
+model = Seq2seq(feature_dim, vocab_size, 500, max_frame_len, max_sent_len, load_model_path='./tmp/finish')
 model.summary()
 
 if run_train:
     try:
         model.fit(train=[train_X[:], train_Ys[:]], 
                   valid=[train_X[-50:], train_Ys[-50:]], 
-                  num_epochs=100, 
+                  num_epochs=500, 
                   batch_size=128,
                   ground_truth_prob=1., 
-                  ground_truth_prob_decay=0.997,
+                  ground_truth_prob_decay=0.95,
                   shuffle=True,
                   eval_every=1,
-                  save_min_loss=False,
+                  save_min_loss=True,
                   id2word=id2word)
     except KeyboardInterrupt: # ctrl + c
         pass
-    model.save('./tmp/atten_finish')
-
+    model.save('./tmp/finish')
  
 # output test
 test_X, test_video_ids = load_test_data(fpath_test_data, fpath_test_ids)
