@@ -1,5 +1,6 @@
-from agent_dir.agent import Agent
 import numpy as np
+
+from agent_dir.agent import Agent
 from agent_dir.RL import PolicyGradient
 
 def prepro(I):
@@ -36,9 +37,9 @@ class Agent_PG(Agent):
                      )
 
         # load
-        if args.test_pg:
+        if args.test_pg or args.load_best:
             print('loading trained model')
-            self.model.load('models/best_pg')
+            self.model.load('models/pong/best')
 
 
     def init_game_setting(self):
@@ -52,8 +53,10 @@ class Agent_PG(Agent):
 
 
     def train(self):
-        try:
-            for epoch in range(1,10000):
+        best_mean = 0.
+        reward_hist = []
+        for episode in range(1,10000):
+            try:
                 pre_observation = None
                 observation = self.env.reset()
                 observation = prepro(observation)
@@ -78,32 +81,39 @@ class Agent_PG(Agent):
                     if done:
                         # show info
                         total_reward = sum(self.model.ep_rs)
-                        print('episode:', epoch, '  reward:', int(total_reward))
+                        print('episode:', episode, '  reward:', int(total_reward))
+                        
+                        # history mean, save best
+                        reward_hist.append(total_reward)
+                        if len(reward_hist) > 30:
+                            mean = np.array(reward_hist[max(len(reward_hist)-30,0):]).astype('float32').mean()
+                            if best_mean != 0. and mean > best_mean:
+                                self.model.save('models/pong_train/best')
+                                print('save best mean reward:', mean)
+                            best_mean = max(best_mean, mean)
 
                         # learn
                         self.model.learn()
                         break
-
-        except KeyboardInterrupt:
-            cmd = input('\nsave/load/keep/render/exit ?\n')
-            if cmd == 'save' or cmd == 's':
-                path = input('save path: ')
-                self.model.save(path)
-                self.train()
-            if cmd == 'load' or cmd == 'l':
-                path = input('load path: ')
-                self.model.load(path)
-                self.train()
-            elif cmd == 'keep' or cmd == 'k':
-                self.train()
-            elif cmd == 'render' or cmd == 'r':
-                self.env.do_render = not self.env.do_render
-                self.train()
-            elif cmd == 'exit' or cmd == 'e':
-                pass
-            return
-
-        self.model.save('models/finish_pong_pg')
+            except KeyboardInterrupt:
+                cmd = input('\nsave/load/keep/render/exit ?\n')
+                if cmd == 'save' or cmd == 's':
+                    path = input('save path: ')
+                    self.model.save(path)
+                    pass
+                if cmd == 'load' or cmd == 'l':
+                    path = input('load path: ')
+                    self.model.load(path)
+                    pass
+                elif cmd == 'keep' or cmd == 'k':
+                    pass
+                elif cmd == 'render' or cmd == 'r':
+                    self.env.do_render = not self.env.do_render
+                    pass
+                elif cmd == 'exit' or cmd == 'e':
+                    return
+                
+        self.model.save('models/pong_finish/finish')
                 
 
             

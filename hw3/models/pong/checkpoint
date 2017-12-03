@@ -1,2 +1,2 @@
-model_checkpoint_path: "best_pong_pg"
-all_model_checkpoint_paths: "best_pong_pg"
+model_checkpoint_path: "best"
+all_model_checkpoint_paths: "best"
