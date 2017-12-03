@@ -1,0 +1,2 @@
+model_checkpoint_path: "finish_pong_pg"
+all_model_checkpoint_paths: "finish_pong_pg"
