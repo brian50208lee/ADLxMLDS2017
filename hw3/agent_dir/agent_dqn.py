@@ -25,11 +25,11 @@ class Agent_DQN(Agent):
         self.model = DeepQNetwork(
                         n_actions=self.n_actions, 
                         n_features=self.n_features,
-                        learning_rate=0.0005, 
+                        learning_rate=0.001, 
                         reward_decay=0.99,
                         memory_size=10000,
                         epsilon_max=0.9,
-                        epsilon_increment=0.000001,
+                        epsilon_increment=0.00001,
                         replace_target_iter=1000
                      )
 
