@@ -10,11 +10,10 @@ class DeepQNetwork(object):
         learning_rate=0.001,
         reward_decay=0.99,
         epsilon_max=0.9,
-        replace_target_iter=100,
+        epsilon_increment=None,
+        replace_target_iter=1000,
         memory_size=1000,
         batch_size=32,
-        epsilon_increment=None,
-        output_graph=False,
     ):  
         # params
         self.n_actions = n_actions
@@ -32,18 +31,18 @@ class DeepQNetwork(object):
         # initialize memory [s, a, r, s_]
         self.memory_size = memory_size
         self.memory_counter = 0
-        self.memory_s = []
-        self.memory_a = []
-        self.memory_r = []
-        self.memory_s_ = []
+        self.memory_s = np.zeros([self.memory_size] + list(self.n_features))
+        self.memory_a = np.zeros((self.memory_size,))
+        self.memory_r = np.zeros((self.memory_size,))
+        self.memory_s_ = np.zeros([self.memory_size] + list(self.n_features))
 
         # total learning step
         self.learn_step_counter = 0
 
         # consist of [target_net, evaluate_net]
-        self._build_net()
-        t_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='target_net')
+        self._build_model()
         e_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='eval_net')
+        t_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='target_net')
         with tf.variable_scope('soft_replacement'):
             self.target_replace_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
 
@@ -55,71 +54,85 @@ class DeepQNetwork(object):
         self.sess = tf.Session()
         self.sess.run(tf.global_variables_initializer())
 
-    def _build_net(self):
+    def _net(self, inputs, name):
+        with tf.variable_scope(name):
+            net = inputs
+            print(net.name, net.shape)
+            net = tf.layers.conv2d(
+                inputs=tf.expand_dims(net, -1), 
+                filters=16, 
+                kernel_size=(3, 3), 
+                strides=(2, 2), 
+                padding='valid', 
+                activation=tf.nn.relu,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(), 
+                name=name+'_conv_1'
+            )
+            print(net.name, net.shape)
+            net = tf.layers.conv2d(
+                inputs=net, 
+                filters=32, 
+                kernel_size=(3, 3), 
+                strides=(2, 2), 
+                padding='valid',
+                activation=tf.nn.relu,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(), 
+                name=name+'_conv_2'
+            )
+            print(net.name, net.shape)
+            shape = net.get_shape().as_list()
+            net = tf.reshape(net, shape=[-1, shape[1]*shape[2]*shape[3]], name=name+'_flatten')
+            print(net.name, net.shape)
+            net = tf.layers.dense(
+                inputs=net, 
+                units=128,
+                activation=tf.nn.relu,
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                name=name+'_fc1'
+            )
+            print(net.name, net.shape)
+            net = tf.layers.dense(
+                inputs=net, 
+                units=self.n_actions, 
+                kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                name=name+'_fc2'
+            )
+            print(net.name, net.shape)
+            return net
+
+    def _build_model(self):
         # ------------------ all inputs ------------------------
         self.s = tf.placeholder(tf.float32, [None] + self.n_features, name='s')  # input State
         self.s_ = tf.placeholder(tf.float32, [None] + self.n_features, name='s_')  # input Next State
         self.r = tf.placeholder(tf.float32, [None, ], name='r')  # input Reward
         self.a = tf.placeholder(tf.int32, [None, ], name='a')  # input Action
 
-        # ------------------ build evaluate_net ------------------
-        with tf.variable_scope('eval_net'):
-            q1 = tf.layers.conv2d(
-                inputs=tf.expand_dims(self.s, -1), 
-                filters=32, 
-                kernel_size=(4, 4), 
-                strides=(2, 2), 
-                padding='valid', 
-                activation=tf.nn.relu,
-                kernel_initializer=tf.contrib.layers.xavier_initializer(), 
-                name='q1_conv_1'
-            )
-            shape = q1.get_shape().as_list()
-            q1 = tf.reshape(q1, shape=[-1, shape[1]*shape[2]*shape[3]], name='flatten')
-            self.q_eval = tf.layers.dense(
-                inputs=q1, 
-                units=self.n_actions, 
-                kernel_initializer=tf.contrib.layers.xavier_initializer(),
-                name='q'
-            )
+        # ------------------ build net ------------------
+        self.q_eval = self._net(self.s, 'eval_net')
+        self.q_next = self._net(self.s_, 'target_net')
 
-        # ------------------ build target_net ------------------
-        with tf.variable_scope('target_net'):
-            t1 =  tf.layers.conv2d(
-                inputs=tf.expand_dims(self.s_, -1), 
-                filters=32, 
-                kernel_size=(4, 4), 
-                strides=(2, 2), 
-                padding='valid', 
-                activation=tf.nn.relu,
-                kernel_initializer=tf.contrib.layers.xavier_initializer(), 
-                name='t1_conv_1'
-            )
-            shape = t1.get_shape().as_list()
-            t1 = tf.reshape(t1, shape=[-1, shape[1]*shape[2]*shape[3]], name='flatten')
-            self.q_next = tf.layers.dense(
-                inputs=t1, 
-                units=self.n_actions, 
-                kernel_initializer=tf.contrib.layers.xavier_initializer(),
-                name='t2'
-            )
 
-        with tf.variable_scope('q_target'):
-            q_target = self.r + self.reward_decay * tf.reduce_max(self.q_next, axis=1, name='Qmax_s_')    # shape=(None, )
-            self.q_target = tf.stop_gradient(q_target)
         with tf.variable_scope('q_eval'):
             a_indices = tf.stack([tf.range(tf.shape(self.a)[0], dtype=tf.int32), self.a], axis=1)
             self.q_eval_wrt_a = tf.gather_nd(params=self.q_eval, indices=a_indices)    # shape=(None, )
+        
+        with tf.variable_scope('q_target'):
+            q_target = self.r + self.reward_decay * tf.reduce_max(self.q_next, axis=1, name='Qmax_s_')    # shape=(None, )
+            self.q_target = tf.stop_gradient(q_target)
+
+        # ------------------ build loss ------------------
         with tf.variable_scope('loss'):
             self.loss = tf.reduce_sum(tf.squared_difference(self.q_target, self.q_eval_wrt_a, name='TD_error'))
         with tf.variable_scope('train'):
-            self._train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
+            self.train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
 
     def store_transition(self, s, a, r, s_):
-        self.memory_s.append(s)
-        self.memory_a.append(a)
-        self.memory_r.append(r)
-        self.memory_s_.append(s_)
+        idx = self.memory_counter % self.memory_size
+        self.memory_s[idx] = np.array(s)
+        self.memory_a[idx] = a
+        self.memory_r[idx] = r
+        self.memory_s_[idx] = np.array(s)
+        self.memory_counter += 1
 
         # replace old
         if len(self.memory_s) > self.memory_size:
@@ -143,18 +156,17 @@ class DeepQNetwork(object):
         # check to replace target parameters
         if self.learn_step_counter % self.replace_target_iter == 0:
             self.sess.run(self.target_replace_op)
-            print('\ntarget_params_replaced\n')
+            print('target_params_replaced')
 
         # sample batch memory from all memory
-        sample_index = np.random.choice(len(self.memory_s), size=self.batch_size)
-
+        sample_index = np.random.choice(min(self.memory_counter, self.memory_size), size=self.batch_size)
         self.sess.run(
-            [self._train_op, self.loss],
+            self.train_op,
             feed_dict={
-                self.s: np.array(self.memory_s[sample_index]),
-                self.a: np.array(self.memory_a[sample_index]),
-                self.r: np.array(self.memory_r[sample_index]),
-                self.s_: np.array(self.memory_s_[sample_index]),
+                self.s: self.memory_s[sample_index],
+                self.a: self.memory_a[sample_index],
+                self.r: self.memory_r[sample_index],
+                self.s_: self.memory_s_[sample_index]
             })
 
         # increasing epsilon
