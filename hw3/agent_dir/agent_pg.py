@@ -39,17 +39,11 @@ class Agent_PG(Agent):
         # load
         if args.test_pg or args.load_best:
             print('loading trained model')
-            self.model.load('models/pong/best')
+            self.model.load('models/pong/112/best')
 
 
     def init_game_setting(self):
-        """
-
-        Testing function will call this function at the begining of new game
-        Put anything you want to initialize if necessary
-
-        """
-        pass
+        self.pre_observation = None
 
 
     def train(self):
@@ -119,17 +113,9 @@ class Agent_PG(Agent):
             
 
     def make_action(self, observation, test=True):
-        """
-        Return predicted action of your agent
-
-        Input:
-            observation: np.array
-                current RGB screen of game, shape: (210, 160, 3)
-
-        Return:
-            action: int
-                the predicted action from trained model
-        """
         observation = prepro(observation)
-        return self.model.choose_action(observation)
+        feature_observation = observation if self.pre_observation is None else observation - self.pre_observation
+        self.pre_observation = observation
+        action = self.model.choose_best_action(feature_observation) + 2
+        return action
 

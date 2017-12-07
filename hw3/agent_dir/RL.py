@@ -67,6 +67,11 @@ class PolicyGradient(object):
         action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())
         return action
 
+    def choose_best_action(self, observation):
+        prob_weights = self.sess.run(self.all_act_prob, feed_dict={self.tf_obs: observation[np.newaxis, :]})
+        action = np.argmax(prob_weights)
+        return action
+
     def store_transition(self, s, a, r):
         self.ep_obs.append(s)
         self.ep_as.append(a)
