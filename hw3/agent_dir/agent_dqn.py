@@ -29,7 +29,7 @@ class Agent_DQN(Agent):
                         reward_decay=0.99,
                         memory_size=10000,
                         epsilon_max=0.9,
-                        epsilon_increment=0.0001,
+                        epsilon_increment=0.000001,
                         replace_target_iter=1000
                      )
 
