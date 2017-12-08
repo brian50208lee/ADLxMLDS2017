@@ -6,18 +6,18 @@ class DeepQNetwork(object):
     def __init__(
         self,
         n_actions,
-        n_features,
-        learning_rate=0.001,
+        inputs_shape,
+        learning_rate=0.0001,
         reward_decay=0.99,
         epsilon_max=0.9,
         epsilon_increment=None,
         replace_target_iter=1000,
-        memory_size=1000,
+        memory_size=10000,
         batch_size=32,
     ):  
         # params
         self.n_actions = n_actions
-        self.n_features = n_features
+        self.inputs_shape = inputs_shape
         self.lr = learning_rate
         self.reward_decay = reward_decay
         self.replace_target_iter = replace_target_iter
@@ -31,10 +31,10 @@ class DeepQNetwork(object):
         # initialize memory [s, a, r, s_]
         self.memory_size = memory_size
         self.memory_counter = 0
-        self.memory_s = np.zeros([self.memory_size] + list(self.n_features))
+        self.memory_s = np.zeros((self.memory_size,) + tuple(self.inputs_shape))
         self.memory_a = np.zeros((self.memory_size,))
         self.memory_r = np.zeros((self.memory_size,))
-        self.memory_s_ = np.zeros([self.memory_size] + list(self.n_features))
+        self.memory_s_ = np.zeros((self.memory_size,) + tuple(self.inputs_shape))
 
         # total learning step
         self.learn_step_counter = 0
@@ -59,10 +59,10 @@ class DeepQNetwork(object):
             net = inputs
             print(net.name, net.shape)
             net = tf.layers.conv2d(
-                inputs=tf.expand_dims(net, -1), 
-                filters=16, 
-                kernel_size=(3, 3), 
-                strides=(2, 2), 
+                inputs=net, 
+                filters=32, 
+                kernel_size=(4, 4), 
+                strides=(4, 4), 
                 padding='valid', 
                 activation=tf.nn.relu,
                 kernel_initializer=tf.contrib.layers.xavier_initializer(), 
@@ -72,7 +72,7 @@ class DeepQNetwork(object):
             net = tf.layers.conv2d(
                 inputs=net, 
                 filters=32, 
-                kernel_size=(3, 3), 
+                kernel_size=(4, 4), 
                 strides=(2, 2), 
                 padding='valid',
                 activation=tf.nn.relu,
@@ -88,22 +88,22 @@ class DeepQNetwork(object):
                 units=128,
                 activation=tf.nn.relu,
                 kernel_initializer=tf.contrib.layers.xavier_initializer(),
-                name=name+'_fc1'
+                name=name+'_fc3'
             )
             print(net.name, net.shape)
             net = tf.layers.dense(
                 inputs=net, 
                 units=self.n_actions, 
                 kernel_initializer=tf.contrib.layers.xavier_initializer(),
-                name=name+'_fc2'
+                name=name+'_fc4'
             )
             print(net.name, net.shape)
             return net
 
     def _build_model(self):
         # ------------------ all inputs ------------------------
-        self.s = tf.placeholder(tf.float32, [None] + self.n_features, name='s')  # input State
-        self.s_ = tf.placeholder(tf.float32, [None] + self.n_features, name='s_')  # input Next State
+        self.s = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='s')  # input State
+        self.s_ = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='s_')  # input Next State
         self.r = tf.placeholder(tf.float32, [None, ], name='r')  # input Reward
         self.a = tf.placeholder(tf.int32, [None, ], name='a')  # input Action
 

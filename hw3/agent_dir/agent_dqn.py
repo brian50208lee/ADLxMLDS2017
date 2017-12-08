@@ -4,8 +4,7 @@ from agent_dir.DQN import DeepQNetwork
 
 def prepro(I):
     """ prepro 84x84x4 uint8 frame into 3034 (41x74) 1D float vector """
-    I = I[:,:,0] # chanel 0
-    I = I[-46:-5,5:-5] # crop
+    I = I[-46:-5,5:-5,:] # crop
     I[I != 0] = 1. # everything else set to 1
     return I.astype(np.float)
 
@@ -19,17 +18,17 @@ class Agent_DQN(Agent):
 
         # hyperparameters
         self.n_actions = 3
-        self.n_features = [41, 74]
+        self.inputs_shape = [41, 74, 4]
         
         # model
         self.model = DeepQNetwork(
                         n_actions=self.n_actions, 
-                        n_features=self.n_features,
-                        learning_rate=0.001, 
+                        inputs_shape=self.inputs_shape,
+                        learning_rate=0.0001, 
                         reward_decay=0.99,
-                        memory_size=10000,
                         epsilon_max=0.9,
                         epsilon_increment=0.00001,
+                        memory_size=10000,
                         replace_target_iter=1000
                      )
 
