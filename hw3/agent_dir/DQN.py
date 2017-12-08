@@ -8,10 +8,9 @@ class DeepQNetwork(object):
         n_actions,
         inputs_shape,
         learning_rate=0.0001,
-        reward_decay=0.99,
+        discount=0.99,
         epsilon_max=0.9,
         epsilon_increment=None,
-        replace_target_iter=1000,
         memory_size=10000,
         batch_size=32,
     ):  
@@ -19,8 +18,7 @@ class DeepQNetwork(object):
         self.n_actions = n_actions
         self.inputs_shape = inputs_shape
         self.lr = learning_rate
-        self.reward_decay = reward_decay
-        self.replace_target_iter = replace_target_iter
+        self.discount = discount
         self.batch_size = batch_size
 
         # epsilon
@@ -36,15 +34,12 @@ class DeepQNetwork(object):
         self.memory_r = np.zeros((self.memory_size,))
         self.memory_s_ = np.zeros((self.memory_size,) + tuple(self.inputs_shape))
 
-        # total learning step
-        self.learn_step_counter = 0
-
         # consist of [target_net, evaluate_net]
         self._build_model()
         e_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='eval_net')
         t_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='target_net')
         with tf.variable_scope('soft_replacement'):
-            self.target_replace_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
+            self.replace_target_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
 
         # vars
         self.vars = {var.name: var for var in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)}
@@ -113,16 +108,16 @@ class DeepQNetwork(object):
 
 
         with tf.variable_scope('q_eval'):
-            a_indices = tf.stack([tf.range(tf.shape(self.a)[0], dtype=tf.int32), self.a], axis=1)
-            self.q_eval_wrt_a = tf.gather_nd(params=self.q_eval, indices=a_indices)    # shape=(None, )
+            action_one_hot = tf.one_hot(self.a, self.n_actions)
+            self.q_eval_wrt_a = tf.reduce_sum(self.q_eval * action_one_hot, reduction_indices=1)    # shape=(None, )
         
         with tf.variable_scope('q_target'):
-            q_target = self.r + self.reward_decay * tf.reduce_max(self.q_next, axis=1, name='Qmax_s_')    # shape=(None, )
+            q_target = self.r + self.discount * tf.reduce_max(self.q_next, axis=1, name='Qmax_s_')    # shape=(None, )
             self.q_target = tf.stop_gradient(q_target)
 
         # ------------------ build loss ------------------
         with tf.variable_scope('loss'):
-            self.loss = tf.reduce_sum(tf.squared_difference(self.q_target, self.q_eval_wrt_a, name='TD_error'))
+            self.loss = tf.reduce_mean(self.q_target - self.q_eval_wrt_a, name='loss')
         with tf.variable_scope('train'):
             self.train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
 
@@ -153,12 +148,6 @@ class DeepQNetwork(object):
         return action
 
     def learn(self):
-        # check to replace target parameters
-        if self.learn_step_counter % self.replace_target_iter == 0:
-            self.sess.run(self.target_replace_op)
-            print('target_params_replaced')
-
-        # sample batch memory from all memory
         sample_index = np.random.choice(min(self.memory_counter, self.memory_size), size=self.batch_size)
         self.sess.run(
             self.train_op,
@@ -171,7 +160,10 @@ class DeepQNetwork(object):
 
         # increasing epsilon
         self.epsilon = min(self.epsilon+self.epsilon_increment, self.epsilon_max)
-        self.learn_step_counter += 1
+
+    def replace_target(self):
+        self.sess.run(self.replace_target_op)
+        print('target_params_replaced')
 
     def save(self, checkpoint_file_path):
         if not os.path.exists(os.path.dirname(checkpoint_file_path)):

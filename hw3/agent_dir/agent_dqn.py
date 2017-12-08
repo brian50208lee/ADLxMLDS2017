@@ -15,21 +15,27 @@ class Agent_DQN(Agent):
         # enviroment infomation
         print('Action Num:', env.action_space.n)
         print('Observe Shape:', env.observation_space.shape)
+        self.action_map = [1, 2, 3] # stop, left, right
 
-        # hyperparameters
-        self.n_actions = 3
+        # model parameters
+        self.n_actions = len(self.action_map)
         self.inputs_shape = [41, 74, 4]
+
+        # learning parameters
+        self.learn_freq = 4
+        self.learn_start = 5000
+        self.replace_target_freq = 10000
+        self.max_episode = 1000000
         
         # model
         self.model = DeepQNetwork(
                         n_actions=self.n_actions, 
                         inputs_shape=self.inputs_shape,
                         learning_rate=0.0001, 
-                        reward_decay=0.99,
+                        discount=0.99,
                         epsilon_max=0.9,
                         epsilon_increment=0.00001,
                         memory_size=10000,
-                        replace_target_iter=1000
                      )
 
         # load
@@ -44,29 +50,30 @@ class Agent_DQN(Agent):
     def train(self):
         best_mean = 0.
         reward_hist = []
-        for episode in range(1,1000000):
+        step = 0
+        for episode in range(self.max_episode):
             try:
                 observation = self.env.reset()
                 observation = prepro(observation)
                 episode_reward = 0.0
-                step = 0
                 while True:
-                    # diff_observation
-                    pre_observation = observation
-
                     # transition
-                    action = self.model.choose_action(pre_observation)
-                    observation, reward, done, info = self.env.step(action+1)
+                    action = self.model.choose_action(observation)
+                    pre_observation = observation
+                    observation, reward, done, _ = self.env.step(self.action_map[action])
                     observation = prepro(observation)
-                    episode_reward += reward
-
-                    # store
                     self.model.store_transition(pre_observation, action, reward, observation)
                     
-                    # learn
+                    # update step
+                    episode_reward += reward
                     step += 1
-                    if step % 4 == 0:
-                        self.model.learn()
+
+                    # learn and replace
+                    if step > self.learn_start:
+                        if step % self.learn_freq == 0:
+                            self.model.learn()
+                        if step % self.replace_target_freq == 0:
+                            self.model.replace_target()
 
                     # slow motion
                     #print('\n', feature_observation[:,list(range(0,21))])
@@ -74,7 +81,10 @@ class Agent_DQN(Agent):
 
                     if done:
                         # show info
-                        print('episode:', episode, '  reward:', episode_reward, '  memory_count:', self.model.memory_counter)
+                        print('episode:', episode, 
+                              '  reward:', episode_reward, 
+                              '  step:', step,
+                              '  epsilon:', self.model.epsilon)
                         # history mean, save best
                         reward_hist.append(episode_reward)
                         if len(reward_hist) > 100:
@@ -109,6 +119,6 @@ class Agent_DQN(Agent):
         observation = prepro(observation)
         feature_observation = observation if self.pre_observation is None else observation - self.pre_observation
         self.pre_observation = observation
-        action = self.model.choose_action(feature_observation) + 1
-        return action
+        action = self.model.choose_action(feature_observation)
+        return self.action_map(action)
 
