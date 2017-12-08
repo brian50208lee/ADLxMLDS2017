@@ -9,8 +9,6 @@ class DeepQNetwork(object):
         inputs_shape,
         learning_rate=0.0001,
         discount=0.99,
-        epsilon_max=0.9,
-        epsilon_increment=None,
         memory_size=10000,
         batch_size=32,
     ):  
@@ -20,11 +18,6 @@ class DeepQNetwork(object):
         self.lr = learning_rate
         self.discount = discount
         self.batch_size = batch_size
-
-        # epsilon
-        self.epsilon_max = epsilon_max
-        self.epsilon_increment = epsilon_increment
-        self.epsilon = 0.0 if epsilon_increment is not None else self.epsilon_max
 
         # initialize memory [s, a, r, s_]
         self.memory_size = memory_size
@@ -55,7 +48,7 @@ class DeepQNetwork(object):
             print(net.name, net.shape)
             net = tf.layers.conv2d(
                 inputs=net, 
-                filters=32, 
+                filters=32,
                 kernel_size=(4, 4), 
                 strides=(4, 4), 
                 padding='valid', 
@@ -126,7 +119,7 @@ class DeepQNetwork(object):
         self.memory_s[idx] = np.array(s)
         self.memory_a[idx] = a
         self.memory_r[idx] = r
-        self.memory_s_[idx] = np.array(s)
+        self.memory_s_[idx] = np.array(s_)
         self.memory_counter += 1
 
         # replace old
@@ -138,13 +131,8 @@ class DeepQNetwork(object):
 
     def choose_action(self, observation):
         observation = observation[np.newaxis, :]
-
-        if np.random.uniform() < self.epsilon:
-            actions_value = self.sess.run(self.q_eval, feed_dict={self.s: observation})
-            action = np.argmax(actions_value)
-        else:
-            action = np.random.randint(0, self.n_actions)
-
+        actions_value = self.sess.run(self.q_eval, feed_dict={self.s: observation})
+        action = np.argmax(actions_value)
         return action
 
     def learn(self):
@@ -157,9 +145,6 @@ class DeepQNetwork(object):
                 self.r: self.memory_r[sample_index],
                 self.s_: self.memory_s_[sample_index]
             })
-
-        # increasing epsilon
-        self.epsilon = min(self.epsilon+self.epsilon_increment, self.epsilon_max)
 
     def replace_target(self):
         self.sess.run(self.replace_target_op)

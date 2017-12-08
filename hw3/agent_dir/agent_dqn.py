@@ -25,7 +25,10 @@ class Agent_DQN(Agent):
         self.learn_freq = 4
         self.learn_start = 5000
         self.replace_target_freq = 10000
-        self.max_episode = 1000000
+        self.max_step = 10e6
+        self.explore_rate = 1.0
+        self.min_explore_rate = 0.05
+        self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.1)
         
         # model
         self.model = DeepQNetwork(
@@ -33,8 +36,6 @@ class Agent_DQN(Agent):
                         inputs_shape=self.inputs_shape,
                         learning_rate=0.0001, 
                         discount=0.99,
-                        epsilon_max=0.9,
-                        epsilon_increment=0.00001,
                         memory_size=10000,
                      )
 
@@ -48,25 +49,31 @@ class Agent_DQN(Agent):
 
 
     def train(self):
-        best_mean = 0.
+        best_mean_reward = 0.
         reward_hist = []
         step = 0
-        for episode in range(self.max_episode):
+        episode = 0
+        while step < self.max_step:
             try:
+                episode += 1
+                episode_reward = 0.0
                 observation = self.env.reset()
                 observation = prepro(observation)
-                episode_reward = 0.0
                 while True:
                     # transition
                     action = self.model.choose_action(observation)
+                    if np.random.uniform() < self.explore_rate:
+                        action = np.random.randint(0, self.n_actions)
                     pre_observation = observation
                     observation, reward, done, _ = self.env.step(self.action_map[action])
                     observation = prepro(observation)
                     self.model.store_transition(pre_observation, action, reward, observation)
                     
-                    # update step
-                    episode_reward += reward
+                    # update params
                     step += 1
+                    episode_reward += reward
+                    self.explore_rate -= self.decrease_explore_rate
+                    self.explore_rate = max(self.explore_rate, self.min_explore_rate)
 
                     # learn and replace
                     if step > self.learn_start:
@@ -84,15 +91,15 @@ class Agent_DQN(Agent):
                         print('episode:', episode, 
                               '  reward:', episode_reward, 
                               '  step:', step,
-                              '  epsilon:', self.model.epsilon)
+                              '  explore_rate:', self.explore_rate)
                         # history mean, save best
                         reward_hist.append(episode_reward)
                         if len(reward_hist) > 100:
-                            mean = np.array(reward_hist[max(len(reward_hist)-30,0):]).astype('float32').mean()
-                            if best_mean != 0. and mean > best_mean:
+                            mean_reward = np.array(reward_hist[max(len(reward_hist)-30,0):]).astype('float32').mean()
+                            if best_mean_reward != 0. and mean_reward > best_mean_reward:
                                 self.model.save('models/break/train/best')
-                                print('save best mean reward:', mean)
-                            best_mean = max(best_mean, mean)
+                                print('save best mean reward:', mean_reward)
+                            best_mean_reward = max(best_mean_reward, mean_reward)
                         break
             except KeyboardInterrupt:
                 cmd = input('\nsave/load/keep/render/exit ?\n')
