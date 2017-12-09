@@ -1,7 +1,8 @@
 import numpy as np
+import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.DQN import DeepQNetwork
+from agent_dir.DQN import *
 
 class Agent_DQN(Agent):
     def __init__(self, env, args):
@@ -14,20 +15,24 @@ class Agent_DQN(Agent):
         self.inputs_shape = [84, 84, 4]
 
         # learning parameters
+        self.learn_start = 1000
         self.learn_freq = 4
-        self.learn_start = 5000
-        self.max_step = 10e6
+        self.replace_target_freq = 1000
+        self.max_step = 1e7
         self.explore_rate = 1.0
         self.min_explore_rate = 0.1
         self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.1)
         
         # model
-        self.model = DeepQNetwork(
-                        n_actions=self.n_actions, 
+        self.model = DeepQNetwork_v2(
                         inputs_shape=self.inputs_shape,
-                        learning_rate=0.005, 
-                        discount=0.99,
+                        n_actions=self.n_actions,
+                        gamma=0.99,
+                        optimizer=tf.train.AdamOptimizer,
+                        learning_rate=0.0005,
+                        batch_size=32,
                         memory_size=10000,
+                        output_graph_path='models/break/tensorboard/'
                      )
 
         # load
@@ -37,7 +42,6 @@ class Agent_DQN(Agent):
 
     def init_game_setting(self):
         pass
-
 
     def train(self):
         best_mean_reward = 0.
@@ -68,22 +72,18 @@ class Agent_DQN(Agent):
                     if step > self.learn_start:
                         if step % self.learn_freq == 0:
                             self.model.learn()
-                        if step % 10000 == 0:
-                            self.model.update_target()
-
-                    # slow motion
-                    #print('\n', feature_observation[:,list(range(0,21))])
-                    #input()
+                            self.model.summary(step=step)
+                        if step % self.replace_target_freq == 0:
+                            self.model.replace_target_net()
 
                     if done:
                         # show info
-                        print('episode:', episode, 
-                              '  reward:', episode_reward, 
-                              '  step:', step,
-                              '  explore_rate:', self.explore_rate)
+                        info = 'episode: {}  reward: {}  step: {}  explore_rate: {}'.format(
+                                episode, episode_reward, step, self.explore_rate)
+                        print(info)
                         # history mean, save best
                         reward_hist.append(episode_reward)
-                        if len(reward_hist) > 200:
+                        if len(reward_hist) > 100:
                             mean_reward = np.array(reward_hist[max(len(reward_hist)-100,0):]).astype('float32').mean()
                             if best_mean_reward != 0. and mean_reward > best_mean_reward:
                                 self.model.save('models/break/train/best')
