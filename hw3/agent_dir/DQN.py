@@ -33,7 +33,7 @@ class DeepQNetwork(object):
         e_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='eval_net')
         t_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='target_net')
         with tf.variable_scope('soft_replacement'):
-            self.update_target_op = [tf.assign(t, 0.99*t + 0.01*e) for t, e in zip(t_params, e_params)]
+            self.update_target_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
 
         # vars
         self.vars = {var.name: var for var in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)}
@@ -142,6 +142,7 @@ class DeepQNetwork(object):
 
     def update_target(self):
         self.sess.run(self.update_target_op)
+        print('update_target_op')
 
     def save(self, checkpoint_file_path):
         if not os.path.exists(os.path.dirname(checkpoint_file_path)):

@@ -19,7 +19,7 @@ class Agent_DQN(Agent):
         self.max_step = 10e6
         self.explore_rate = 1.0
         self.min_explore_rate = 0.1
-        self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.01)
+        self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.1)
         
         # model
         self.model = DeepQNetwork(
@@ -68,6 +68,7 @@ class Agent_DQN(Agent):
                     if step > self.learn_start:
                         if step % self.learn_freq == 0:
                             self.model.learn()
+                        if step % 10000 == 0:
                             self.model.update_target()
 
                     # slow motion
