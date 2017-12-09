@@ -110,7 +110,7 @@ class DeepQNetwork(object):
 
         # ------------------ build loss ------------------
         with tf.variable_scope('loss'):
-            self.loss = tf.reduce_mean(self.q_target - self.q_eval_wrt_a, name='loss')
+            self.loss = tf.reduce_mean(tf.square(self.q_target - self.q_eval_wrt_a), name='loss')
         with tf.variable_scope('train'):
             self.train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
 
