@@ -18,6 +18,7 @@ class Agent_DQN(Agent):
         self.learn_start = 10000
         self.learn_freq = 4
         self.replace_target_freq = 1000
+        self.summary_freq = 100
         self.max_step = 1e7
         self.explore_rate = 1.0
         self.min_explore_rate = 0.1
@@ -72,9 +73,10 @@ class Agent_DQN(Agent):
                     if step > self.learn_start:
                         if step % self.learn_freq == 0:
                             self.model.learn()
-                            self.model.summary(step=step)
                         if step % self.replace_target_freq == 0:
                             self.model.replace_target_net()
+                        if step % self.summary_freq == 0:
+                            self.model.summary(step=step)
 
                     if done:
                         # show info
