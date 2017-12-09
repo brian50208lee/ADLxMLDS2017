@@ -1,6 +1,7 @@
+import os
 import numpy as np
 import tensorflow as tf
-import os
+
 
 class DeepQNetwork(object):
     def __init__(
@@ -10,7 +11,7 @@ class DeepQNetwork(object):
         learning_rate=0.0001,
         discount=0.99,
         memory_size=10000,
-        batch_size=32,
+        batch_size=32
     ):  
         # params
         self.n_actions = n_actions
@@ -32,7 +33,7 @@ class DeepQNetwork(object):
         e_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='eval_net')
         t_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='target_net')
         with tf.variable_scope('soft_replacement'):
-            self.replace_target_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
+            self.update_target_op = [tf.assign(t, 0.99*t + 0.01*e) for t, e in zip(t_params, e_params)]
 
         # vars
         self.vars = {var.name: var for var in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)}
@@ -49,12 +50,12 @@ class DeepQNetwork(object):
             net = tf.layers.conv2d(
                 inputs=net, 
                 filters=32,
-                kernel_size=(4, 4), 
+                kernel_size=(8, 8), 
                 strides=(4, 4), 
                 padding='valid', 
                 activation=tf.nn.relu,
                 kernel_initializer=tf.contrib.layers.xavier_initializer(), 
-                name=name+'_conv_1'
+                name=name+'_conv1'
             )
             print(net.name, net.shape)
             net = tf.layers.conv2d(
@@ -65,7 +66,7 @@ class DeepQNetwork(object):
                 padding='valid',
                 activation=tf.nn.relu,
                 kernel_initializer=tf.contrib.layers.xavier_initializer(), 
-                name=name+'_conv_2'
+                name=name+'_conv2'
             )
             print(net.name, net.shape)
             shape = net.get_shape().as_list()
@@ -73,17 +74,10 @@ class DeepQNetwork(object):
             print(net.name, net.shape)
             net = tf.layers.dense(
                 inputs=net, 
-                units=128,
-                activation=tf.nn.relu,
+                units=self.n_actions,
+                activation=None,
                 kernel_initializer=tf.contrib.layers.xavier_initializer(),
                 name=name+'_fc3'
-            )
-            print(net.name, net.shape)
-            net = tf.layers.dense(
-                inputs=net, 
-                units=self.n_actions, 
-                kernel_initializer=tf.contrib.layers.xavier_initializer(),
-                name=name+'_fc4'
             )
             print(net.name, net.shape)
             return net
@@ -146,9 +140,8 @@ class DeepQNetwork(object):
                 self.s_: self.memory_s_[sample_index]
             })
 
-    def replace_target(self):
-        self.sess.run(self.replace_target_op)
-        print('target_params_replaced')
+    def update_target(self):
+        self.sess.run(self.update_target_op)
 
     def save(self, checkpoint_file_path):
         if not os.path.exists(os.path.dirname(checkpoint_file_path)):
