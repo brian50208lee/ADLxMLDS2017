@@ -15,7 +15,7 @@ class Agent_DQN(Agent):
         self.inputs_shape = [84, 84, 4]
 
         # learning parameters
-        self.learn_start = 1000
+        self.learn_start = 10000
         self.learn_freq = 4
         self.replace_target_freq = 1000
         self.max_step = 1e7
