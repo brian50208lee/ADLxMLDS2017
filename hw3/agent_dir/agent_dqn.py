@@ -76,7 +76,7 @@ class Agent_DQN(Agent):
                         if step % self.replace_target_freq == 0:
                             self.model.replace_target_net()
                         if step % self.summary_freq == 0:
-                            self.model.summary(step=step)
+                            self.model.summary(step=step, reward_hist=reward_hist)
 
                     if done:
                         # show info

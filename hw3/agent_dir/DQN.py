@@ -46,18 +46,13 @@ class BasicDeepQNetwork(object):
         self.sess.run(tf.global_variables_initializer())
 
         # log
-        if self.output_graph_path:
-            self.summary_op = tf.summary.merge_all()
-            self.summary_writer = tf.summary.FileWriter(output_graph_path, self.sess.graph)
+        self._build_summary()
 
     def _build_placeholder(self):
         self.s = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='s')  # input State
         self.s_ = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='s_')  # input Next State
         self.r = tf.placeholder(tf.float32, [None], name='r')  # input Reward
         self.a = tf.placeholder(tf.int32, [None], name='a')  # input Action
-        tf.summary.scalar('min_reward', tf.reduce_min(self.r))
-        tf.summary.scalar('max_reward', tf.reduce_max(self.r))
-        tf.summary.scalar('avg_reward', tf.reduce_mean(self.r))
      
     def _net(self, inputs, name):
         with tf.variable_scope(name):
@@ -71,10 +66,9 @@ class BasicDeepQNetwork(object):
         with tf.variable_scope('loss'):
             action_one_hot = tf.one_hot(self.a, self.n_actions)
             q_eval = tf.reduce_sum(self.online_net * action_one_hot, axis=1, name='q_eval')
-            q_target = self.r + self.gamma * tf.reduce_max(self.target_net, axis=1, name='q_target')
-            q_target = tf.stop_gradient(q_target)
-            self.loss = tf.reduce_mean(tf.square(q_target - q_eval), name='loss_mse')
-            tf.summary.scalar('max_q', tf.reduce_max(q_target))
+            self.q_target = self.r + self.gamma * tf.reduce_max(self.target_net, axis=1, name='q_target')
+            self.q_target = tf.stop_gradient(self.q_target)
+            self.loss = tf.reduce_mean(tf.square(self.q_target - q_eval), name='loss_mse')
 
         with tf.variable_scope('train_op'):
             self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)
@@ -84,6 +78,17 @@ class BasicDeepQNetwork(object):
         t_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='target_net')
         with tf.variable_scope('replacement'):
             self.replace_target_net_op = [tf.assign(t, o) for t, o in zip(t_params, o_params)]
+
+    def _build_summary(self):
+        if self.output_graph_path:
+            self.reward_hist = tf.placeholder(tf.float32, [None], name='reward_hist')
+            tf.summary.scalar('min_reward', tf.reduce_min(self.reward_hist))
+            tf.summary.scalar('max_reward', tf.reduce_max(self.reward_hist))
+            tf.summary.scalar('avg_reward', tf.reduce_mean(self.reward_hist))
+            tf.summary.scalar('max_q', tf.reduce_max(self.q_target))
+            tf.summary.scalar('loss_mse', self.loss)
+            self.summary_op = tf.summary.merge_all()
+            self.summary_writer = tf.summary.FileWriter(self.output_graph_path, self.sess.graph)
 
     def store_transition(self, s, a, r, s_):
         idx = self.memory_counter % self.memory_size
@@ -103,11 +108,12 @@ class BasicDeepQNetwork(object):
                             self.s_: self.memory_s_[sample_index]
                       })
 
-    def summary(self, step):
+    def summary(self, step, reward_hist):
         if self.output_graph_path:
             sample_index = np.random.choice(min(self.memory_counter, self.memory_size), size=self.batch_size)
             result = self.sess.run(self.summary_op,
                                    feed_dict={
+                                        self.reward_hist: np.array(reward_hist[-self.batch_size:]),
                                         self.s: self.memory_s[sample_index],
                                         self.a: self.memory_a[sample_index],
                                         self.r: self.memory_r[sample_index],
