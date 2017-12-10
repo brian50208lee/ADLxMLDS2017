@@ -115,5 +115,5 @@ class Agent_DQN(Agent):
 
     def make_action(self, observation, test=True):
         action = self.model.choose_action(observation)
-        return self.action_map(action)
+        return self.action_map[action]
 
