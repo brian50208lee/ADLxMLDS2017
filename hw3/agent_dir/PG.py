@@ -56,9 +56,14 @@ class BasicPolicyGradient(object):
 
     def _build_loss(self):
         with tf.name_scope('loss'):
+            '''
+            neg_log_prob = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.value, labels=self.a)
+            self.loss = tf.reduce_sum(neg_log_prob * self.r, name='loss')
+            '''
             action_one_hot = tf.one_hot(self.a, self.n_actions, name='action_one_hot')
             cross_entropy = -tf.reduce_sum(action_one_hot * tf.log(self.network), axis=1, name='cross_entropy')
             self.loss = tf.reduce_sum(cross_entropy * self.r, name='loss')
+            
 
         with tf.name_scope('train_op'):
             self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)

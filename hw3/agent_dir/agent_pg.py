@@ -7,10 +7,11 @@ from agent_dir.PG import PolicyGradient
 
 
 def prepro(o, image_size=[80,80]):
-    y = 0.2126 * o[:, :, 0] + 0.7152 * o[:, :, 1] + 0.0722 * o[:, :, 2]
+    y = 0.2126 * o[:,:,0] + 0.7152 * o[:,:,1] + 0.0722 * o[:,:,2]
     y = y.astype(np.uint8)
-    resized = scipy.misc.imresize(y, image_size) / 255
-    return np.expand_dims(resized.astype(np.float32), axis=2)
+    resized = scipy.misc.imresize(y, image_size)
+    return resized.astype(np.float32) / 255
+
 class Agent_PG(Agent):
     def __init__(self, env, args):
         super(Agent_PG,self).__init__(env)
@@ -20,10 +21,11 @@ class Agent_PG(Agent):
 
         # model parameters
         self.n_actions = len(self.action_map)
-        self.inputs_shape = [80, 80, 1]
+        self.inputs_shape = [80, 80, 2]
 
         # learning parameters
         self.max_episode = 10000
+
         # model
         self.model = PolicyGradient(
                         inputs_shape=self.inputs_shape, 
@@ -41,7 +43,7 @@ class Agent_PG(Agent):
 
 
     def init_game_setting(self):
-        pass
+        self.pre_observation = None
 
     def train(self):
         best_mean_reward = 0.
@@ -51,15 +53,21 @@ class Agent_PG(Agent):
             try:
                 episode += 1
                 episode_reward = 0.0
+                pre_observation = None
                 observation = self.env.reset()
                 observation = prepro(observation)
                 while True:
+                    # feature
+                    if pre_observation is None:
+                        pre_observation = observation
+                    feature_observation = np.stack([pre_observation, observation], axis=2)
                     # do action
-                    action = self.model.choose_action(observation)
+                    action = self.model.choose_action(feature_observation)
                     next_observation, reward, done, _ = self.env.step(self.action_map[action])
-                    self.model.store_transition(observation, action, reward)
+                    self.model.store_transition(feature_observation, action, reward)
 
                     # next step
+                    pre_observation = observation
                     observation = prepro(next_observation)
                     episode_reward += reward
 
