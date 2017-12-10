@@ -35,6 +35,7 @@ class BasicDeepQNetwork(object):
         self._build_placeholder()
         self._build_model()
         self._build_loss()
+        self._build_optimize()
         self._build_replacement()
 
         # saver
@@ -70,6 +71,7 @@ class BasicDeepQNetwork(object):
             self.q_target = tf.stop_gradient(self.q_target)
             self.loss = tf.reduce_mean(tf.square(self.q_target - q_eval), name='loss_mse')
 
+    def _build_optimize(self):
         with tf.variable_scope('train_op'):
             self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)
 
@@ -236,6 +238,66 @@ class DeepQNetwork_v2(BasicDeepQNetwork):
                 units=self.n_actions,
                 activation=None,
                 kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                name='fc5'
+            )
+            print(net.name, net.shape)
+            return net
+
+
+
+class DeepQNetwork_v3(BasicDeepQNetwork):
+    def _net(self, inputs, name):
+        with tf.variable_scope(name):
+            net = inputs
+            print(net.name, net.shape)
+            net = tf.layers.conv2d(
+                inputs=net, 
+                filters=32,
+                kernel_size=(8, 8), 
+                strides=(4, 4), 
+                padding='valid', 
+                activation=tf.nn.relu,
+                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                name='conv1'
+            )
+            print(net.name, net.shape)
+            net = tf.layers.conv2d(
+                inputs=net, 
+                filters=64, 
+                kernel_size=(4, 4), 
+                strides=(2, 2), 
+                padding='valid',
+                activation=tf.nn.relu,
+                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                name='conv2'
+            )
+            print(net.name, net.shape)
+            net = tf.layers.conv2d(
+                inputs=net, 
+                filters=64, 
+                kernel_size=(3, 3), 
+                strides=(1, 1), 
+                padding='valid',
+                activation=tf.nn.relu,
+                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                name='conv3'
+            )
+            print(net.name, net.shape)
+            net = tf.contrib.layers.flatten(net, scope='flatten')
+            print(net.name, net.shape)
+            net = tf.layers.dense(
+                inputs=net, 
+                units=512,
+                activation=tf.nn.relu,
+                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                name='fc4'
+            )
+            print(net.name, net.shape)
+            net = tf.layers.dense(
+                inputs=net, 
+                units=self.n_actions,
+                activation=None,
+                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
                 name='fc5'
             )
             print(net.name, net.shape)
