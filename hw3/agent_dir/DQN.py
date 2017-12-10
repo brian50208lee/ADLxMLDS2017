@@ -257,7 +257,7 @@ class DeepQNetwork_v3(BasicDeepQNetwork):
                 strides=(4, 4), 
                 padding='valid', 
                 activation=tf.nn.relu,
-                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                kernel_initializer=tf.truncated_normal_initializer(mean=0., stddev=0.01),
                 name='conv1'
             )
             print(net.name, net.shape)
@@ -268,7 +268,7 @@ class DeepQNetwork_v3(BasicDeepQNetwork):
                 strides=(2, 2), 
                 padding='valid',
                 activation=tf.nn.relu,
-                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
                 name='conv2'
             )
             print(net.name, net.shape)
@@ -279,7 +279,7 @@ class DeepQNetwork_v3(BasicDeepQNetwork):
                 strides=(1, 1), 
                 padding='valid',
                 activation=tf.nn.relu,
-                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
                 name='conv3'
             )
             print(net.name, net.shape)
@@ -289,7 +289,7 @@ class DeepQNetwork_v3(BasicDeepQNetwork):
                 inputs=net, 
                 units=512,
                 activation=tf.nn.relu,
-                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
                 name='fc4'
             )
             print(net.name, net.shape)
@@ -297,7 +297,7 @@ class DeepQNetwork_v3(BasicDeepQNetwork):
                 inputs=net, 
                 units=self.n_actions,
                 activation=None,
-                kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+                kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
                 name='fc5'
             )
             print(net.name, net.shape)

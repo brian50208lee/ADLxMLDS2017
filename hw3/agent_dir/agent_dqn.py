@@ -30,7 +30,7 @@ class Agent_DQN(Agent):
                         n_actions=self.n_actions,
                         gamma=0.99,
                         optimizer=tf.train.AdamOptimizer,
-                        learning_rate=0.0005,
+                        learning_rate=0.0001,
                         batch_size=32,
                         memory_size=10000,
                         output_graph_path='models/break/tensorboard/'
