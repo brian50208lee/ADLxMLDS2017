@@ -29,6 +29,7 @@ class BasicPolicyGradient(object):
         self._build_placeholder()
         self._build_model()
         self._build_loss()
+        self._build_optimize()
 
         # saver
         self.vars = {var.name: var for var in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)}
@@ -64,7 +65,7 @@ class BasicPolicyGradient(object):
             cross_entropy = -tf.reduce_sum(action_one_hot * tf.log(self.network), axis=1, name='cross_entropy')
             self.loss = tf.reduce_sum(cross_entropy * self.r, name='loss')
             
-
+    def _build_optimize(self):
         with tf.name_scope('train_op'):
             self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)
 
@@ -194,6 +195,54 @@ class PolicyGradient(BasicPolicyGradient):
             units=self.n_actions,
             activation=None,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
+            name='fc4'
+        )
+        print(net.name, net.shape)
+        net = tf.nn.softmax(net, name='softmax')
+        print(net.name, net.shape)
+        return net
+
+class PolicyGradient_v2(BasicPolicyGradient):
+    def _net(self, inputs):
+        net = inputs
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(
+            inputs=net, 
+            filters=16,
+            kernel_size=(8, 8), 
+            strides=(4, 4), 
+            padding='valid', 
+            activation=tf.nn.relu,
+            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3), 
+            name='conv1'
+        )
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(
+            inputs=net, 
+            filters=32, 
+            kernel_size=(4, 4), 
+            strides=(2, 2), 
+            padding='valid',
+            activation=tf.nn.relu,
+            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3), 
+            name='conv2'
+        )
+        print(net.name, net.shape)
+        net = tf.contrib.layers.flatten(net, scope='flatten')
+        print(net.name, net.shape)
+        net = tf.layers.dense(
+            inputs=net, 
+            units=128,
+            activation=tf.nn.relu,
+            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+            name='fc3'
+        )
+        print(net.name, net.shape)
+        net = tf.layers.dense(
+            inputs=net, 
+            units=self.n_actions,
+            activation=None,
+            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
             name='fc4'
         )
         print(net.name, net.shape)

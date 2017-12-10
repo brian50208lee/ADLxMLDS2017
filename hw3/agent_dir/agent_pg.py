@@ -3,31 +3,30 @@ import numpy as np
 import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.PG import PolicyGradient
+from agent_dir.PG import PolicyGradient_v2
 
 
 def prepro(o, image_size=[80,80]):
     y = 0.2126 * o[:,:,0] + 0.7152 * o[:,:,1] + 0.0722 * o[:,:,2]
-    y = y.astype(np.uint8)
-    resized = scipy.misc.imresize(y, image_size)
-    return resized.astype(np.float32) / 255
+    resized = scipy.misc.imresize(y.astype(np.uint8), image_size)
+    return np.expand_dims(resized.astype(np.float32), axis=2) / 255
 
 class Agent_PG(Agent):
     def __init__(self, env, args):
         super(Agent_PG,self).__init__(env)
 
         # enviroment infomation
-        self.action_map = [2, 3] # down, up
+        self.action_map = [1, 2, 3] # down, up
 
         # model parameters
         self.n_actions = len(self.action_map)
-        self.inputs_shape = [80, 80, 2]
+        self.inputs_shape = [80, 80, 1]
 
         # learning parameters
-        self.max_episode = 10000
+        self.max_episode = 5000
 
         # model
-        self.model = PolicyGradient(
+        self.model = PolicyGradient_v2(
                         inputs_shape=self.inputs_shape, 
                         n_actions=self.n_actions,
                         gamma=0.99,
@@ -60,7 +59,8 @@ class Agent_PG(Agent):
                     # feature
                     if pre_observation is None:
                         pre_observation = observation
-                    feature_observation = np.stack([pre_observation, observation], axis=2)
+                    feature_observation = observation - pre_observation
+
                     # do action
                     action = self.model.choose_action(feature_observation)
                     next_observation, reward, done, _ = self.env.step(self.action_map[action])
@@ -111,6 +111,10 @@ class Agent_PG(Agent):
                 
     def make_action(self, observation, test=True):
         observation = prepro(observation)
+        # feature
+        if self.pre_observation is None:
+                self.pre_observation = observation
+        feature_observation = observation - self.pre_observation
         action = self.model.choose_best_action(feature_observation)
         return self.action_map[action]
 
