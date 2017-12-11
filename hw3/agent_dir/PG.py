@@ -281,6 +281,7 @@ class PolicyGradient_v3(BasicPolicyGradient):
         net = tf.layers.dense(
             inputs=net, 
             units=128,
+            use_bias=False,
             activation=tf.nn.relu,
             kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
             name='fc3'
@@ -289,6 +290,7 @@ class PolicyGradient_v3(BasicPolicyGradient):
         net = tf.layers.dense(
             inputs=net, 
             units=self.n_actions,
+            use_bias=False,
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
             name='fc4'
