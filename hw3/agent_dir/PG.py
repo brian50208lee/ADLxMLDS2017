@@ -249,3 +249,60 @@ class PolicyGradient_v2(BasicPolicyGradient):
         net = tf.nn.softmax(net, name='softmax')
         print(net.name, net.shape)
         return net
+
+class PolicyGradient_v3(BasicPolicyGradient):
+    def _net(self, inputs):
+        net = inputs
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(
+            inputs=net, 
+            filters=16,
+            kernel_size=(8, 8), 
+            strides=(4, 4), 
+            padding='valid', 
+            activation=tf.nn.relu,
+            kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01), 
+            name='conv1'
+        )
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(
+            inputs=net, 
+            filters=32, 
+            kernel_size=(4, 4), 
+            strides=(2, 2), 
+            padding='valid',
+            activation=tf.nn.relu,
+            kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01), 
+            name='conv2'
+        )
+        print(net.name, net.shape)
+        net = tf.contrib.layers.flatten(net, scope='flatten')
+        print(net.name, net.shape)
+        net = tf.layers.dense(
+            inputs=net, 
+            units=128,
+            activation=tf.nn.relu,
+            kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
+            name='fc3'
+        )
+        print(net.name, net.shape)
+        net = tf.layers.dense(
+            inputs=net, 
+            units=self.n_actions,
+            activation=None,
+            kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
+            name='fc4'
+        )
+        print(net.name, net.shape)
+        net = tf.nn.softmax(net, name='softmax')
+        print(net.name, net.shape)
+        return net
+
+
+class PolicyGradient_v4(PolicyGradient_v3):
+    def _build_optimize(self):
+        with tf.variable_scope('train_op'):        
+            clip_value = 1.
+            trainable_variables = tf.trainable_variables()
+            grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
+            self.train_op = self.optimizer(self.learning_rate, decay=0.99).apply_gradients(zip(grads, trainable_variables))

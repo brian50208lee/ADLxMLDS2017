@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.PG import PolicyGradient_v2
+from agent_dir.PG import PolicyGradient_v4
 
 
 def prepro(o, image_size=[80,80]):
@@ -16,7 +16,7 @@ class Agent_PG(Agent):
         super(Agent_PG,self).__init__(env)
 
         # enviroment infomation
-        self.action_map = [1, 2, 3] # down, up
+        self.action_map = [2, 3] # down, up
 
         # model parameters
         self.n_actions = len(self.action_map)
@@ -26,11 +26,11 @@ class Agent_PG(Agent):
         self.max_episode = 5000
 
         # model
-        self.model = PolicyGradient_v2(
+        self.model = PolicyGradient_v4(
                         inputs_shape=self.inputs_shape, 
                         n_actions=self.n_actions,
                         gamma=0.99,
-                        optimizer=tf.train.AdamOptimizer,
+                        optimizer=tf.train.RMSPropOptimizerr,
                         learning_rate=0.0001,
                         output_graph_path='models/pong/tensorboard/'
                      )
