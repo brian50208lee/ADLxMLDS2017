@@ -10,7 +10,7 @@ class Agent_DQN(Agent):
     def __init__(self, env, args):
         super(Agent_DQN,self).__init__(env)
         # enviroment infomation
-        self.action_map = [2, 3] # stop, right, left
+        self.action_map = range(env.action_space.n)
 
         # model parameters
         self.n_actions = len(self.action_map)
@@ -24,7 +24,7 @@ class Agent_DQN(Agent):
         self.max_step = 5e6
         self.explore_rate = 1.0
         self.min_explore_rate = 0.05
-        self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.3)
+        self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.2)
         
         # model
         self.model = DeepQNetwork(

@@ -18,7 +18,7 @@ class Agent_PG(Agent):
         super(Agent_PG,self).__init__(env)
 
         # enviroment infomation
-        self.action_map = [2, 3] # down, up
+        self.action_map = range(env.action_space.n)
 
         # model parameters
         self.n_actions = len(self.action_map)
