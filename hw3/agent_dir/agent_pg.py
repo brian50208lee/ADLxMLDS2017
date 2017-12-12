@@ -94,7 +94,6 @@ class Agent_PG(Agent):
                         # learn
                         self.model.summary(step=episode, reward_hist=reward_hist)
                         if episode_reward > min(reward_hist[-5:]):
-                            print('learn')
                             self.model.learn()
                         else:
                             self.model.clear_transition()
