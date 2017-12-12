@@ -57,10 +57,6 @@ class BasicPolicyGradient(object):
 
     def _build_loss(self):
         with tf.name_scope('loss'):
-            '''
-            neg_log_prob = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.value, labels=self.a)
-            self.loss = tf.reduce_sum(neg_log_prob * self.r, name='loss')
-            '''
             action_one_hot = tf.one_hot(self.a, self.n_actions, name='action_one_hot')
             cross_entropy = -tf.reduce_sum(action_one_hot * tf.log(self.network), axis=1, name='cross_entropy')
             self.loss = tf.reduce_sum(cross_entropy * self.r, name='loss')
@@ -101,6 +97,11 @@ class BasicPolicyGradient(object):
         self.memory_a.append(a)
         self.memory_r.append(r)
 
+    def clear_transition(self):
+        self.memory_s = []
+        self.memory_a = []
+        self.memory_r = []
+
     def learn(self):
         # discounted and normalize reward
         discounted_norm_r = self.memory_r
@@ -114,9 +115,7 @@ class BasicPolicyGradient(object):
                             self.r: discounted_norm_r,
                       })
         # clear memory
-        self.memory_s = []
-        self.memory_a = []
-        self.memory_r = []
+        self.clear_transition()
 
     def summary(self, step, reward_hist):
         if self.output_graph_path:
@@ -165,7 +164,7 @@ class PolicyGradient(BasicPolicyGradient):
             strides=(4, 4), 
             padding='valid', 
             activation=tf.nn.relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer(), 
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv1'
         )
         print(net.name, net.shape)
@@ -176,7 +175,7 @@ class PolicyGradient(BasicPolicyGradient):
             strides=(2, 2), 
             padding='valid',
             activation=tf.nn.relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer(), 
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv2'
         )
         print(net.name, net.shape)
@@ -202,108 +201,8 @@ class PolicyGradient(BasicPolicyGradient):
         print(net.name, net.shape)
         return net
 
-class PolicyGradient_v2(BasicPolicyGradient):
-    def _net(self, inputs):
-        net = inputs
-        print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=16,
-            kernel_size=(8, 8), 
-            strides=(4, 4), 
-            padding='valid', 
-            activation=tf.nn.relu,
-            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3), 
-            name='conv1'
-        )
-        print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=32, 
-            kernel_size=(4, 4), 
-            strides=(2, 2), 
-            padding='valid',
-            activation=tf.nn.relu,
-            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3), 
-            name='conv2'
-        )
-        print(net.name, net.shape)
-        net = tf.contrib.layers.flatten(net, scope='flatten')
-        print(net.name, net.shape)
-        net = tf.layers.dense(
-            inputs=net, 
-            units=128,
-            activation=tf.nn.relu,
-            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
-            name='fc3'
-        )
-        print(net.name, net.shape)
-        net = tf.layers.dense(
-            inputs=net, 
-            units=self.n_actions,
-            activation=None,
-            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
-            name='fc4'
-        )
-        print(net.name, net.shape)
-        net = tf.nn.softmax(net, name='softmax')
-        print(net.name, net.shape)
-        return net
-
-class PolicyGradient_v3(BasicPolicyGradient):
-    def _net(self, inputs):
-        net = inputs
-        print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=16,
-            kernel_size=(8, 8), 
-            strides=(4, 4), 
-            padding='valid', 
-            activation=tf.nn.relu,
-            kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01), 
-            name='conv1'
-        )
-        print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=32, 
-            kernel_size=(4, 4), 
-            strides=(2, 2), 
-            padding='valid',
-            activation=tf.nn.relu,
-            kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01), 
-            name='conv2'
-        )
-        print(net.name, net.shape)
-        net = tf.contrib.layers.flatten(net, scope='flatten')
-        print(net.name, net.shape)
-        net = tf.layers.dense(
-            inputs=net, 
-            units=128,
-            use_bias=False,
-            activation=tf.nn.relu,
-            kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
-            name='fc3'
-        )
-        print(net.name, net.shape)
-        net = tf.layers.dense(
-            inputs=net, 
-            units=self.n_actions,
-            use_bias=False,
-            activation=None,
-            kernel_initializer=tf.truncated_normal_initializer(mean=0, stddev=0.01),
-            name='fc4'
-        )
-        print(net.name, net.shape)
-        net = tf.nn.softmax(net, name='softmax')
-        print(net.name, net.shape)
-        return net
-
-
-class PolicyGradient_v4(PolicyGradient_v3):
     def _build_optimize(self):
-        with tf.variable_scope('train_op'):        
+        with tf.name_scope('train_op'):
             clip_value = 1.
             trainable_variables = tf.trainable_variables()
             grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)

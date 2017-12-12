@@ -1,15 +1,17 @@
+import time
+
 import scipy
 import numpy as np
 import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.PG import PolicyGradient_v3
+from agent_dir.PG import PolicyGradient
 
 
 def prepro(o, image_size=[80,80]):
     y = 0.2126 * o[:,:,0] + 0.7152 * o[:,:,1] + 0.0722 * o[:,:,2]
     resized = scipy.misc.imresize(y.astype(np.uint8), image_size)
-    return np.expand_dims(resized.astype(np.float32), axis=2) / 255
+    return np.expand_dims(resized.astype(np.float32), axis=2)
 
 class Agent_PG(Agent):
     def __init__(self, env, args):
@@ -26,13 +28,13 @@ class Agent_PG(Agent):
         self.max_episode = 5000
 
         # model
-        self.model = PolicyGradient_v3(
+        self.model = PolicyGradient(
                         inputs_shape=self.inputs_shape, 
                         n_actions=self.n_actions,
-                        gamma=0.99,
+                        gamma=0.97,
                         optimizer=tf.train.AdamOptimizer,
-                        learning_rate=0.0001,
-                        output_graph_path='models/pong/tensorboard/'
+                        learning_rate=0.001,
+                        output_graph_path='models/pong/{}'.format(time.strftime("tb%y%m%d_%H%M%S", time.localtime()))
                      )
 
         # load
@@ -60,6 +62,7 @@ class Agent_PG(Agent):
                     if pre_observation is None:
                         pre_observation = observation
                     feature_observation = observation - pre_observation
+                    feature_observation = np.sign(feature_observation).astype(np.float32)
 
                     # do action
                     action = self.model.choose_action(feature_observation)
@@ -70,6 +73,9 @@ class Agent_PG(Agent):
                     pre_observation = observation
                     observation = prepro(next_observation)
                     episode_reward += reward
+
+                    #print(feature_observation[:,-14:-7,0])
+                    #input()
 
                     # done
                     if done:
@@ -87,7 +93,10 @@ class Agent_PG(Agent):
                             best_mean_reward = max(best_mean_reward, mean_reward)
                         # learn
                         self.model.summary(step=episode, reward_hist=reward_hist)
-                        self.model.learn()
+                        if episode_reward != -21:
+                            self.model.learn()
+                        else:
+                            self.model.clear_transition()
                         break
             except KeyboardInterrupt:
                 cmd = input('\nsave/load/keep/render/exit ?\n')
