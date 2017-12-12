@@ -1,6 +1,7 @@
+import os
+
 import numpy as np
 import tensorflow as tf
-import os
 
 class BasicPolicyGradient(object):
     def __init__(
