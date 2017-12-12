@@ -206,4 +206,4 @@ class PolicyGradient(BasicPolicyGradient):
             clip_value = 1.
             trainable_variables = tf.trainable_variables()
             grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
-            self.train_op = self.optimizer(self.learning_rate, decay=0.99).apply_gradients(zip(grads, trainable_variables))
+            self.train_op = self.optimizer(self.learning_rate).apply_gradients(zip(grads, trainable_variables))
