@@ -56,17 +56,20 @@ class BasicPolicyGradient(object):
 
     def _build_model(self):
         with tf.variable_scope('network'):
-            self.network = self._net(self.s)
+            self.network_without_softmax = self._net(self.s)
+            self.network = tf.nn.softmax(net_nosoftmax, name='softmax')
 
     def _build_loss(self):
         with tf.name_scope('loss'):
-            action_one_hot = tf.one_hot(self.a, self.n_actions, name='action_one_hot')
-            cross_entropy = -tf.reduce_sum(action_one_hot * tf.log(self.network), axis=1, name='cross_entropy')
+            cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.a, logits=self.network_without_softmax)
             self.loss = tf.reduce_sum(cross_entropy * self.r, name='loss')
             
     def _build_optimize(self):
         with tf.name_scope('train_op'):
-            self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)
+            clip_value = 1.
+            trainable_variables = tf.trainable_variables()
+            grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
+            self.train_op = self.optimizer(self.learning_rate).apply_gradients(zip(grads, trainable_variables))
 
     def _build_summary(self):
         if self.output_graph_path:
@@ -156,6 +159,8 @@ class BasicPolicyGradient(object):
         self.saver.restore(self.sess, checkpoint_file_path)
         print('Model restored from: {}'.format(checkpoint_file_path))
 
+
+
 class PolicyGradient(BasicPolicyGradient):
     def _net(self, inputs):
         net = inputs
@@ -195,21 +200,12 @@ class PolicyGradient(BasicPolicyGradient):
         net = tf.layers.dense(
             inputs=net, 
             units=self.n_actions,
-            activation=tf.nn.softmax,
+            activation=None,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
-        '''
-        self.net_nosoftmax = net
-        print(net.name, net.shape)
-        net = tf.nn.softmax(net, name='softmax')
-        '''
         print(net.name, net.shape)
         return net
 
-    def _build_optimize(self):
-        with tf.name_scope('train_op'):
-            clip_value = 1.
-            trainable_variables = tf.trainable_variables()
-            grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
-            self.train_op = self.optimizer(self.learning_rate).apply_gradients(zip(grads, trainable_variables))
+
+        

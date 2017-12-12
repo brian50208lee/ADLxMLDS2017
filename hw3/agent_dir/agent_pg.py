@@ -48,7 +48,7 @@ class Agent_PG(Agent):
 
     def train(self):
         best_mean_reward = 0.
-        reward_hist = []
+        reward_hist = [-21]
         episode = 0
         while episode < self.max_episode:
             try:
@@ -93,7 +93,8 @@ class Agent_PG(Agent):
                             best_mean_reward = max(best_mean_reward, mean_reward)
                         # learn
                         self.model.summary(step=episode, reward_hist=reward_hist)
-                        if episode_reward != -21:
+                        if episode_reward > min(reward_hist[-5:]):
+                            print('learn')
                             self.model.learn()
                         else:
                             self.model.clear_transition()
