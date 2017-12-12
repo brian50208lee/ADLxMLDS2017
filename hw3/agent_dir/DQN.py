@@ -152,7 +152,7 @@ class BasicDeepQNetwork(object):
 
 
 class DeepQNetwork(BasicDeepQNetwork):
-    def _net(self, inputs, name):
+    def _net(self, inputs):
         net = inputs
         print(net.name, net.shape)
         net = tf.layers.conv2d(
