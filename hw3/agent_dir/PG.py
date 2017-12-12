@@ -10,7 +10,7 @@ class BasicPolicyGradient(object):
         gamma=0.99,
         optimizer=tf.train.AdamOptimizer,
         learning_rate=0.0001,
-        output_graph_path=None
+        output_graph_path=None,
     ):
         # params
         self.inputs_shape = inputs_shape
@@ -36,7 +36,10 @@ class BasicPolicyGradient(object):
         self.saver = tf.train.Saver(self.vars)
 
         # session
-        self.sess = tf.Session()
+        config = tf.ConfigProto()
+        config.gpu_options.per_process_gpu_memory_fraction = 0.3
+        config.gpu_options.allow_growth = True
+        self.sess = tf.Session(config=config)
         self.sess.run(tf.global_variables_initializer())
 
         # log
@@ -196,6 +199,7 @@ class PolicyGradient(BasicPolicyGradient):
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
+        self.net_nosoftmax = net
         print(net.name, net.shape)
         net = tf.nn.softmax(net, name='softmax')
         print(net.name, net.shape)
