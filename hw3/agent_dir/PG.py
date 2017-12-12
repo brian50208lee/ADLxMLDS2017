@@ -67,10 +67,7 @@ class BasicPolicyGradient(object):
             
     def _build_optimize(self):
         with tf.name_scope('train_op'):
-            clip_value = 1.
-            trainable_variables = tf.trainable_variables()
-            grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
-            self.train_op = self.optimizer(self.learning_rate).apply_gradients(zip(grads, trainable_variables))
+            self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)
 
     def _build_summary(self):
         if self.output_graph_path:

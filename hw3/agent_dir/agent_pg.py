@@ -31,7 +31,7 @@ class Agent_PG(Agent):
         self.model = PolicyGradient(
                         inputs_shape=self.inputs_shape, 
                         n_actions=self.n_actions,
-                        gamma=0.97,
+                        gamma=0.99,
                         optimizer=tf.train.AdamOptimizer,
                         learning_rate=0.001,
                         output_graph_path='models/pong/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
