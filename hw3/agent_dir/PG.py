@@ -57,7 +57,7 @@ class BasicPolicyGradient(object):
     def _build_model(self):
         with tf.variable_scope('network'):
             self.network_without_softmax = self._net(self.s)
-            self.network = tf.nn.softmax(net_nosoftmax, name='softmax')
+            self.network = tf.nn.softmax(self.network_without_softmax, name='softmax')
 
     def _build_loss(self):
         with tf.name_scope('loss'):
