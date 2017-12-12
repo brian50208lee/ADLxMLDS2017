@@ -195,13 +195,15 @@ class PolicyGradient(BasicPolicyGradient):
         net = tf.layers.dense(
             inputs=net, 
             units=self.n_actions,
-            activation=None,
+            activation=tf.nn.softmax,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
+        '''
         self.net_nosoftmax = net
         print(net.name, net.shape)
         net = tf.nn.softmax(net, name='softmax')
+        '''
         print(net.name, net.shape)
         return net
 
