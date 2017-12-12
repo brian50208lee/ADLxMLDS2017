@@ -31,9 +31,9 @@ class Agent_PG(Agent):
         self.model = PolicyGradient(
                         inputs_shape=self.inputs_shape, 
                         n_actions=self.n_actions,
-                        gamma=0.97,
+                        gamma=0.98,
                         optimizer=tf.train.AdamOptimizer,
-                        learning_rate=0.001,
+                        learning_rate=0.0005,
                         output_graph_path='models/pong/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
                      )
 
@@ -47,7 +47,7 @@ class Agent_PG(Agent):
         self.pre_observation = None
 
     def train(self):
-        best_mean_reward = 0.
+        best_mean_reward = -21
         reward_hist = [-21]
         episode = 0
         while episode < self.max_episode:
@@ -87,7 +87,7 @@ class Agent_PG(Agent):
                         # save best
                         if len(reward_hist) > 30:
                             mean_reward = np.array(reward_hist[max(len(reward_hist)-30,0):]).astype('float32').mean()
-                            if best_mean_reward != 0. and mean_reward > best_mean_reward:
+                            if best_mean_reward != -21 and mean_reward > best_mean_reward:
                                 self.model.save('models/pong/train/best')
                                 print('save best mean reward:', mean_reward)
                             best_mean_reward = max(best_mean_reward, mean_reward)
