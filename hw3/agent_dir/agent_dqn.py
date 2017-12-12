@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.DQN import DeepQNetwork
+from agent_dir.DQN import DoubleDeepQNetwork
 
 class Agent_DQN(Agent):
     def __init__(self, env, args):
@@ -27,7 +27,7 @@ class Agent_DQN(Agent):
         self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.2)
         
         # model
-        self.model = DeepQNetwork(
+        self.model = DoubleDeepQNetwork(
                         inputs_shape=self.inputs_shape,
                         n_actions=self.n_actions,
                         gamma=0.99,

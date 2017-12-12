@@ -207,3 +207,17 @@ class DeepQNetwork(BasicDeepQNetwork):
         )
         print(net.name, net.shape)
         return net
+
+class DoubleDeepQNetwork(DeepQNetwork):
+    def _build_loss(self):
+        with tf.variable_scope('loss'):
+            # eval q
+            action_one_hot = tf.one_hot(self.a, self.n_actions)
+            q_eval = tf.reduce_sum(self.online_net * action_one_hot, axis=1, name='q_eval')
+            # target q
+            action_eval = tf.argmax(self.online_net, axis=1)
+            action_eval_one_hot = tf.one_hot(action_eval, self.n_actions)
+            self.q_target = self.r + self.gamma * tf.reduce_sum(self.target_net * action_eval_one_hot, axis=1, name='q_target')
+            self.q_target = tf.stop_gradient(self.q_target)
+            # loss
+            self.loss = tf.reduce_mean(tf.square(self.q_target - q_eval), name='loss_mse') 
