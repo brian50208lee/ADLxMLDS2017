@@ -34,7 +34,7 @@ class Agent_PG(Agent):
                         gamma=0.97,
                         optimizer=tf.train.AdamOptimizer,
                         learning_rate=0.001,
-                        output_graph_path='models/pong/{}'.format(time.strftime("tb%y%m%d_%H%M%S", time.localtime()))
+                        output_graph_path='models/pong/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
                      )
 
         # load

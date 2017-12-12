@@ -1,14 +1,16 @@
+import time
+
 import numpy as np
 import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.DQN import DeepQNetwork_v4
+from agent_dir.DQN import DeepQNetwork
 
 class Agent_DQN(Agent):
     def __init__(self, env, args):
         super(Agent_DQN,self).__init__(env)
         # enviroment infomation
-        self.action_map = [1, 2, 3] # stop, right, left
+        self.action_map = [2, 3] # stop, right, left
 
         # model parameters
         self.n_actions = len(self.action_map)
@@ -22,18 +24,18 @@ class Agent_DQN(Agent):
         self.max_step = 5e6
         self.explore_rate = 1.0
         self.min_explore_rate = 0.05
-        self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.2)
+        self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.3)
         
         # model
-        self.model = DeepQNetwork_v4(
+        self.model = DeepQNetwork(
                         inputs_shape=self.inputs_shape,
                         n_actions=self.n_actions,
                         gamma=0.99,
                         optimizer=tf.train.RMSPropOptimizer,
                         learning_rate=0.0001,
                         batch_size=32,
-                        memory_size=10000,
-                        output_graph_path='models/break/tensorboard/'
+                        memory_size=30000,
+                        output_graph_path='models/break/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
                      )
 
         # load
