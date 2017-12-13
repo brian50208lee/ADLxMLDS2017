@@ -201,7 +201,7 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=self.n_actions,
-            activation=tf.keras.layers.LeakyReLU,
+            activation=lambda x: max(x, x*0.1),
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc5'
         )
