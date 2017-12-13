@@ -201,7 +201,7 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=self.n_actions,
-            activation=None,
+            activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc5'
         )
