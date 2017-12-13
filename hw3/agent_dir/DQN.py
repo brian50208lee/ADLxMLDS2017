@@ -201,10 +201,11 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=self.n_actions,
-            activation=lambda x: max(x, x*0.1),
+            activation=None,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc5'
         )
+        net = tf.maximum(net, 0.1 * net)
         print(net.name, net.shape)
         return net
 
