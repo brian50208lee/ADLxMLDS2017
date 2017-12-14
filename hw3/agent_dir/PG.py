@@ -67,7 +67,7 @@ class BasicPolicyGradient(object):
             
     def _build_optimize(self):
         with tf.name_scope('train_op'):
-            self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)
+            self.train_op = self.optimizer(self.learning_rate, decay=0.99).minimize(self.loss)
 
     def _build_summary(self):
         if self.output_graph_path:
@@ -202,7 +202,7 @@ class PolicyGradient(BasicPolicyGradient):
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
-        net = tf.maximum(net, 0.1 * net)
+        net = tf.maximum(net, 0.01 * net)
         print(net.name, net.shape)
         return net
 
