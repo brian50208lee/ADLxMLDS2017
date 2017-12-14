@@ -193,7 +193,7 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=512,
-            activation=tf.nn.relu,
+            activation=tf.maximum(net, 0.01 * net), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
@@ -205,7 +205,6 @@ class DeepQNetwork(BasicDeepQNetwork):
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc5'
         )
-        net = tf.maximum(net, 0.1 * net)
         print(net.name, net.shape)
         return net
 
