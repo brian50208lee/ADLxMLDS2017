@@ -208,6 +208,8 @@ class DeepQNetwork(BasicDeepQNetwork):
         print(net.name, net.shape)
         return net
 
+
+
 class DoubleDeepQNetwork(DeepQNetwork):
     def _build_loss(self):
         with tf.variable_scope('loss'):
