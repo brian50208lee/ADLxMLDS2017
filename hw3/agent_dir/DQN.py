@@ -24,12 +24,13 @@ class BasicDeepQNetwork(object):
         self.memory_size = memory_size
         self.output_graph_path = output_graph_path
 
-        # initialize memory [s, a, r, s_]
+        # initialize memory [s, a, r, s_, d]
         self.memory_counter = 0
         self.memory_s = np.zeros((self.memory_size,) + tuple(self.inputs_shape))
         self.memory_a = np.zeros((self.memory_size,))
         self.memory_r = np.zeros((self.memory_size,))
         self.memory_s_ = np.zeros((self.memory_size,) + tuple(self.inputs_shape))
+        self.memory_d = np.zeros((self.memory_size,))
 
         # model
         self._build_placeholder()
@@ -57,6 +58,7 @@ class BasicDeepQNetwork(object):
         self.s_ = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='s_')  # input Next State
         self.r = tf.placeholder(tf.float32, [None], name='r')  # input Reward
         self.a = tf.placeholder(tf.int32, [None], name='a')  # input Action
+        self.d = tf.placeholder(tf.float32, [None], name='d')  # done
      
     def _net(self, inputs):
         raise NotImplementedError()
@@ -71,13 +73,16 @@ class BasicDeepQNetwork(object):
         with tf.variable_scope('loss'):
             action_one_hot = tf.one_hot(self.a, self.n_actions)
             q_eval = tf.reduce_sum(self.online_net * action_one_hot, axis=1, name='q_eval')
-            q_target = self.r + self.gamma * tf.reduce_max(self.target_net, axis=1, name='q_target')
+            q_target = self.r + (1. - self.d) * self.gamma * tf.reduce_max(self.target_net, axis=1, name='q_target')
             self.q_target = tf.stop_gradient(q_target)
             self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, q_eval), name='loss_mse')
 
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
-            self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)
+            clip_value = 1.
+            trainable_variables = tf.trainable_variables()
+            grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
+            self.train_op = self.optimizer(self.learning_rate).apply_gradients(zip(grads, trainable_variables))
 
     def _build_replacement(self):
         o_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='online_net')
@@ -96,12 +101,13 @@ class BasicDeepQNetwork(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.output_graph_path, self.sess.graph)
 
-    def store_transition(self, s, a, r, s_):
+    def store_transition(self, s, a, r, s_, d):
         idx = self.memory_counter % self.memory_size
         self.memory_s[idx] = np.array(s)
         self.memory_a[idx] = a
-        self.memory_r[idx] = r
+        self.memory_r[idx] = float(r)
         self.memory_s_[idx] = np.array(s_)
+        self.memory_d[idx] = float(d)
         self.memory_counter += 1
 
     def learn(self):
@@ -111,7 +117,8 @@ class BasicDeepQNetwork(object):
                             self.s: self.memory_s[sample_index],
                             self.a: self.memory_a[sample_index],
                             self.r: self.memory_r[sample_index],
-                            self.s_: self.memory_s_[sample_index]
+                            self.s_: self.memory_s_[sample_index],
+                            self.d: self.memory_d[sample_index]
                       })
 
     def summary(self, step, reward_hist):
@@ -123,7 +130,8 @@ class BasicDeepQNetwork(object):
                                         self.s: self.memory_s[sample_index],
                                         self.a: self.memory_a[sample_index],
                                         self.r: self.memory_r[sample_index],
-                                        self.s_: self.memory_s_[sample_index]
+                                        self.s_: self.memory_s_[sample_index],
+                                        self.d: self.memory_d[sample_index]
                                    })
             self.summary_writer.add_summary(result, step)
 
@@ -160,7 +168,6 @@ class DeepQNetwork(BasicDeepQNetwork):
             padding='valid', 
             activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            bias_initializer=tf.zeros_initializer(),
             name='conv1'
         )
         print(net.name, net.shape)
@@ -172,7 +179,6 @@ class DeepQNetwork(BasicDeepQNetwork):
             padding='valid',
             activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(), 
-            bias_initializer=tf.zeros_initializer(),
             name='conv2'
         )
         print(net.name, net.shape)
@@ -184,7 +190,6 @@ class DeepQNetwork(BasicDeepQNetwork):
             padding='valid',
             activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            bias_initializer=tf.zeros_initializer(),
             name='conv3'
         )
         print(net.name, net.shape)
@@ -193,9 +198,8 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=512,
-            activation=lambda x: tf.maximum(x, 0.2 * x), # leaky relu
+            activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            bias_initializer=tf.zeros_initializer(),
             name='fc4'
         )
         print(net.name, net.shape)
@@ -204,7 +208,6 @@ class DeepQNetwork(BasicDeepQNetwork):
             units=self.n_actions,
             activation=None,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            bias_initializer=tf.zeros_initializer(),
             name='fc5'
         )
         print(net.name, net.shape)
@@ -221,7 +224,7 @@ class DoubleDeepQNetwork(DeepQNetwork):
             # target q
             action_eval = tf.argmax(self.online_net, axis=1)
             action_eval_one_hot = tf.one_hot(action_eval, self.n_actions)
-            q_target = self.r + self.gamma * tf.reduce_sum(self.target_net * action_eval_one_hot, axis=1, name='q_target')
+            q_target = self.r + (1. - self.d) * self.gamma * tf.reduce_sum(self.target_net * action_eval_one_hot, axis=1, name='q_target')
             self.q_target = tf.stop_gradient(q_target)
             # loss
             self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, q_eval), name='loss_mse')
@@ -234,9 +237,8 @@ class DuelingDeepQNetwork(DeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=512,
-            activation=lambda x: tf.maximum(x, 0.2 * x), # leaky relu
+            activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            bias_initializer=tf.zeros_initializer(),
             name='fc4'
         )
         net = tf.layers.dense(
@@ -244,7 +246,6 @@ class DuelingDeepQNetwork(DeepQNetwork):
             units=1,
             activation=None,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            bias_initializer=tf.zeros_initializer(),
             name='fc5'
         )
         return net
@@ -254,9 +255,8 @@ class DuelingDeepQNetwork(DeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=512,
-            activation=lambda x: tf.maximum(x, 0.2 * x), # leaky relu
+            activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            bias_initializer=tf.zeros_initializer(),
             name='fc4'
         )
         net = tf.layers.dense(
@@ -264,7 +264,6 @@ class DuelingDeepQNetwork(DeepQNetwork):
             units=self.n_actions,
             activation=None,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            bias_initializer=tf.zeros_initializer(),
             name='fc5'
         )
         return net
@@ -280,7 +279,6 @@ class DuelingDeepQNetwork(DeepQNetwork):
             padding='valid', 
             activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            bias_initializer=tf.zeros_initializer(),
             name='conv1'
         )
         print(net.name, net.shape)
@@ -292,7 +290,6 @@ class DuelingDeepQNetwork(DeepQNetwork):
             padding='valid',
             activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(), 
-            bias_initializer=tf.zeros_initializer(),
             name='conv2'
         )
         print(net.name, net.shape)
@@ -304,7 +301,6 @@ class DuelingDeepQNetwork(DeepQNetwork):
             padding='valid',
             activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            bias_initializer=tf.zeros_initializer(),
             name='conv3'
         )
         print(net.name, net.shape)

@@ -63,7 +63,7 @@ class Agent_DQN(Agent):
                         action = np.random.randint(0, self.n_actions)
                     pre_observation = observation
                     observation, reward, done, _ = self.env.step(self.action_map[action])
-                    self.model.store_transition(pre_observation, action, reward, observation)
+                    self.model.store_transition(pre_observation, action, reward, observation, done)
                     
                     # update params
                     step += 1
