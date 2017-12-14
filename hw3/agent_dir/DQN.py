@@ -8,7 +8,7 @@ class BasicDeepQNetwork(object):
         inputs_shape,
         n_actions,
         gamma=0.99,
-        optimizer=tf.train.AdamOptimizer,
+        optimizer=tf.train.RMSPropOptimizer,
         learning_rate=0.0001,
         batch_size=32,
         memory_size=10000,
@@ -71,15 +71,12 @@ class BasicDeepQNetwork(object):
         with tf.variable_scope('loss'):
             action_one_hot = tf.one_hot(self.a, self.n_actions)
             q_eval = tf.reduce_sum(self.online_net * action_one_hot, axis=1, name='q_eval')
-            self.q_target = self.r + self.gamma * tf.reduce_max(self.target_net, axis=1, name='q_target')
-            self.q_target = tf.stop_gradient(self.q_target)
-            self.loss = tf.reduce_mean(tf.square(self.q_target - q_eval), name='loss_mse')
+            q_target = self.r + self.gamma * tf.reduce_max(self.target_net, axis=1, name='q_target')
+            self.q_target = tf.stop_gradient(q_target)
+            self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, q_eval), name='loss_mse')
 
     def _build_optimize(self):
-        with tf.variable_scope('train_op'):            
-            clip_value = 1.
-            trainable_variables = tf.trainable_variables()
-            grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, trainable_variables), clip_value)
+        with tf.variable_scope('train_op'):
             self.train_op = self.optimizer(self.learning_rate).minimize(self.loss)
 
     def _build_replacement(self):
@@ -162,7 +159,8 @@ class DeepQNetwork(BasicDeepQNetwork):
             strides=(4, 4), 
             padding='valid', 
             activation=tf.nn.relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(), 
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+            bias_initializer=tf.zeros_initializer(),
             name='conv1'
         )
         print(net.name, net.shape)
@@ -174,6 +172,7 @@ class DeepQNetwork(BasicDeepQNetwork):
             padding='valid',
             activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(), 
+            bias_initializer=tf.zeros_initializer(),
             name='conv2'
         )
         print(net.name, net.shape)
@@ -184,7 +183,8 @@ class DeepQNetwork(BasicDeepQNetwork):
             strides=(1, 1), 
             padding='valid',
             activation=tf.nn.relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(), 
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+            bias_initializer=tf.zeros_initializer(),
             name='conv3'
         )
         print(net.name, net.shape)
@@ -193,8 +193,9 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=512,
-            activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
+            activation=lambda x: tf.maximum(x, 0.2 * x), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
+            bias_initializer=tf.zeros_initializer(),
             name='fc4'
         )
         print(net.name, net.shape)
@@ -203,6 +204,7 @@ class DeepQNetwork(BasicDeepQNetwork):
             units=self.n_actions,
             activation=None,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
+            bias_initializer=tf.zeros_initializer(),
             name='fc5'
         )
         print(net.name, net.shape)
@@ -219,7 +221,101 @@ class DoubleDeepQNetwork(DeepQNetwork):
             # target q
             action_eval = tf.argmax(self.online_net, axis=1)
             action_eval_one_hot = tf.one_hot(action_eval, self.n_actions)
-            self.q_target = self.r + self.gamma * tf.reduce_sum(self.target_net * action_eval_one_hot, axis=1, name='q_target')
-            self.q_target = tf.stop_gradient(self.q_target)
+            q_target = self.r + self.gamma * tf.reduce_sum(self.target_net * action_eval_one_hot, axis=1, name='q_target')
+            self.q_target = tf.stop_gradient(q_target)
             # loss
-            self.loss = tf.reduce_mean(tf.square(self.q_target - q_eval), name='loss_mse') 
+            self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, q_eval), name='loss_mse')
+
+
+
+class DuelingDeepQNetwork(DeepQNetwork):
+    def _net_deuling_V(self, inputs):
+        net = inputs
+        net = tf.layers.dense(
+            inputs=net, 
+            units=512,
+            activation=lambda x: tf.maximum(x, 0.2 * x), # leaky relu
+            kernel_initializer=tf.contrib.layers.xavier_initializer(),
+            bias_initializer=tf.zeros_initializer(),
+            name='fc4'
+        )
+        net = tf.layers.dense(
+            inputs=net, 
+            units=1,
+            activation=None,
+            kernel_initializer=tf.contrib.layers.xavier_initializer(),
+            bias_initializer=tf.zeros_initializer(),
+            name='fc5'
+        )
+        return net
+
+    def _net_deuling_A(self, inputs):
+        net = inputs
+        net = tf.layers.dense(
+            inputs=net, 
+            units=512,
+            activation=lambda x: tf.maximum(x, 0.2 * x), # leaky relu
+            kernel_initializer=tf.contrib.layers.xavier_initializer(),
+            bias_initializer=tf.zeros_initializer(),
+            name='fc4'
+        )
+        net = tf.layers.dense(
+            inputs=net, 
+            units=self.n_actions,
+            activation=None,
+            kernel_initializer=tf.contrib.layers.xavier_initializer(),
+            bias_initializer=tf.zeros_initializer(),
+            name='fc5'
+        )
+        return net
+
+    def _net(self, inputs):
+        net = inputs
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(
+            inputs=net, 
+            filters=32,
+            kernel_size=(8, 8), 
+            strides=(4, 4), 
+            padding='valid', 
+            activation=tf.nn.relu,
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+            bias_initializer=tf.zeros_initializer(),
+            name='conv1'
+        )
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(
+            inputs=net, 
+            filters=64, 
+            kernel_size=(4, 4), 
+            strides=(2, 2), 
+            padding='valid',
+            activation=tf.nn.relu,
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(), 
+            bias_initializer=tf.zeros_initializer(),
+            name='conv2'
+        )
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(
+            inputs=net, 
+            filters=64, 
+            kernel_size=(3, 3), 
+            strides=(1, 1), 
+            padding='valid',
+            activation=tf.nn.relu,
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+            bias_initializer=tf.zeros_initializer(),
+            name='conv3'
+        )
+        print(net.name, net.shape)
+        net = tf.contrib.layers.flatten(net, scope='flatten')
+        print(net.name, net.shape)
+        with tf.variable_scope('deuling_V'):
+            deuling_V = self._net_deuling_V(net)
+            print(deuling_V.name, deuling_V.shape)
+        with tf.variable_scope('deuling_A'):
+            deuling_A = self._net_deuling_A(net)
+            print(deuling_A.name, deuling_A.shape)
+        net = deuling_V + (deuling_A - tf.reduce_mean(deuling_A, axis=1, keep_dims=True))
+        print(net.name, net.shape)
+        return net
