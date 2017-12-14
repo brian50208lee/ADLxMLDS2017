@@ -202,6 +202,7 @@ class PolicyGradient(BasicPolicyGradient):
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
+        net = tf.maximum(net, 0.1 * net)
         print(net.name, net.shape)
         return net
 

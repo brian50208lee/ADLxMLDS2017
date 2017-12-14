@@ -18,7 +18,7 @@ class Agent_PG(Agent):
         super(Agent_PG,self).__init__(env)
 
         # enviroment infomation
-        self.action_map = range(env.action_space.n)
+        self.action_map = [2, 3]
 
         # model parameters
         self.n_actions = len(self.action_map)
@@ -93,10 +93,7 @@ class Agent_PG(Agent):
                             best_mean_reward = max(best_mean_reward, mean_reward)
                         # learn
                         self.model.summary(step=episode, reward_hist=reward_hist)
-                        if episode_reward > min(reward_hist[-5:]):
-                            self.model.learn()
-                        else:
-                            self.model.clear_transition()
+                        self.model.learn()
                         break
             except KeyboardInterrupt:
                 cmd = input('\nsave/load/keep/render/exit ?\n')
