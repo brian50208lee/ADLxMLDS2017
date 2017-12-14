@@ -190,7 +190,7 @@ class PolicyGradient(BasicPolicyGradient):
         net = tf.layers.dense(
             inputs=net, 
             units=128,
-            activation=tf.nn.relu,
+            activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc3'
         )
@@ -202,7 +202,6 @@ class PolicyGradient(BasicPolicyGradient):
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
-        net = tf.maximum(net, 0.01 * net)
         print(net.name, net.shape)
         return net
 
