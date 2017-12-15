@@ -47,7 +47,7 @@ class BasicDeepQNetwork(object):
         config = tf.ConfigProto()
         config.gpu_options.per_process_gpu_memory_fraction = 0.5
         config.gpu_options.allow_growth = True
-        self.sess = tf.Session()
+        self.sess = tf.Session(config=config)
         self.sess.run(tf.global_variables_initializer())
 
         # log
