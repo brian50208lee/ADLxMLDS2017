@@ -198,7 +198,8 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=512,
-            activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
+            activation=tf.nn.relu,
+            #activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
