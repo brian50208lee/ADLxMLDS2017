@@ -45,7 +45,7 @@ class BasicDeepQNetwork(object):
 
         # session
         config = tf.ConfigProto()
-        config.gpu_options.per_process_gpu_memory_fraction = 0.5
+        config.gpu_options.per_process_gpu_memory_fraction = 0.9
         config.gpu_options.allow_growth = True
         self.sess = tf.Session(config=config)
         self.sess.run(tf.global_variables_initializer())
@@ -198,8 +198,7 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=512,
-            activation=tf.nn.relu,
-            #activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
+            activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
         )
@@ -316,18 +315,3 @@ class DuelingDeepQNetwork(DeepQNetwork):
         net = deuling_V + (deuling_A - tf.reduce_mean(deuling_A, axis=1, keep_dims=True))
         print(net.name, net.shape)
         return net
-
-
-class DoubleDuelingDeepQNetwork(DuelingDeepQNetwork):
-    def _build_loss(self):
-        with tf.variable_scope('loss'):
-            # eval q
-            action_one_hot = tf.one_hot(self.a, self.n_actions)
-            q_eval = tf.reduce_sum(self.online_net * action_one_hot, axis=1, name='q_eval')
-            # target q
-            action_eval = tf.argmax(self.online_net, axis=1)
-            action_eval_one_hot = tf.one_hot(action_eval, self.n_actions)
-            q_target = self.r + (1. - self.d) * self.gamma * tf.reduce_sum(self.target_net * action_eval_one_hot, axis=1, name='q_target')
-            self.q_target = tf.stop_gradient(q_target)
-            # loss
-            self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, q_eval), name='loss_mse')

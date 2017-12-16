@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.DQN import DoubleDuelingDeepQNetwork
+from agent_dir.DQN import DuelingDeepQNetwork
 
 class Agent_DQN(Agent):
     def __init__(self, env, args):
@@ -27,20 +27,30 @@ class Agent_DQN(Agent):
         self.decrease_explore_rate = (self.explore_rate - self.min_explore_rate) / (self.max_step * 0.2)
         
         # model
-        self.model = DoubleDuelingDeepQNetwork(
-                        inputs_shape=self.inputs_shape,
-                        n_actions=self.n_actions,
-                        gamma=0.99,
-                        optimizer=tf.train.AdamOptimizer,
-                        learning_rate=0.0001,
-                        batch_size=32,
-                        memory_size=10000,
-                        output_graph_path='models/break/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
-                     )
+        if not args.test_dqn:
+            self.model = DuelingDeepQNetwork(
+                inputs_shape=self.inputs_shape,
+                n_actions=self.n_actions,
+                gamma=0.99,
+                optimizer=tf.train.RMSPropOptimizer,
+                learning_rate=0.0001,
+                batch_size=32,
+                memory_size=10000,
+                #output_graph_path='models/break/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
+             )
+        else:
+            self.model = DuelingDeepQNetwork(
+                inputs_shape=self.inputs_shape,
+                n_actions=self.n_actions,
+                gamma=0.99,
+                optimizer=tf.train.RMSPropOptimizer,
+                learning_rate=0.0001,
+                batch_size=32,
+                memory_size=0,
+                output_graph_path=None
+            )
+            self.model.load('models/break/baseline/finish')
 
-        # load
-        if args.test_dqn or args.load_best:
-            self.model.load('models/break/train/best')
 
 
     def init_game_setting(self):

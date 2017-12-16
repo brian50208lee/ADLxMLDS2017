@@ -1,4 +1,4 @@
 data/*
-experiment/*
+experiment/backup/*
 .DS_Store
 *.pyc

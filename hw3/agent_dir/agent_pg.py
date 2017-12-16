@@ -1,98 +1,92 @@
-import time
-
-import scipy
 import numpy as np
-import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.PG import PolicyGradient
+from agent_dir.RL import PolicyGradient
 
-
-def prepro(o, image_size=[80,80]):
-    y = 0.2126 * o[:,:,0] + 0.7152 * o[:,:,1] + 0.0722 * o[:,:,2]
-    resized = scipy.misc.imresize(y.astype(np.uint8), image_size)
-    return np.expand_dims(resized.astype(np.float32), axis=2)
+def prepro(I):
+    """ prepro 210x160x3 uint8 frame into 5120 (80x64) 1D float vector """
+    I = I[35:195] # crop
+    I = I[:,16:-16]
+    I = I[::2,::2,0] # downsample by factor of 2
+    I[I == 144] = 0 # erase background (background type 1)
+    I[I == 109] = 0 # erase background (background type 2)
+    I[I != 0] = 1 # everything else (paddles, ball) just set to 1
+    return I.astype(np.float).ravel()
 
 class Agent_PG(Agent):
     def __init__(self, env, args):
         super(Agent_PG,self).__init__(env)
 
         # enviroment infomation
-        self.action_map = [2, 3]
+        print('Action Num:', env.action_space.n)
+        print('Observe Shape:', env.observation_space.shape)
 
-        # model parameters
-        self.n_actions = len(self.action_map)
-        self.inputs_shape = [80, 80, 1]
-
-        # learning parameters
-        self.max_episode = 5000
-
+        # hyperparameters
+        self.n_actions = 2
+        self.n_features = 80 * 64
+        self.n_hidden = 200 # number of hidden layer neurons
+        
         # model
         self.model = PolicyGradient(
-                        inputs_shape=self.inputs_shape, 
-                        n_actions=self.n_actions,
-                        gamma=0.99,
-                        optimizer=tf.train.RMSPropOptimizer,
-                        learning_rate=0.0001,
-                        output_graph_path='models/pong/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
+                        self.n_actions, 
+                        self.n_features, 
+                        n_hidden=self.n_hidden, 
+                        learning_rate=0.0005, 
+                        reward_decay=0.99, 
+                        output_graph=False
                      )
 
         # load
-        if args.test_pg or args.load_best:
+        if args.test_pg:
             print('loading trained model')
-            self.model.load('models/pong/112/best')
+            self.model.load('models/pong/baseline/best')
 
 
     def init_game_setting(self):
         self.pre_observation = None
 
+
     def train(self):
-        best_mean_reward = -21
-        reward_hist = [-21]
-        episode = 0
-        while episode < self.max_episode:
+        best_mean = 0.
+        reward_hist = []
+        for episode in range(1,10000):
             try:
-                episode += 1
-                episode_reward = 0.0
                 pre_observation = None
                 observation = self.env.reset()
                 observation = prepro(observation)
                 while True:
-                    # feature
-                    if pre_observation is None:
-                        pre_observation = observation
-                    feature_observation = observation - pre_observation
-                    feature_observation = np.sign(feature_observation).astype(np.float32)
+                    # diff_observation
+                    feature_observation = observation if pre_observation is None else observation - pre_observation
+                    pre_observation = observation
 
-                    # do action
+                    # transition
                     action = self.model.choose_action(feature_observation)
-                    next_observation, reward, done, _ = self.env.step(self.action_map[action])
+                    observation, reward, done, info = self.env.step(action+2)
+                    observation = prepro(observation)
+
+                    # store
                     self.model.store_transition(feature_observation, action, reward)
 
-                    # next step
-                    pre_observation = observation
-                    observation = prepro(next_observation)
-                    episode_reward += reward
-
-                    #print(feature_observation[:,-14:-7,0])
+                    # slow motion
+                    #print('\n', feature_observation.reshape((80,64))[:,-10:])
+                    #print('\n', observation.reshape((80,64))[:,[0,1,2,3,-4,-3,-2,-1]])
                     #input()
-
-                    # done
+                        
                     if done:
                         # show info
-                        info = 'episode: {}  reward: {}'.format(
-                                episode, episode_reward)
-                        print(info)
-                        reward_hist.append(episode_reward)
-                        # save best
+                        total_reward = sum(self.model.ep_rs)
+                        print('episode:', episode, '  reward:', int(total_reward))
+                        
+                        # history mean, save best
+                        reward_hist.append(total_reward)
                         if len(reward_hist) > 30:
-                            mean_reward = np.array(reward_hist[max(len(reward_hist)-30,0):]).astype('float32').mean()
-                            if best_mean_reward != -21 and mean_reward > best_mean_reward:
+                            mean = np.array(reward_hist[max(len(reward_hist)-30,0):]).astype('float32').mean()
+                            if best_mean != 0. and mean > best_mean:
                                 self.model.save('models/pong/train/best')
-                                print('save best mean reward:', mean_reward)
-                            best_mean_reward = max(best_mean_reward, mean_reward)
+                                print('save best mean reward:', mean)
+                            best_mean = max(best_mean, mean)
+
                         # learn
-                        self.model.summary(step=episode, reward_hist=reward_hist)
                         self.model.learn()
                         break
             except KeyboardInterrupt:
@@ -115,12 +109,13 @@ class Agent_PG(Agent):
                 
         self.model.save('models/pong/finish/finish')
                 
+
+            
+
     def make_action(self, observation, test=True):
         observation = prepro(observation)
-        # feature
-        if self.pre_observation is None:
-                self.pre_observation = observation
-        feature_observation = observation - self.pre_observation
-        action = self.model.choose_best_action(feature_observation)
-        return self.action_map[action]
+        feature_observation = observation if self.pre_observation is None else observation - self.pre_observation
+        self.pre_observation = observation
+        action = self.model.choose_best_action(feature_observation) + 2
+        return action
 
