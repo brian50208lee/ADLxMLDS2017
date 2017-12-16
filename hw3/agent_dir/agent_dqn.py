@@ -31,7 +31,7 @@ class Agent_DQN(Agent):
                         inputs_shape=self.inputs_shape,
                         n_actions=self.n_actions,
                         gamma=0.99,
-                        optimizer=tf.train.RMSPropOptimizer,
+                        optimizer=tf.train.AdamOptimizer,
                         learning_rate=0.0001,
                         batch_size=32,
                         memory_size=10000,
