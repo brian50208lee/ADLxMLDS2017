@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 
 from agent_dir.agent import Agent
-from agent_dir.DQN import DuelingDeepQNetwork
+from agent_dir.DQN import DeepQNetwork
 
 class Agent_DQN(Agent):
     def __init__(self, env, args):
@@ -28,29 +28,28 @@ class Agent_DQN(Agent):
         
         # model
         if not args.test_dqn:
-            self.model = DuelingDeepQNetwork(
+            self.model = DeepQNetwork(
                 inputs_shape=self.inputs_shape,
                 n_actions=self.n_actions,
                 gamma=0.99,
-                optimizer=tf.train.RMSPropOptimizer,
+                optimizer=tf.train.AdamOptimizer,
                 learning_rate=0.0001,
                 batch_size=32,
                 memory_size=10000,
-                output_graph_path='models/break/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
+                #output_graph_path='models/break/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
              )
         else:
-            self.model = DuelingDeepQNetwork(
+            self.model = DeepQNetwork(
                 inputs_shape=self.inputs_shape,
                 n_actions=self.n_actions,
                 gamma=0.99,
-                optimizer=tf.train.RMSPropOptimizer,
+                optimizer=tf.train.AdamOptimizer,
                 learning_rate=0.0001,
                 batch_size=32,
                 memory_size=0,
-                output_graph_path=None
-            )
+                #output_graph_path='models/break/tb{}'.format(time.strftime("%y%m%d_%H%M%S", time.localtime()))
+             )
             self.model.load('models/break/baseline/finish')
-
 
 
     def init_game_setting(self):
@@ -127,5 +126,7 @@ class Agent_DQN(Agent):
 
     def make_action(self, observation, test=True):
         action = self.model.choose_action(observation)
+        if np.random.uniform() < 0.01:
+            action = np.random.randint(0, self.n_actions)
         return self.action_map[action]
 

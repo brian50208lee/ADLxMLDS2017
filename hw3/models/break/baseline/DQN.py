@@ -45,9 +45,9 @@ class BasicDeepQNetwork(object):
 
         # session
         config = tf.ConfigProto()
-        config.gpu_options.per_process_gpu_memory_fraction = 0.5
+        config.gpu_options.per_process_gpu_memory_fraction = 0.9
         config.gpu_options.allow_growth = True
-        self.sess = tf.Session()
+        self.sess = tf.Session(config=config)
         self.sess.run(tf.global_variables_initializer())
 
         # log
@@ -198,6 +198,7 @@ class DeepQNetwork(BasicDeepQNetwork):
         net = tf.layers.dense(
             inputs=net, 
             units=512,
+            #activation=tf.nn.relu,
             activation=lambda x: tf.maximum(x, 0.01 * x), # leaky relu
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4'
