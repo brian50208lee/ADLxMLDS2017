@@ -39,7 +39,7 @@ model = GAN(
 	        output_graph_path='tb'
 		)
 model.train(train=[imgs, sents], valid_sents=test_sents)
-
+model.save('./model/finish')
 
 
 
