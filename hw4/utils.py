@@ -1,6 +1,7 @@
 import os
 import random
 from scipy import misc
+from scipy.misc import imread
 import numpy as np
 
 def load_train_data(imgs_dir, tags_path, imresize_shape=[64,64,3], filter_tag=True, max_data_len=None):
