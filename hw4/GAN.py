@@ -9,7 +9,7 @@ class BasicGAN(object):
         inputs_shape,
         seq_vec_len,
         noise_len=100,
-        optimizer=tf.train.AdamOptimizer,
+        optimizer=tf.train.RMSPropOptimizer,
         learning_rate=0.0001,
         output_graph_path=None
     ):  
@@ -28,7 +28,7 @@ class BasicGAN(object):
         self._build_optimize()
 
         # noise sampler
-        self.noise_sampler = stats.truncnorm(-1., 1., loc=0., scale=1)
+        self.noise_sampler = stats.truncnorm(0., 1., loc=0.5, scale=0.5)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -68,12 +68,18 @@ class BasicGAN(object):
             self.d_net_rw = self._net_discriminative(self.r_seq, self.w_img, reuse=True)
 
     def _build_loss(self):
+        def cross_entropy_with_logits(logits, labels):
+            epsilon = tf.constant(value=1e-08)
+            logits += epsilon
+            cross_entropy = -(labels * tf.log(logits))
+            return cross_entropy
+
         with tf.variable_scope('loss'):
-            self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
-            self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
-                        + (tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) + \
-                           tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) + \
-                           tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))) / 3 
+            self.g_loss = tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
+            self.d_loss = tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
+                        + (tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) + \
+                           tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) + \
+                           tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))) / 3 
 
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
@@ -94,7 +100,7 @@ class BasicGAN(object):
         for batch in range(1000000):
             r_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
             w_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
-            _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.d_loss, self.g_loss],
+            _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
                                                   feed_dict={
                                                         self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
                                                         self.r_seq: seqs[r_idx],
