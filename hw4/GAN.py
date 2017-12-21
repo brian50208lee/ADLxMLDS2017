@@ -88,6 +88,7 @@ class BasicGAN(object):
             d_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='discriminative_net')
             self.g_train_op = self.optimizer(self.learning_rate).minimize(self.g_loss, var_list=g_params)
             self.d_train_op = self.optimizer(self.learning_rate).minimize(self.d_loss, var_list=d_params)
+            self.d_clip = [v.assign(tf.clip_by_value(v, -0.01, 0.01)) for v in d_params]
 
     def _build_summary(self):
         if self.output_graph_path:
@@ -101,7 +102,7 @@ class BasicGAN(object):
         for batch in range(max_batch_num):
             r_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
             w_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
-            _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
+            _, _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.d_clip, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
                                                   feed_dict={
                                                         self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
                                                         self.r_seq: seqs[r_idx],
