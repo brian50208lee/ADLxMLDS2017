@@ -85,7 +85,7 @@ class BasicGAN(object):
     def _build_summary(self):
         if self.output_graph_path:
             #self.reward_hist = tf.placeholder(tf.float32, [None], name='reward_hist')
-            tf.summary.image('f_img', self.f_img, max_outputs=10)
+            tf.summary.image('f_img', self.f_img, max_outputs=100)
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.output_graph_path, self.sess.graph)
 
@@ -104,7 +104,7 @@ class BasicGAN(object):
                                                   })
             print('batch:{} d_loss: {} g_loss: {}'.format(batch, d_loss, g_loss))
             if valid_sents is not None and batch % summary_every == 0:
-                test_seqs = np.tile(valid_sents, (5,1))
+                test_seqs = valid_sents
                 feed_dict = {
                     self.g_noise: self.noise_sampler.rvs([len(test_seqs), self.noise_len]),
                     self.r_seq: test_seqs
@@ -182,7 +182,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=tf.nn.tanh,
+            activation=tf.nn.sigmoid,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv5'
         )
