@@ -69,7 +69,7 @@ class BasicGAN(object):
 
     def _build_loss(self):
         def cross_entropy_with_logits(logits, labels):
-            epsilon = tf.constant(value=1e-08)
+            epsilon = tf.constant(value=1e-07)
             logits += epsilon
             cross_entropy = -(labels * tf.log(logits))
             return cross_entropy
@@ -95,7 +95,7 @@ class BasicGAN(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.output_graph_path, self.sess.graph)
 
-    def train(self, train, max_batch_num=300000, valid_sents=None, batch_size=128, summary_every=1000):
+    def train(self, train, max_batch_num=300000, valid_sents=None, batch_size=64, summary_every=1000):
         imgs, seqs = train
         for batch in range(max_batch_num):
             r_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
