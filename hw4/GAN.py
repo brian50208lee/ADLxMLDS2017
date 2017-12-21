@@ -95,9 +95,9 @@ class BasicGAN(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.output_graph_path, self.sess.graph)
 
-    def train(self, train, valid_sents=None, batch_size=64, summary_every=1000):
+    def train(self, train, max_batch_num=300000, valid_sents=None, batch_size=128, summary_every=1000):
         imgs, seqs = train
-        for batch in range(1000000):
+        for batch in range(max_batch_num):
             r_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
             w_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
             _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
