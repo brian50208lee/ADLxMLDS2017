@@ -68,19 +68,20 @@ class BasicGAN(object):
             self.d_net_rw = self._net_discriminative(self.r_seq, self.w_img, reuse=True)
 
     def _build_loss(self):
-        def cross_entropy_with_logits(logits, labels):
-            epsilon = tf.constant(value=1e-07)
-            logits += epsilon
-            cross_entropy = -(labels * tf.log(logits))
-            return cross_entropy
-
         with tf.variable_scope('loss'):
-            self.g_loss = tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
-            self.d_loss = tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
-                        + (tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) + \
-                           tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) + \
-                           tf.reduce_mean(cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))) / 3 
-
+            '''
+            self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
+            self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
+                        + (tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) + \
+                           tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) + \
+                           tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))) / 3 
+            '''
+            self.g_loss = -tf.reduce_mean(self.d_net_rf) 
+            self.d_loss = -tf.reduce_mean(self.d_net_rr) \
+                        + (tf.reduce_mean(self.d_net_rf) + \
+                           tf.reduce_mean(self.d_net_wr) + \
+                           tf.reduce_mean(self.d_net_rw)) / 3 
+    
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
             g_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='generative_net')
