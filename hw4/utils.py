@@ -4,7 +4,7 @@ from scipy import misc
 from scipy.misc import imread
 import numpy as np
 
-def load_train_data(imgs_dir, tags_path, imresize_shape=[64,64,3], filter_tag=True, max_data_len=None):
+def load_train_data(imgs_dir, tags_path, imresize_shape=[96,96,3], filter_tag=True, max_data_len=None):
     # define filter tag
     hair_tag_filter = set([
         'orange hair', 'white hair', 'aqua hair', 'gray hair',
@@ -58,7 +58,7 @@ def load_test_data(sents_path):
 			test.append(sent)
 	return test
 
-def sent2vec(sents, word2idx=None, max_seq_len=4):
+def sent2vec(sents, word2idx=None, max_seq_len=6):
 	if word2idx is None: # build word2idx
 		word2idx = dict()
 		word2idx.update({'<UKN>': 0})

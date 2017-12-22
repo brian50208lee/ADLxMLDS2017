@@ -30,7 +30,7 @@ class BasicGAN(object):
         self._build_clip_parms() # WGAN
 
         # noise sampler
-        self.noise_sampler = stats.truncnorm(0., 1., loc=0.5, scale=1.)
+        self.noise_sampler = stats.truncnorm(-1.0, 1.0, loc=0.0, scale=0.1)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -100,17 +100,19 @@ class BasicGAN(object):
 
     def _build_summary(self):
         if self.summary_path:
-            tf.summary.image('fake_img', self.f_img, max_outputs=100)
+            fake_img = tf.image.resize_images(self.f_img, [64,64])
+            tf.summary.image('fake_img', fake_img, max_outputs=100)
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
-    def train(self, train, max_batch_num=300000, valid_seqs=None, batch_size=64, summary_every=1000):
+    def train(self, train, max_batch_num=300000, valid_seqs=None, batch_size=64, summary_every=100):
         imgs, seqs = train
         for batch in range(max_batch_num):
             r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
             w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
             # train d_net : g_net = 1 : 2
-            _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
+            print(self.noise_sampler.rvs([batch_size, self.noise_len][0]))
+            _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.d_loss, self.g_loss],
                                                     feed_dict={
                                                         self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
                                                         self.r_seq: seqs[r_idx],
@@ -151,12 +153,12 @@ class GAN(BasicGAN):
         print(net.name, net.shape)
         net = tf.layers.dense(
             inputs=net, 
-            units=4*4*256,
+            units=3*3*256,
             activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc1'
         )
-        net = tf.reshape(net, [-1, 4, 4, 256])
+        net = tf.reshape(net, [-1, 3, 3, 256])
         print(net.name, net.shape)
         net = tf.layers.conv2d_transpose(
             inputs=net, 
@@ -197,9 +199,20 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=tf.nn.sigmoid,
+            activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv5'
+        )
+        print(net.name, net.shape)
+        net = tf.layers.conv2d_transpose(
+            inputs=net, 
+            filters=3, 
+            kernel_size=(5, 5), 
+            strides=(2, 2), 
+            padding='same',
+            activation=tf.nn.sigmoid,
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+            name='conv6'
         )
         print(net.name, net.shape)
         return net
@@ -244,7 +257,7 @@ class GAN(BasicGAN):
         )
         print(net.name, net.shape)
         seq_vectors = tf.expand_dims(tf.expand_dims(seq, 1), 2)
-        seq_vectors = tf.tile(seq_vectors, [1, 8, 8, 1])
+        seq_vectors = tf.tile(seq_vectors, [1, 12, 12, 1])
         net = tf.concat([net, seq_vectors], axis=-1, name='concat_condition')
         print(net.name, net.shape)
         net = tf.layers.conv2d(
@@ -261,7 +274,7 @@ class GAN(BasicGAN):
         net = tf.layers.conv2d(
             inputs=net, 
             filters=1, 
-            kernel_size=(8, 8), 
+            kernel_size=(12, 12), 
             strides=(1, 1), 
             padding='valid',
             activation=None,
