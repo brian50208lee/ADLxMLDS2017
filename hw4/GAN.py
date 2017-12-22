@@ -8,7 +8,7 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=100,
+        noise_len=20,
         g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         summary_path=None
@@ -16,7 +16,7 @@ class BasicGAN(object):
         # params
         self.inputs_shape = inputs_shape
         self.seq_vec_len = seq_vec_len
-        self.noise_len = seq_vec_len
+        self.noise_len = noise_len
         self.g_optimizer = g_optimizer
         self.d_optimizer = d_optimizer
         self.summary_path = summary_path
@@ -30,7 +30,7 @@ class BasicGAN(object):
         self._build_clip_parms() # WGAN
 
         # noise sampler
-        self.noise_sampler = stats.truncnorm(-1.0, 1.0, loc=0.0, scale=0.1)
+        self.noise_sampler = stats.truncnorm(-1.0, 1.0, loc=0.0, scale=1.0)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -149,7 +149,7 @@ class GAN(BasicGAN):
         return tf.maximum(tf.minimum(0.0, alpha * x), x)
 
     def _net_generative(self, seq, noise):
-        #net = tf.concat([seq, noise], axis=1, name='noise_vector')
+        net = tf.concat([seq, noise], axis=1, name='noise_vector')
         net = seq + noise
         print(net.name, net.shape)
         net = tf.layers.dense(

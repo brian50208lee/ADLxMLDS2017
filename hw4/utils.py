@@ -58,7 +58,7 @@ def load_test_data(sents_path):
 			test.append(sent)
 	return test
 
-def sent2vec(sents, word2idx=None, max_seq_len=6):
+def sent2vec(sents, word2idx=None, max_seq_len=4):
 	if word2idx is None: # build word2idx
 		word2idx = dict()
 		word2idx.update({'<UKN>': 0})
