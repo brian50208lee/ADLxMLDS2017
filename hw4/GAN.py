@@ -9,8 +9,8 @@ class BasicGAN(object):
         inputs_shape,
         seq_vec_len,
         noise_len=20,
-        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.00005),
-        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.00005),
+        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0005),
+        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0005),
         summary_path=None
     ):  
         # params
@@ -106,7 +106,7 @@ class BasicGAN(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
-    def train(self, train, max_batch_num=300000, valid_seqs=None, batch_size=64, summary_every=100):
+    def train(self, train, max_batch_num=100000, valid_seqs=None, batch_size=64, summary_every=50):
         imgs, seqs = train
         for batch in range(max_batch_num):
             for _ in range(5):
@@ -165,7 +165,7 @@ class GAN(BasicGAN):
         net = tf.layers.dense(
             inputs=net, 
             units=3*3*256,
-            activation=self.leaky_relu,
+            activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc1'
         )
@@ -177,7 +177,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=self.leaky_relu,
+            activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv2'
         )
@@ -188,7 +188,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=self.leaky_relu,
+            activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv3'
         )
@@ -199,7 +199,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=self.leaky_relu,
+            activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv4'
         )
@@ -210,7 +210,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=self.leaky_relu,
+            activation=tf.nn.relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv5'
         )
