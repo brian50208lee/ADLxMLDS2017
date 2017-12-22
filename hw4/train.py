@@ -16,16 +16,16 @@ output_gene_num = 5
 output_fname_format = 'sample_({testing_text_id})_({sample_id}).jpg'
 
 # load data
-imgs, sents = load_train_data(imgs_dir, tags_path, max_data_len=None)
-sents, word2idx = sent2vec(sents)
+train_imgs, train_sents = load_train_data(imgs_dir, tags_path, max_data_len=None)
+train_sents, word2idx = sent2vec(train_sents)
 
 test_sents = load_test_data(special_text_path)
 test_sents, _ = sent2vec(test_sents, word2idx)
 
 # data info
 print('word2idx:', word2idx)
-print('train img:', imgs.shape)
-print('train sents:', sents.shape)
+print('train img:', train_imgs.shape)
+print('train sents:', train_sents.shape)
 print('test sents:', test_sents.shape)
 
 inputs_shape = (64, 64, 3)
@@ -33,12 +33,9 @@ seq_vec_len = 64
 model = GAN(
 	        inputs_shape,
         	seq_vec_len,
-	        noise_len=100,
-	        optimizer=tf.train.AdamOptimizer,
-	        learning_rate=0.0001,
-	        output_graph_path='tb'
+	        summary_path='tb'
 		)
-model.train(train=[imgs, sents], valid_sents=test_sents)
+model.train(train=[train_imgs, train_sents], valid_seqs=test_sents)
 model.save('./model/finish')
 
 

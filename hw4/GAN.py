@@ -9,26 +9,28 @@ class BasicGAN(object):
         inputs_shape,
         seq_vec_len,
         noise_len=100,
-        optimizer=tf.train.RMSPropOptimizer,
-        learning_rate=0.0001,
-        output_graph_path=None
+        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        summary_path=None
     ):  
         # params
         self.inputs_shape = inputs_shape
         self.seq_vec_len = seq_vec_len
         self.noise_len = noise_len
-        self.optimizer = optimizer
-        self.learning_rate = learning_rate
-        self.output_graph_path = output_graph_path
+        self.g_optimizer = g_optimizer
+        self.d_optimizer = d_optimizer
+        self.summary_path = summary_path
 
         # model
+        tf.reset_default_graph()
         self._build_placeholder()
         self._build_model()
         self._build_loss()
         self._build_optimize()
+        self._build_clip_parms() # WGAN
 
         # noise sampler
-        self.noise_sampler = stats.truncnorm(0., 1., loc=0.5, scale=0.5)
+        self.noise_sampler = stats.truncnorm(0., 1., loc=0.5, scale=1.)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -60,22 +62,23 @@ class BasicGAN(object):
     def _build_model(self):
         with tf.variable_scope('generative_net'):
             self.g_net = self._net_generative(self.r_seq, self.g_noise)
-            self.f_img = self.g_net
+            self.f_img = self.g_net # fake image
         with tf.variable_scope('discriminative_net'):
-            self.d_net_rr = self._net_discriminative(self.r_seq, self.r_img)
-            self.d_net_rf = self._net_discriminative(self.r_seq, self.f_img, reuse=True)
-            self.d_net_wr = self._net_discriminative(self.w_seq, self.r_img, reuse=True)
-            self.d_net_rw = self._net_discriminative(self.r_seq, self.w_img, reuse=True)
+            self.d_net_rr = self._net_discriminative(self.r_seq, self.r_img) # real sequence, real image -> 1
+            self.d_net_rf = self._net_discriminative(self.r_seq, self.f_img, reuse=True) # real sequence, fake image -> 0
+            self.d_net_wr = self._net_discriminative(self.w_seq, self.r_img, reuse=True) # wrong sequence, real image -> 0
+            self.d_net_rw = self._net_discriminative(self.r_seq, self.w_img, reuse=True) # real sequence, wrong image -> 0
 
     def _build_loss(self):
         with tf.variable_scope('loss'):
-            
+            # GAN loss
             self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
             self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
                         + (tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) + \
                            tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) + \
                            tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))) / 3 
             '''
+            # WGAN loss
             self.g_loss = -tf.reduce_mean(self.d_net_rf)
             self.d_loss = -tf.reduce_mean(self.d_net_rr) \
                         + (tf.reduce_mean(self.d_net_rf) + \
@@ -85,44 +88,47 @@ class BasicGAN(object):
     
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
-            g_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='generative_net')
-            d_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='discriminative_net')
-            self.g_train_op = self.optimizer(self.learning_rate).minimize(self.g_loss, var_list=g_params)
-            self.d_train_op = self.optimizer(self.learning_rate).minimize(self.d_loss, var_list=d_params)
-            #self.d_clip = [v.assign(tf.clip_by_value(v, -0.01, 0.01)) for v in d_params]
+            self.g_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='generative_net')
+            self.d_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='discriminative_net')
+            self.g_train_op = self.g_optimizer.minimize(self.g_loss, var_list=self.g_vars)
+            self.d_train_op = self.d_optimizer.minimize(self.d_loss, var_list=self.d_vars)
+            
+    def _build_clip_parms(self):
+        # WGAN clip
+        with tf.variable_scope('d_clip_op'):
+            self.d_clip_op = [v.assign(tf.clip_by_value(v, -0.01, 0.01)) for v in self.d_vars]
 
     def _build_summary(self):
-        if self.output_graph_path:
-            #self.reward_hist = tf.placeholder(tf.float32, [None], name='reward_hist')
-            tf.summary.image('f_img', self.f_img, max_outputs=100)
+        if self.summary_path:
+            tf.summary.image('fake_img', self.f_img, max_outputs=100)
             self.summary_op = tf.summary.merge_all()
-            self.summary_writer = tf.summary.FileWriter(self.output_graph_path, self.sess.graph)
+            self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
-    def train(self, train, max_batch_num=300000, valid_sents=None, batch_size=64, summary_every=1000):
+    def train(self, train, max_batch_num=300000, valid_seqs=None, batch_size=64, summary_every=1000):
         imgs, seqs = train
         for batch in range(max_batch_num):
-            r_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
-            w_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
+            r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
+            w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
+            # train d_net : g_net = 1 : 2
             _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
-                                                  feed_dict={
+                                                    feed_dict={
                                                         self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
                                                         self.r_seq: seqs[r_idx],
                                                         self.r_img: imgs[r_idx],
                                                         self.w_seq: seqs[w_idx],
                                                         self.w_img: imgs[w_idx]
-                                                  })
+                                                    })
             print('batch:{} d_loss: {} g_loss: {}'.format(batch, d_loss, g_loss))
-            if valid_sents is not None and batch % summary_every == 0:
-                test_seqs = valid_sents
-                feed_dict = {
-                    self.g_noise: self.noise_sampler.rvs([len(test_seqs), self.noise_len]),
-                    self.r_seq: test_seqs
-                }
-                self.summary(batch, feed_dict)
+            if valid_seqs is not None and batch % summary_every == 0:
+                self.summary(batch, valid_seqs)
 
-    def summary(self, step, feed_dict):
-        if self.output_graph_path:
-            result = self.sess.run(self.summary_op, feed_dict=feed_dict)
+    def summary(self, step, seqs):
+        if self.summary_path:
+            result = self.sess.run(self.summary_op, 
+                                   feed_dict={
+                                        self.g_noise: self.noise_sampler.rvs([len(seqs), self.noise_len]),
+                                        self.r_seq: seqs
+                                   })
             self.summary_writer.add_summary(result, step)
 
     def save(self, checkpoint_file_path):
