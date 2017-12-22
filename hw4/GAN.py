@@ -8,7 +8,7 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=20,
+        noise_len=50,
         g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         summary_path=None
@@ -30,7 +30,7 @@ class BasicGAN(object):
         self._build_clip_parms() # WGAN
 
         # noise sampler
-        self.noise_sampler = stats.truncnorm(-1.0, 1.0, loc=0.0, scale=1.0)
+        self.noise_sampler = stats.truncnorm(0.0, 1.0, loc=0.5, scale=1.0)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -162,7 +162,7 @@ class GAN(BasicGAN):
         print(net.name, net.shape)
         net = tf.layers.conv2d_transpose(
             inputs=net, 
-            filters=128, 
+            filters=256, 
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
@@ -173,7 +173,7 @@ class GAN(BasicGAN):
         print(net.name, net.shape)
         net = tf.layers.conv2d_transpose(
             inputs=net, 
-            filters=64, 
+            filters=128, 
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
@@ -184,7 +184,7 @@ class GAN(BasicGAN):
         print(net.name, net.shape)
         net = tf.layers.conv2d_transpose(
             inputs=net, 
-            filters=32, 
+            filters=64, 
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
@@ -195,7 +195,7 @@ class GAN(BasicGAN):
         print(net.name, net.shape)
         net = tf.layers.conv2d_transpose(
             inputs=net, 
-            filters=3, 
+            filters=32, 
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
