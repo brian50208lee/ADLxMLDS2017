@@ -9,8 +9,8 @@ class BasicGAN(object):
         inputs_shape,
         seq_vec_len,
         noise_len=20,
-        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0005),
-        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0005),
+        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         summary_path=None
     ):  
         # params
@@ -109,7 +109,7 @@ class BasicGAN(object):
     def train(self, train, max_batch_num=100000, valid_seqs=None, batch_size=64, summary_every=50):
         imgs, seqs = train
         for batch in range(max_batch_num):
-            for _ in range(5):
+            for _ in range(3):
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
                 _, d_loss, _ = self.sess.run([self.d_train_op, self.d_loss, self.d_clip_op],
@@ -165,7 +165,7 @@ class GAN(BasicGAN):
         net = tf.layers.dense(
             inputs=net, 
             units=3*3*256,
-            activation=tf.nn.relu,
+            activation=self.leaky_relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc1'
         )
