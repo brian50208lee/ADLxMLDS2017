@@ -69,18 +69,19 @@ class BasicGAN(object):
 
     def _build_loss(self):
         with tf.variable_scope('loss'):
-            '''
+            
             self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
             self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
                         + (tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) + \
                            tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) + \
                            tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))) / 3 
             '''
-            self.g_loss = -tf.reduce_mean(self.d_net_rf) 
+            self.g_loss = -tf.reduce_mean(self.d_net_rf)
             self.d_loss = -tf.reduce_mean(self.d_net_rr) \
                         + (tf.reduce_mean(self.d_net_rf) + \
                            tf.reduce_mean(self.d_net_wr) + \
-                           tf.reduce_mean(self.d_net_rw)) / 3 
+                           tf.reduce_mean(self.d_net_rw)) / 3
+            '''
     
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
@@ -88,7 +89,7 @@ class BasicGAN(object):
             d_params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='discriminative_net')
             self.g_train_op = self.optimizer(self.learning_rate).minimize(self.g_loss, var_list=g_params)
             self.d_train_op = self.optimizer(self.learning_rate).minimize(self.d_loss, var_list=d_params)
-            self.d_clip = [v.assign(tf.clip_by_value(v, -0.01, 0.01)) for v in d_params]
+            #self.d_clip = [v.assign(tf.clip_by_value(v, -0.01, 0.01)) for v in d_params]
 
     def _build_summary(self):
         if self.output_graph_path:
@@ -102,7 +103,7 @@ class BasicGAN(object):
         for batch in range(max_batch_num):
             r_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
             w_idx = np.random.choice(len(imgs), size=batch_size, replace=False)
-            _, _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.d_clip, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
+            _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
                                                   feed_dict={
                                                         self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
                                                         self.r_seq: seqs[r_idx],
