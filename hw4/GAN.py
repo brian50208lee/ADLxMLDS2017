@@ -16,7 +16,7 @@ class BasicGAN(object):
         # params
         self.inputs_shape = inputs_shape
         self.seq_vec_len = seq_vec_len
-        self.noise_len = noise_len
+        self.noise_len = seq_vec_len
         self.g_optimizer = g_optimizer
         self.d_optimizer = d_optimizer
         self.summary_path = summary_path
@@ -149,7 +149,8 @@ class GAN(BasicGAN):
         return tf.maximum(tf.minimum(0.0, alpha * x), x)
 
     def _net_generative(self, seq, noise):
-        net = tf.concat([seq, noise], axis=1, name='noise_vector')
+        #net = tf.concat([seq, noise], axis=1, name='noise_vector')
+        net = seq + noise
         print(net.name, net.shape)
         net = tf.layers.dense(
             inputs=net, 
@@ -256,30 +257,41 @@ class GAN(BasicGAN):
             name='conv3'
         )
         print(net.name, net.shape)
-        seq_vectors = tf.expand_dims(tf.expand_dims(seq, 1), 2)
-        seq_vectors = tf.tile(seq_vectors, [1, 12, 12, 1])
-        net = tf.concat([net, seq_vectors], axis=-1, name='concat_condition')
-        print(net.name, net.shape)
         net = tf.layers.conv2d(
             inputs=net, 
-            filters=128, 
-            kernel_size=(1, 1), 
-            strides=(1, 1), 
+            filters=256, 
+            kernel_size=(5, 5), 
+            strides=(2, 2), 
             padding='same',
             activation=self.leaky_relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv4'
         )
         print(net.name, net.shape)
+        seq_vectors = tf.expand_dims(tf.expand_dims(seq, 1), 2)
+        seq_vectors = tf.tile(seq_vectors, [1, 6, 6, 1])
+        net = tf.concat([net, seq_vectors], axis=-1, name='concat_condition')
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(
+            inputs=net, 
+            filters=256, 
+            kernel_size=(1, 1), 
+            strides=(1, 1), 
+            padding='same',
+            activation=self.leaky_relu,
+            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+            name='conv5'
+        )
+        print(net.name, net.shape)
         net = tf.layers.conv2d(
             inputs=net, 
             filters=1, 
-            kernel_size=(12, 12), 
+            kernel_size=(6, 6), 
             strides=(1, 1), 
             padding='valid',
             activation=None,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv5'
+            name='conv6'
         )
         print(net.name, net.shape)
         net = tf.squeeze(net, [1, 2, 3], name='squeeze')
