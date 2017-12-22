@@ -11,7 +11,7 @@ output_dir = './samples/'
 special_text_path = './special_text.txt'
 
 # load data
-train_imgs, train_sents = load_train_data(imgs_dir, tags_path, max_data_len=100)
+train_imgs, train_sents = load_train_data(imgs_dir, tags_path, max_data_len=None)
 train_sents, word2idx = sent2vec(train_sents)
 
 test_sents = load_test_data(special_text_path)
