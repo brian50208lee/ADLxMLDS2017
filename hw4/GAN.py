@@ -150,7 +150,6 @@ class GAN(BasicGAN):
 
     def _net_generative(self, seq, noise):
         net = tf.concat([seq, noise], axis=1, name='noise_vector')
-        net = seq + noise
         print(net.name, net.shape)
         net = tf.layers.dense(
             inputs=net, 
