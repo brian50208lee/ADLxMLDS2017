@@ -8,7 +8,7 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=50,
+        noise_len=20,
         g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         summary_path=None
@@ -30,7 +30,7 @@ class BasicGAN(object):
         self._build_clip_parms() # WGAN
 
         # noise sampler
-        self.noise_sampler = stats.truncnorm(0.0, 1.0, loc=0.5, scale=1.0)
+        self.noise_sampler = stats.truncnorm(-1.0, 1.0, loc=0.0, scale=1.0)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
