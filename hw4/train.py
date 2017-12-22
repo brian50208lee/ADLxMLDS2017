@@ -24,7 +24,7 @@ print('train sents:', train_sents.shape)
 print('test sents:', test_sents.shape)
 
 inputs_shape = (96, 96, 3)
-seq_vec_len = 96
+seq_vec_len = 64
 model = GAN(
 	        inputs_shape,
         	seq_vec_len,
