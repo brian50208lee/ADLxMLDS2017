@@ -26,10 +26,8 @@ class BasicGAN(object):
         self._build_model()
         self._build_loss()
         self._build_optimize()
-        self._build_clip_parms() # WGAN
 
         # noise sampler
-        #self.noise_sampler = lambda size: np.random.uniform(low=-1.0, high=1.0, size=size)
         self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
 
         # saver
@@ -55,10 +53,10 @@ class BasicGAN(object):
         self.r_img = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='real_image')
         self.w_img = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='wrong_image')
 
-    def _net_generative(self, seq, noise):
+    def _net_generative(self, seq, noise, training):
         raise NotImplementedError()    
 
-    def _net_discriminative(self, seq, img):
+    def _net_discriminative(self, seq, img, training):
         raise NotImplementedError()
 
     def _build_model(self):
@@ -76,20 +74,11 @@ class BasicGAN(object):
 
     def _build_loss(self):
         with tf.variable_scope('loss'):
-            # GAN loss
             self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
             self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
                         + (tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) + \
                            tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) + \
                            tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))) / 3 
-            '''
-            # WGAN loss
-            self.g_loss = -tf.reduce_mean(self.d_net_rf)
-            self.d_loss = -tf.reduce_mean(self.d_net_rr) \
-                        + (tf.reduce_mean(self.d_net_rf) + \
-                           tf.reduce_mean(self.d_net_wr) + \
-                           tf.reduce_mean(self.d_net_rw)) / 3
-            '''
     
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
@@ -98,11 +87,6 @@ class BasicGAN(object):
             self.g_train_op = self.g_optimizer.minimize(self.g_loss, var_list=self.g_vars)
             self.d_train_op = self.d_optimizer.minimize(self.d_loss, var_list=self.d_vars)
             
-    def _build_clip_parms(self):
-        # WGAN clip
-        with tf.variable_scope('d_clip_op'):
-            self.d_clip_op = [v.assign(tf.clip_by_value(v, -0.01, 0.01)) for v in self.d_vars]
-
     def _build_summary(self):
         if self.summary_path:
             fake_img = tf.image.resize_images(self.f_img, [64,64])
@@ -113,32 +97,18 @@ class BasicGAN(object):
     def train(self, train, valid_seqs=None, max_batch_num=300000, batch_size=64, summary_every=100):
         imgs, seqs = train
         for batch in range(max_batch_num):
-            for _ in range(1): # train descrimenator
-                r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
-                w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
-                g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
-                _, d_loss = self.sess.run([self.d_train_op, self.d_loss],
-                                          feed_dict={
-                                                self.training: True,
-                                                self.g_noise: g_noise,
-                                                self.r_seq: seqs[r_idx],
-                                                self.r_img: imgs[r_idx],
-                                                self.w_seq: seqs[w_idx],
-                                                self.w_img: imgs[w_idx]
-                                          })
-            for _ in range(1): # train generator
-                r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
-                w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
-                g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
-                _, g_loss = self.sess.run([self.g_train_op, self.g_loss],
-                                          feed_dict={
-                                                self.training: True,
-                                                self.g_noise: g_noise,
-                                                self.r_seq: seqs[r_idx],
-                                                self.r_img: imgs[r_idx],
-                                                self.w_seq: seqs[w_idx],
-                                                self.w_img: imgs[w_idx]
-                                          })
+            r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
+            w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
+            g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
+            _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.d_loss, self.g_loss],
+                                                  feed_dict={
+                                                        self.training: True,
+                                                        self.g_noise: g_noise,
+                                                        self.r_seq: seqs[r_idx],
+                                                        self.r_img: imgs[r_idx],
+                                                        self.w_seq: seqs[w_idx],
+                                                        self.w_img: imgs[w_idx]
+                                                  })
             print('batch:{} d_loss: {} g_loss: {}'.format(batch, d_loss, g_loss))
             if valid_seqs is not None and batch % summary_every == 0: # summary
                 self.summary(step=batch, seqs=valid_seqs)
@@ -165,7 +135,6 @@ class BasicGAN(object):
         self.saver.restore(self.sess, checkpoint_file_path)
         print('Model restored from: {}'.format(checkpoint_file_path))
 
-
 class GAN(BasicGAN):
     def leaky_relu(self, x, alpha=0.2):
         return tf.maximum(tf.minimum(0.0, alpha*x), x)
@@ -182,7 +151,6 @@ class GAN(BasicGAN):
         condition = tf.tile(condition, [1] + img_shape + [1])
         concat = tf.concat([img, condition], axis=3)
         return concat
-
 
     def _net_generative(self, seq, noise, training):
         net = tf.concat([noise, seq], axis=1, name='noise_vector')
@@ -245,4 +213,3 @@ class GAN(BasicGAN):
         print(net.name, net.shape)
 
         return net
-
