@@ -7,9 +7,9 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=1000,
-        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
-        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        noise_len=20,
+        g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
+        d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         summary_path=None
     ):  
         # params
@@ -45,6 +45,8 @@ class BasicGAN(object):
         self._build_summary()
 
     def _build_placeholder(self):
+        self.training = tf.placeholder(tf.bool)
+        
         self.g_noise = tf.placeholder(tf.float32, [None, self.noise_len], name='generative_noise')
         
         self.r_seq = tf.placeholder(tf.float32, [None, self.seq_vec_len], name='real_sequence')
@@ -56,18 +58,21 @@ class BasicGAN(object):
     def _net_generative(self, seq, noise):
         raise NotImplementedError()    
 
-    def _net_discriminative(self, seq, img, reuse=False):
+    def _net_discriminative(self, seq, img):
         raise NotImplementedError()
 
     def _build_model(self):
         with tf.variable_scope('generative_net'):
-            self.g_net = self._net_generative(self.r_seq, self.g_noise)
+            self.g_net = self._net_generative(self.r_seq, self.g_noise, self.training)
             self.f_img = self.g_net # fake image
         with tf.variable_scope('discriminative_net'):
-            self.d_net_rr = self._net_discriminative(self.r_seq, self.r_img) # real sequence, real image -> 1
-            self.d_net_rf = self._net_discriminative(self.r_seq, self.f_img, reuse=True) # real sequence, fake image -> 0
-            self.d_net_wr = self._net_discriminative(self.w_seq, self.r_img, reuse=True) # wrong sequence, real image -> 0
-            self.d_net_rw = self._net_discriminative(self.r_seq, self.w_img, reuse=True) # real sequence, wrong image -> 0
+            self.d_net_rr = self._net_discriminative(self.r_seq, self.r_img, self.training) # real sequence, real image -> 1
+        with tf.variable_scope('discriminative_net', reuse=True):
+            self.d_net_rf = self._net_discriminative(self.r_seq, self.f_img, self.training) # real sequence, fake image -> 0
+        with tf.variable_scope('discriminative_net', reuse=True):
+            self.d_net_wr = self._net_discriminative(self.w_seq, self.r_img, self.training) # wrong sequence, real image -> 0
+        with tf.variable_scope('discriminative_net', reuse=True):
+            self.d_net_rw = self._net_discriminative(self.r_seq, self.w_img, self.training) # real sequence, wrong image -> 0
 
     def _build_loss(self):
         with tf.variable_scope('loss'):
@@ -108,39 +113,45 @@ class BasicGAN(object):
     def train(self, train, valid_seqs=None, max_batch_num=300000, batch_size=64, summary_every=100):
         imgs, seqs = train
         for batch in range(max_batch_num):
-            '''
-            for _ in range(3):
+            for _ in range(1): # train descrimenator
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
-                _, d_loss, _ = self.sess.run([self.d_train_op, self.d_loss, self.d_clip_op],
-                                              feed_dict={
-                                                    self.g_noise: self.noise_sampler([batch_size, self.noise_len]),
-                                                    self.r_seq: seqs[r_idx],
-                                                    self.r_img: imgs[r_idx],
-                                                    self.w_seq: seqs[w_idx],
-                                                    self.w_img: imgs[w_idx]
-                                              })
-            '''
-            r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
-            w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
-            _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
-                                       feed_dict={
-                                            self.g_noise: self.noise_sampler([batch_size, self.noise_len]),
-                                            self.r_seq: seqs[r_idx],
-                                            self.r_img: imgs[r_idx],
-                                            self.w_seq: seqs[w_idx],
-                                            self.w_img: imgs[w_idx]
-                                       })
+                g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
+                _, d_loss = self.sess.run([self.d_train_op, self.d_loss],
+                                          feed_dict={
+                                                self.training: True,
+                                                self.g_noise: g_noise,
+                                                self.r_seq: seqs[r_idx],
+                                                self.r_img: imgs[r_idx],
+                                                self.w_seq: seqs[w_idx],
+                                                self.w_img: imgs[w_idx]
+                                          })
+            for _ in range(1): # train generator
+                r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
+                w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
+                g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
+                _, g_loss = self.sess.run([self.g_train_op, self.g_loss],
+                                          feed_dict={
+                                                self.training: True,
+                                                self.g_noise: g_noise,
+                                                self.r_seq: seqs[r_idx],
+                                                self.r_img: imgs[r_idx],
+                                                self.w_seq: seqs[w_idx],
+                                                self.w_img: imgs[w_idx]
+                                          })
             print('batch:{} d_loss: {} g_loss: {}'.format(batch, d_loss, g_loss))
-            if valid_seqs is not None and batch % summary_every == 0:
-                self.summary(batch, valid_seqs)
+            if valid_seqs is not None and batch % summary_every == 0: # summary
+                self.summary(step=batch, seqs=valid_seqs)
 
     def summary(self, step, seqs):
         if self.summary_path:
+            r_idx = range(len(seqs)) # real
+            g_noise = self.noise_sampler([len(seqs), self.noise_len]) # noise
             result = self.sess.run(self.summary_op, 
                                    feed_dict={
-                                        self.g_noise: self.noise_sampler([len(seqs), self.noise_len]),
-                                        self.r_seq: seqs
+                                        self.training: False,
+                                        self.g_noise: g_noise,
+                                        self.r_seq: seqs[r_idx]
                                    })
             self.summary_writer.add_summary(result, step)
 
@@ -156,154 +167,67 @@ class BasicGAN(object):
 
 
 class GAN(BasicGAN):
-    def leaky_relu(self, x, alpha=0.1):
+    def leaky_relu(self, x, alpha=0.2):
         return tf.maximum(tf.minimum(0.0, alpha*x), x)
 
-    def _net_generative(self, seq, noise):
-        net = tf.concat([seq, noise], axis=1, name='noise_vector')
+    def _net_generative(self, seq, noise, training):
+        net = tf.concat([noise, seq], axis=1, name='noise_vector')
         print(net.name, net.shape)
-        net = tf.layers.dense(
-            inputs=net, 
-            units=3*3*256,
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer(),
-            name='fc1'
-        )
+        net = tf.layers.dense(net, 3*3*256, name='fc1')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = tf.nn.relu(net)
         net = tf.reshape(net, [-1, 3, 3, 256])
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(
-            inputs=net, 
-            filters=256, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv2'
-        )
+        net = tf.layers.conv2d_transpose(net, 256, (5, 5), strides=(2, 2), padding='same',name='conv2')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = tf.nn.relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(
-            inputs=net, 
-            filters=128, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv3'
-        )
+        net = tf.layers.conv2d_transpose(net, 128, (5, 5), strides=(2, 2), padding='same',name='conv3')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = tf.nn.relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(
-            inputs=net, 
-            filters=64, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv4'
-        )
+        net = tf.layers.conv2d_transpose(net, 64, (5, 5), strides=(2, 2), padding='same',name='conv4')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = tf.nn.relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(
-            inputs=net, 
-            filters=32, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv5'
-        )
+        net = tf.layers.conv2d_transpose(net, 32, (5, 5), strides=(2, 2), padding='same',name='conv5')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = tf.nn.relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(
-            inputs=net, 
-            filters=3, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=tf.nn.sigmoid,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv6'
-        )
+        net = tf.layers.conv2d_transpose(net, 3, (5, 5), strides=(2, 2), padding='same',name='conv6')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = tf.nn.sigmoid(net)
         print(net.name, net.shape)
         return net
 
-    def _net_discriminative(self, seq, img, reuse=False):
-        if reuse == True:
-           tf.get_variable_scope().reuse_variables()
-
+    def _net_discriminative(self, seq, img, training):
         net = img
         print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=32, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv1'
-        )
+        net = tf.layers.conv2d(net, 32, (5, 5), strides=(2, 2), padding='same',name='conv1')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = self.leaky_relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=64, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv2'
-        )
+        net = tf.layers.conv2d(net, 64, (5, 5), strides=(2, 2), padding='same',name='conv2')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = self.leaky_relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=128, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv3'
-        )
+        net = tf.layers.conv2d(net, 128, (5, 5), strides=(2, 2), padding='same',name='conv3')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = self.leaky_relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=256, 
-            kernel_size=(5, 5), 
-            strides=(2, 2), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv4'
-        )
+        net = tf.layers.conv2d(net, 256, (5, 5), strides=(2, 2), padding='same',name='conv4')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = self.leaky_relu(net)
         print(net.name, net.shape)
         seq_vectors = tf.expand_dims(tf.expand_dims(seq, 1), 2)
         seq_vectors = tf.tile(seq_vectors, [1, 6, 6, 1])
         net = tf.concat([net, seq_vectors], axis=-1, name='concat_condition')
         print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=256, 
-            kernel_size=(1, 1), 
-            strides=(1, 1), 
-            padding='same',
-            activation=self.leaky_relu,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv5'
-        )
+        net = tf.layers.conv2d(net, 256, (1, 1), strides=(1, 1), padding='same',name='conv5')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = self.leaky_relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d(
-            inputs=net, 
-            filters=1, 
-            kernel_size=(6, 6), 
-            strides=(1, 1), 
-            padding='valid',
-            activation=None,
-            kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-            name='conv6'
-        )
-        print(net.name, net.shape)
+        net = tf.layers.conv2d(net, 1, (6, 6), strides=(1, 1), padding='valid',name='conv6')
         net = tf.squeeze(net, [1, 2, 3], name='squeeze')
         print(net.name, net.shape)
 
