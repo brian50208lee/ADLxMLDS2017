@@ -219,7 +219,6 @@ class GAN(BasicGAN):
         print(net.name, net.shape)
         net = tf.layers.conv2d(net, 32, (5, 5), strides=(2, 2), padding='same',name='conv1')
         net = tf.layers.batch_normalization(net, training=training)
-        net = self.img_condition_concat(net, seq) # concat condition
         net = self.leaky_relu(net)
         print(net.name, net.shape)
         net = tf.layers.conv2d(net, 64, (5, 5), strides=(2, 2), padding='same',name='conv2')
@@ -234,7 +233,8 @@ class GAN(BasicGAN):
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         print(net.name, net.shape)
-        net = tf.layers.conv2d(net, 4, (1, 1), strides=(1, 1), padding='same',name='conv5')
+        net = self.img_condition_concat(net, seq) # concat condition
+        net = tf.layers.conv2d(net, 128, (1, 1), strides=(1, 1), padding='same',name='conv5')
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         print(net.name, net.shape)
