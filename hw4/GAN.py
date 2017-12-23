@@ -130,7 +130,7 @@ class BasicGAN(object):
                                             #self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
                                             self.g_noise: np.random.uniform(-1.0, 1.0, size=[batch_size, self.noise_len]).astype(np.float32),
                                             self.r_seq: seqs[r_idx],
-                                            self.r_img: imgs[r_idx]
+                                            self.r_img: imgs[r_idx],
                                             self.w_seq: seqs[w_idx],
                                             self.w_img: imgs[w_idx]
                                        })
@@ -143,7 +143,8 @@ class BasicGAN(object):
         if self.summary_path:
             result = self.sess.run(self.summary_op, 
                                    feed_dict={
-                                        self.g_noise: self.noise_sampler.rvs([len(seqs), self.noise_len]),
+                                        #self.g_noise: self.noise_sampler.rvs([len(seqs), self.noise_len]),
+                                        self.g_noise: np.random.uniform(-1.0, 1.0, size=[batch_size, self.noise_len]).astype(np.float32),
                                         self.r_seq: seqs
                                    })
             self.summary_writer.add_summary(result, step)
