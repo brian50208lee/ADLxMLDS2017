@@ -113,6 +113,7 @@ class BasicGAN(object):
     def train(self, train, valid_seqs=None, max_batch_num=300000, batch_size=64, summary_every=100):
         imgs, seqs = train
         for batch in range(max_batch_num):
+            '''
             for _ in range(1): # train descrimenator
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
@@ -126,11 +127,12 @@ class BasicGAN(object):
                                                 self.w_seq: seqs[w_idx],
                                                 self.w_img: imgs[w_idx]
                                           })
+            '''
             for _ in range(1): # train generator
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
                 g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
-                _, g_loss = self.sess.run([self.g_train_op, self.g_loss],
+                _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.d_loss, self.g_loss],
                                           feed_dict={
                                                 self.training: True,
                                                 self.g_noise: g_noise,
