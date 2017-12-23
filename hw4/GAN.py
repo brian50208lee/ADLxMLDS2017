@@ -1,14 +1,13 @@
 import os
 import numpy as np
 import tensorflow as tf
-from scipy import stats
 
 class BasicGAN(object):
     def __init__(
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=20,
+        noise_len=1000,
         g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         summary_path=None
@@ -30,7 +29,7 @@ class BasicGAN(object):
         self._build_clip_parms() # WGAN
 
         # noise sampler
-        self.noise_sampler = stats.truncnorm(-1.0, 1.0, loc=0.0, scale=1.0)
+        self.noise_sampler = lambda size: np.random.uniform(-1.0, 1.0, size=size)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -71,7 +70,6 @@ class BasicGAN(object):
 
     def _build_loss(self):
         with tf.variable_scope('loss'):
-            
             # GAN loss
             self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
             self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
@@ -106,7 +104,7 @@ class BasicGAN(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
-    def train(self, train, max_batch_num=300000, valid_seqs=None, batch_size=64, summary_every=500):
+    def train(self, train, valid_seqs=None, max_batch_num=300000, batch_size=64, summary_every=500):
         imgs, seqs = train
         for batch in range(max_batch_num):
             '''
@@ -115,8 +113,7 @@ class BasicGAN(object):
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
                 _, d_loss, _ = self.sess.run([self.d_train_op, self.d_loss, self.d_clip_op],
                                               feed_dict={
-                                                    #self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
-                                                    self.g_noise: np.random.uniform(-1.0, 1.0, size=[batch_size, self.noise_len]).astype(np.float32),
+                                                    self.g_noise: self.noise_sampler([batch_size, self.noise_len]),
                                                     self.r_seq: seqs[r_idx],
                                                     self.r_img: imgs[r_idx],
                                                     self.w_seq: seqs[w_idx],
@@ -127,14 +124,12 @@ class BasicGAN(object):
             w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
             _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
                                        feed_dict={
-                                            #self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
-                                            self.g_noise: np.random.uniform(-1.0, 1.0, size=[batch_size, self.noise_len]).astype(np.float32),
+                                            self.g_noise: self.noise_sampler([batch_size, self.noise_len]),
                                             self.r_seq: seqs[r_idx],
                                             self.r_img: imgs[r_idx],
                                             self.w_seq: seqs[w_idx],
                                             self.w_img: imgs[w_idx]
                                        })
-
             print('batch:{} d_loss: {} g_loss: {}'.format(batch, d_loss, g_loss))
             if valid_seqs is not None and batch % summary_every == 0:
                 self.summary(batch, valid_seqs)
@@ -143,8 +138,7 @@ class BasicGAN(object):
         if self.summary_path:
             result = self.sess.run(self.summary_op, 
                                    feed_dict={
-                                        #self.g_noise: self.noise_sampler.rvs([len(seqs), self.noise_len]),
-                                        self.g_noise: np.random.uniform(-1.0, 1.0, size=[len(seqs), self.noise_len]).astype(np.float32),
+                                        self.g_noise: self.noise_sampler([len(seqs), self.noise_len]),
                                         self.r_seq: seqs
                                    })
             self.summary_writer.add_summary(result, step)
