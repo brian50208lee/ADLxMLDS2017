@@ -29,7 +29,8 @@ class BasicGAN(object):
         self._build_clip_parms() # WGAN
 
         # noise sampler
-        self.noise_sampler = lambda size: np.random.uniform(-1.0, 1.0, size=size)
+        #self.noise_sampler = lambda size: np.random.uniform(low=-1.0, high=1.0, size=size)
+        self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -104,7 +105,7 @@ class BasicGAN(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
-    def train(self, train, valid_seqs=None, max_batch_num=300000, batch_size=64, summary_every=500):
+    def train(self, train, valid_seqs=None, max_batch_num=300000, batch_size=64, summary_every=100):
         imgs, seqs = train
         for batch in range(max_batch_num):
             '''
