@@ -71,7 +71,7 @@ class BasicGAN(object):
 
     def _build_loss(self):
         with tf.variable_scope('loss'):
-            '''
+            
             # GAN loss
             self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
             self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
@@ -85,7 +85,7 @@ class BasicGAN(object):
                         + (tf.reduce_mean(self.d_net_rf) + \
                            tf.reduce_mean(self.d_net_wr) + \
                            tf.reduce_mean(self.d_net_rw)) / 3
-            
+            '''
     
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
@@ -109,6 +109,7 @@ class BasicGAN(object):
     def train(self, train, max_batch_num=100000, valid_seqs=None, batch_size=64, summary_every=50):
         imgs, seqs = train
         for batch in range(max_batch_num):
+            '''
             for _ in range(3):
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
@@ -121,16 +122,17 @@ class BasicGAN(object):
                                                     self.w_seq: seqs[w_idx],
                                                     self.w_img: imgs[w_idx]
                                               })
+            '''
             r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
             w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
-            _, g_loss = self.sess.run([self.g_train_op, self.g_loss],
+            _, _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.g_train_op, self.d_loss, self.g_loss],
                                        feed_dict={
                                             #self.g_noise: self.noise_sampler.rvs([batch_size, self.noise_len]),
                                             self.g_noise: np.random.uniform(-1.0, 1.0, size=[batch_size, self.noise_len]).astype(np.float32),
                                             self.r_seq: seqs[r_idx],
                                             self.r_img: imgs[r_idx]
-                                            #self.w_seq: seqs[w_idx],
-                                            #self.w_img: imgs[w_idx]
+                                            self.w_seq: seqs[w_idx],
+                                            self.w_img: imgs[w_idx]
                                        })
 
             print('batch:{} d_loss: {} g_loss: {}'.format(batch, d_loss, g_loss))
@@ -179,7 +181,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=tf.nn.relu,
+            activation=self.leaky_relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv2'
         )
@@ -190,7 +192,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=tf.nn.relu,
+            activation=self.leaky_relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv3'
         )
@@ -201,7 +203,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=tf.nn.relu,
+            activation=self.leaky_relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv4'
         )
@@ -212,7 +214,7 @@ class GAN(BasicGAN):
             kernel_size=(5, 5), 
             strides=(2, 2), 
             padding='same',
-            activation=tf.nn.relu,
+            activation=self.leaky_relu,
             kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
             name='conv5'
         )
