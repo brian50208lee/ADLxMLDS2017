@@ -238,18 +238,29 @@ class GAN(BasicGAN):
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         print(net.name, net.shape)
+        net = self.img_condition_concat(net, seq) # concat condition
         net = tf.layers.conv2d(net, 64, (1, 1), strides=(1, 1), padding='same',name='conv6')
-        net = tf.layers.batch_normalization(net, training=training)
-        net = self.leaky_relu(net)
-        print(net.name, net.shape)
-        net = tf.layers.conv2d(net, 32, (1, 1), strides=(1, 1), padding='same',name='conv7')
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         print(net.name, net.shape)
         net = tf.contrib.layers.flatten(net) # flatten
         print(net.name, net.shape)
-        net = tf.layers.dense(net, 1, name='fc8') # dense
+        net = tf.layers.dense(net, 1, name='fc6') # dense
         print(net.name, net.shape)
+
+        '''
+        seq_vectors = tf.expand_dims(tf.expand_dims(seq, 1), 2)
+        seq_vectors = tf.tile(seq_vectors, [1, 6, 6, 1])
+        net = tf.concat([net, seq_vectors], axis=-1)
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(net, 256, (1, 1), strides=(1, 1), padding='same',name='conv5')
+        net = tf.layers.batch_normalization(net, training=training)
+        net = self.leaky_relu(net)
+        print(net.name, net.shape)
+        net = tf.layers.conv2d(net, 1, (6, 6), strides=(1, 1), padding='valid',name='conv6')
+        net = tf.squeeze(net, [1, 2, 3], name='squeeze')
+        print(net.name, net.shape)
+        '''
 
         return net
 
