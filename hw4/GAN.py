@@ -7,9 +7,9 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=100,
-        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
-        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        noise_len=30,
+        g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
+        d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         summary_path=None
     ):  
         # params
@@ -90,7 +90,7 @@ class BasicGAN(object):
             
     def _build_summary(self):
         if self.summary_path:
-            fake_img = tf.image.resize_images(self.f_img, [64,64])
+            fake_img = tf.image.resize_images(self.f_img, [64,64])/2 + 0.5
             tf.summary.image('fake_img', fake_img, max_outputs=100)
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
@@ -201,10 +201,10 @@ class GAN(BasicGAN):
         net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
         # --------- layer6 ----------
-        net = tf.layers.conv2d_transpose(net, 3, (5, 5), strides=(2, 2), padding='same', name='deconv6')
+        net = tf.layers.conv2d_transpose(net, 3, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv6')
         print(net.name, net.shape)
         # --------- output ----------
-        net = tf.nn.sigmoid(net)
+        net = tf.nn.tanh(net)
         net = tf.identity(net, name='output')
         print(net.name, net.shape)
 
@@ -245,7 +245,7 @@ class GAN(BasicGAN):
         net = self.leaky_relu(net)
         # --------- layer6 ----------
         final_shape = net.shape.as_list()[1:-1] # discrimenative
-        net = tf.layers.conv2d(net, 1, final_shape, strides=(1, 1), padding='valid', name='conv6')
+        net = tf.layers.conv2d(net, 1, final_shape, strides=(1, 1), padding='valid', use_bias=use_bias, name='conv6')
         print(net.name, net.shape)
         # --------- output ----------
         net = tf.squeeze(net, [1, 2, 3], name='output')
