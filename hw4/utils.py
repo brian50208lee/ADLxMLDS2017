@@ -48,7 +48,7 @@ def load_train_data(imgs_dir, tags_path, imresize_shape=[96,96,3], filter_tag=Tr
             if max_data_len and len(X) >= max_data_len:
                 break
 
-    return np.array(X, dtype=np.float32)/255. - 0.5, Y
+    return np.array(X, dtype=np.float32)/172.5 - 1.0, Y
 
 def load_test_data(sents_path):
 	test = []
