@@ -7,7 +7,7 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=30,
+        noise_len=100,
         g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         summary_path=None
@@ -125,8 +125,8 @@ class BasicGAN(object):
                                                 self.r_img: imgs[r_idx],
                                           })
             print('batch:{} d_loss: {} g_loss: {} g_iter: {}'.format(batch, d_loss, g_loss, g_iter))
-            if batch % 50 == 0 and g_loss > 3: g_iter += 1
-            if batch % 50 == 0 and g_loss < 1: g_iter -= 1
+            if batch % 100 == 0 and g_loss > 2: g_iter += 1
+            if batch % 100 == 0 and g_loss < 1: g_iter -= 1
             if valid_seqs is not None and batch % summary_every == 0: # summary
                 self.summary(step=batch, seqs=valid_seqs)
 

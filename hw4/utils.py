@@ -37,12 +37,13 @@ def load_train_data(imgs_dir, tags_path, imresize_shape=[96,96,3], filter_tag=Tr
                 tags = [hair_tags, eyes_tags]
                 random.shuffle(tags)
             sent = [tag_name for tag_name, tag_num in tags]
-            sent = ' '.join(sent)
-            Y.append(sent)
+            Y.append(' '.join(sent))
+            Y.append(' '.join(list(reversed(sent))))
             # parse img
             img_path = os.path.join(imgs_dir, '{}.jpg'.format(img_id))
             img = misc.imread(img_path)
             img = misc.imresize(img, imresize_shape)
+            X.append(img)
             X.append(img)
             # max data length
             if max_data_len and len(X) >= max_data_len:
