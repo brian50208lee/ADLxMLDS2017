@@ -172,39 +172,30 @@ class GAN(BasicGAN):
 
     def _net_generative(self, seq, noise, training, use_bias=False):
         # --------- input ----------
-        net = tf.concat([noise, seq], axis=1)
-        '''
-        net = tf.expand_dims(tf.expand_dims(net, 1), 2, name='input')
-        '''
+        net = tf.concat([noise, seq], axis=1, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        '''
-        net = tf.layers.conv2d_transpose(net, 512, (3, 3), strides=(1, 1), padding='valid', use_bias=use_bias, name='deconv1')
-        '''
-        net = tf.nn.dense(net, 3*3*512, name='fc1')
+        net = tf.layers.dense(net, 1024)
+        net = tf.nn.relu(net)
+        net = tf.layers.dense(net, 3*3*512)
+        net = tf.reshape(net, [-1,3,3,512], name='project1')
         print(net.name, net.shape)
-        net = tf.reshape(net, [-1,3,3,512])
-        net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
         # --------- layer2 ----------
         net = tf.layers.conv2d_transpose(net, 256, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv2')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
         # --------- layer3 ----------
         net = tf.layers.conv2d_transpose(net, 128, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv3')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
         # --------- layer4 ----------
         net = tf.layers.conv2d_transpose(net, 64, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv4')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
         # --------- layer5 ----------
         net = tf.layers.conv2d_transpose(net, 32, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv5')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
         # --------- layer6 ----------
         net = tf.layers.conv2d_transpose(net, 3, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv6')
