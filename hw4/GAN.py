@@ -7,9 +7,9 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=20,
-        g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.5),
-        d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.5),
+        noise_len=100,
+        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         summary_path=None
     ):  
         # params
@@ -95,10 +95,12 @@ class BasicGAN(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
-    def train(self, train, valid_seqs=None, max_batch_num=300000, batch_size=64, summary_every=100):
+    def train(self, train, valid_seqs=None, max_batch_num=150000, batch_size=64, summary_every=100):
         imgs, seqs = train
+        d_iter, g_iter = 1, 1
         for batch in range(max_batch_num):
-            for _ in range(1): # discimenator iter
+            g_iter = max(min(g_iter, 5), 1)
+            for _ in range(d_iter): # discimenator iter
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
                 g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
@@ -111,7 +113,7 @@ class BasicGAN(object):
                                                 self.w_seq: seqs[w_idx],
                                                 self.w_img: imgs[w_idx]
                                           })
-            for _ in range(2): # generator iter
+            for _ in range(g_iter): # generator iter
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
                 g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
@@ -122,7 +124,9 @@ class BasicGAN(object):
                                                 self.r_seq: seqs[r_idx],
                                                 self.r_img: imgs[r_idx],
                                           })
-            print('batch:{} d_loss: {} g_loss: {}'.format(batch, d_loss, g_loss))
+            print('batch:{} d_loss: {} g_loss: {} g_iter: {}'.format(batch, d_loss, g_loss, g_iter))
+            if batch % 50 == 0 and g_loss > 3: g_iter += 1
+            if batch % 50 == 0 and g_loss < 1: g_iter -= 1
             if valid_seqs is not None and batch % summary_every == 0: # summary
                 self.summary(step=batch, seqs=valid_seqs)
 
@@ -236,7 +240,7 @@ class GAN(BasicGAN):
         net = tf.identity(net, name='concat_condition')
         print(net.name, net.shape)
         # --------- layer5 ----------
-        net = tf.layers.conv2d(net, 128, (1, 1), strides=(1, 1), padding='same', name='conv5')
+        net = tf.layers.conv2d(net, 256, (1, 1), strides=(1, 1), padding='same', name='conv5')
         print(net.name, net.shape)
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
