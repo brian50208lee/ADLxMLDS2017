@@ -172,13 +172,12 @@ class GAN(BasicGAN):
 
     def _net_generative(self, seq, noise, training, use_bias=False):
         # --------- input ----------
-        net = tf.concat([noise, seq], axis=1, name='input')
+        net = tf.identity(noise, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        net = tf.layers.dense(net, 1024)
-        net = tf.nn.relu(net)
         net = tf.layers.dense(net, 3*3*512)
         net = tf.reshape(net, [-1,3,3,512], name='project1')
+        net = self.img_condition_concat(net, seq)
         print(net.name, net.shape)
         net = tf.nn.relu(net)
         # --------- layer2 ----------
