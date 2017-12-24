@@ -203,7 +203,6 @@ class GAN(BasicGAN):
         # --------- layer6 ----------
         net = tf.layers.conv2d_transpose(net, 3, (5, 5), strides=(2, 2), padding='same', name='deconv6')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         # --------- output ----------
         net = tf.nn.sigmoid(net)
         net = tf.identity(net, name='output')
