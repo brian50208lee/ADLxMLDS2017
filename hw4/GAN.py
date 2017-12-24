@@ -7,7 +7,7 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=50,
+        noise_len=100,
         g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         summary_path=None
@@ -77,9 +77,9 @@ class BasicGAN(object):
         with tf.variable_scope('loss'):
             self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
             self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
-                        + (tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) + \
-                           tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) + \
-                           tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))) / 3 
+                        + tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf)))/3 \
+                        + tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr)))/3 \
+                        + tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))/3 
     
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
@@ -125,8 +125,8 @@ class BasicGAN(object):
                                                 self.r_img: imgs[r_idx],
                                           })
             print('batch:{} d_loss: {} g_loss: {} g_iter: {}'.format(batch, d_loss, g_loss, g_iter))
-            if batch % 100 == 0 and g_loss > 2: g_iter += 1
-            if batch % 100 == 0 and g_loss < 1: g_iter -= 1
+            if batch % 50 == 0 and g_loss > 4: g_iter += 1
+            if batch % 50 == 0 and g_loss < 1: g_iter -= 1
             if valid_seqs is not None and batch % summary_every == 0: # summary
                 self.summary(step=batch, seqs=valid_seqs)
 
@@ -172,15 +172,11 @@ class GAN(BasicGAN):
 
     def _net_generative(self, seq, noise, training, use_bias=False):
         # --------- input ----------
-        net = tf.expand_dims(tf.expand_dims(noise, 1), 2)
-        net = tf.identity(net, name='input')
+        net = tf.concat([noise, seq], axis=1)
+        net = tf.expand_dims(tf.expand_dims(net, 1), 2, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        net = tf.layers.conv2d_transpose(net, 512, (3, 3), strides=(1, 1), padding='valid', use_bias=True, name='deconv1')
-        print(net.name, net.shape)
-        # --------- concat ----------
-        net = self.img_condition_concat(net, seq)
-        net = tf.identity(net, name='concat_condition')
+        net = tf.layers.conv2d_transpose(net, 512, (3, 3), strides=(1, 1), padding='valid', use_bias=use_bias, name='deconv1')
         print(net.name, net.shape)
         net = tf.nn.relu(net)
         # --------- layer2 ----------
