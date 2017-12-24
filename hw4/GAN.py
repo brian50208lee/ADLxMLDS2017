@@ -7,7 +7,7 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
-        noise_len=100,
+        noise_len=50,
         g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         summary_path=None
