@@ -8,8 +8,8 @@ class BasicGAN(object):
         inputs_shape,
         seq_vec_len,
         noise_len=20,
-        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
-        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.5),
+        d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.5),
         summary_path=None
     ):  
         # params
@@ -28,8 +28,8 @@ class BasicGAN(object):
         self._build_optimize()
 
         # noise sampler
-        #self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
-        self.noise_sampler = lambda size: np.random.uniform(low=0.0, high=1.0, size=size)
+        self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
+        #self.noise_sampler = lambda size: np.random.uniform(low=0.0, high=1.0, size=size)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
