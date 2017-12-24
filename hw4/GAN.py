@@ -173,11 +173,17 @@ class GAN(BasicGAN):
     def _net_generative(self, seq, noise, training, use_bias=False):
         # --------- input ----------
         net = tf.concat([noise, seq], axis=1)
+        '''
         net = tf.expand_dims(tf.expand_dims(net, 1), 2, name='input')
+        '''
         print(net.name, net.shape)
         # --------- layer1 ----------
+        '''
         net = tf.layers.conv2d_transpose(net, 512, (3, 3), strides=(1, 1), padding='valid', use_bias=use_bias, name='deconv1')
+        '''
+        net = tf.nn.dense(net, 3*3*512, name='fc1')
         print(net.name, net.shape)
+        net = tf.reshape(net, [-1,3,3,512])
         net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
         # --------- layer2 ----------
