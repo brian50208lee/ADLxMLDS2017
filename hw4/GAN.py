@@ -8,8 +8,8 @@ class BasicGAN(object):
         inputs_shape,
         seq_vec_len,
         noise_len=20,
-        g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
-        d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
+        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         summary_path=None
     ):  
         # params
@@ -28,7 +28,8 @@ class BasicGAN(object):
         self._build_optimize()
 
         # noise sampler
-        self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
+        #self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
+        self.noise_sampler = lambda size: np.random.uniform(low=0.0, high=1.0, size=size)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -97,18 +98,30 @@ class BasicGAN(object):
     def train(self, train, valid_seqs=None, max_batch_num=300000, batch_size=64, summary_every=100):
         imgs, seqs = train
         for batch in range(max_batch_num):
-            r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
-            w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
-            g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
-            _, _, d_loss, g_loss = self.sess.run([self.d_train_op, self.g_train_op, self.d_loss, self.g_loss],
-                                                  feed_dict={
-                                                        self.training: True,
-                                                        self.g_noise: g_noise,
-                                                        self.r_seq: seqs[r_idx],
-                                                        self.r_img: imgs[r_idx],
-                                                        self.w_seq: seqs[w_idx],
-                                                        self.w_img: imgs[w_idx]
-                                                  })
+            for _ in range(1): # discimenator iter
+                r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
+                w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
+                g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
+                _, d_loss = self.sess.run([self.d_train_op, self.d_loss],
+                                          feed_dict={
+                                                self.training: True,
+                                                self.g_noise: g_noise,
+                                                self.r_seq: seqs[r_idx],
+                                                self.r_img: imgs[r_idx],
+                                                self.w_seq: seqs[w_idx],
+                                                self.w_img: imgs[w_idx]
+                                          })
+            for _ in range(2): # generator iter
+                r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
+                w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
+                g_noise = self.noise_sampler([batch_size, self.noise_len]) # noise
+                _, g_loss = self.sess.run([self.g_train_op, self.g_loss],
+                                          feed_dict={
+                                                self.training: True,
+                                                self.g_noise: g_noise,
+                                                self.r_seq: seqs[r_idx],
+                                                self.r_img: imgs[r_idx],
+                                          })
             print('batch:{} d_loss: {} g_loss: {}'.format(batch, d_loss, g_loss))
             if valid_seqs is not None and batch % summary_every == 0: # summary
                 self.summary(step=batch, seqs=valid_seqs)
@@ -117,6 +130,7 @@ class BasicGAN(object):
         if self.summary_path:
             r_idx = range(len(seqs)) # real
             g_noise = self.noise_sampler([len(seqs), self.noise_len]) # noise
+            g_noise[0] = np.zeros([1, g_noise.shape[1]], dtype='float32') # without noise
             result = self.sess.run(self.summary_op, 
                                    feed_dict={
                                         self.training: True,
@@ -153,63 +167,85 @@ class GAN(BasicGAN):
         return concat
 
     def _net_generative(self, seq, noise, training):
-        net = tf.concat([noise, seq], axis=1, name='noise_vector')
+        # --------- input ----------
+        net = tf.concat([noise, seq], axis=1)
+        net = tf.expand_dims(tf.expand_dims(net, 1), 2, name='input')
         print(net.name, net.shape)
-        net = tf.layers.dense(net, 3*3*256, name='fc1')
+        # --------- layer1 ----------
+        net = tf.layers.conv2d_transpose(net, 256, (3, 3), strides=(1, 1), padding='valid', name='deconv1')
+        print(net.name, net.shape)
         net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
-        net = tf.reshape(net, [-1, 3, 3, 256])
+        # --------- layer2 ----------
+        net = tf.layers.conv2d_transpose(net, 256, (5, 5), strides=(2, 2), padding='same', name='deconv2')
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(net, 256, (5, 5), strides=(2, 2), padding='same', name='conv2')
         net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
+        # --------- layer3 ----------
+        net = tf.layers.conv2d_transpose(net, 128, (5, 5), strides=(2, 2), padding='same', name='deconv3')
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(net, 128, (5, 5), strides=(2, 2), padding='same', name='conv3')
         net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
+        # --------- layer4 ----------
+        net = tf.layers.conv2d_transpose(net, 64, (5, 5), strides=(2, 2), padding='same', name='deconv4')
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(net, 64, (5, 5), strides=(2, 2), padding='same', name='conv4')
         net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
+        # --------- layer5 ----------
+        net = tf.layers.conv2d_transpose(net, 32, (5, 5), strides=(2, 2), padding='same', name='deconv5')
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(net, 32, (5, 5), strides=(2, 2), padding='same', name='conv5')
         net = tf.layers.batch_normalization(net, training=training)
         net = tf.nn.relu(net)
+        # --------- layer6 ----------
+        net = tf.layers.conv2d_transpose(net, 3, (5, 5), strides=(2, 2), padding='same', name='deconv6')
         print(net.name, net.shape)
-        net = tf.layers.conv2d_transpose(net, 3, (5, 5), strides=(2, 2), padding='same', name='conv6')
         net = tf.layers.batch_normalization(net, training=training)
+        # --------- output ----------
         net = tf.nn.sigmoid(net)
+        net = tf.identity(net, name='output')
         print(net.name, net.shape)
 
         return net
 
     def _net_discriminative(self, seq, img, training):
-        net = img
+        # --------- input ----------
+        net = tf.identity(img, name='input')
         print(net.name, net.shape)
+        # --------- layer1 ----------
         net = tf.layers.conv2d(net, 32, (5, 5), strides=(2, 2), padding='same', name='conv1')
+        print(net.name, net.shape)
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
-        print(net.name, net.shape)
+        # --------- layer2 ----------
         net = tf.layers.conv2d(net, 64, (5, 5), strides=(2, 2), padding='same', name='conv2')
+        print(net.name, net.shape)
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
-        print(net.name, net.shape)
+        # --------- layer3 ----------
         net = tf.layers.conv2d(net, 128, (5, 5), strides=(2, 2), padding='same', name='conv3')
+        print(net.name, net.shape)
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
-        print(net.name, net.shape)
+        # --------- layer4 ----------
         net = tf.layers.conv2d(net, 256, (5, 5), strides=(2, 2), padding='same', name='conv4')
-        net = tf.layers.batch_normalization(net, training=training)
-        net = self.leaky_relu(net)
         print(net.name, net.shape)
-        net = self.img_condition_concat(net, seq) # concat condition
-        net = tf.layers.conv2d(net, 128, (1, 1), strides=(1, 1), padding='same', name='conv5')
         net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
-        print(net.name, net.shape) 
+        # --------- concat ----------
+        net = self.img_condition_concat(net, seq)
+        net = tf.identity(net, name='concat_condition')
+        print(net.name, net.shape)
+        # --------- layer5 ----------
+        net = tf.layers.conv2d(net, 128, (1, 1), strides=(1, 1), padding='same', name='conv5')
+        print(net.name, net.shape)
+        net = tf.layers.batch_normalization(net, training=training)
+        net = self.leaky_relu(net)
+        # --------- layer6 ----------
         final_shape = net.shape.as_list()[1:-1] # discrimenative
         net = tf.layers.conv2d(net, 1, final_shape, strides=(1, 1), padding='valid', name='conv6')
-        nat = tf.contrib.layers.flatten(net)
+        print(net.name, net.shape)
+        # --------- output ----------
+        net = tf.squeeze(net, [1, 2, 3], name='output')
         print(net.name, net.shape)
 
         return net
