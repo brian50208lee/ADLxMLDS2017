@@ -86,7 +86,18 @@ class BasicGAN(object):
     def _build_summary(self):
         if self.summary_path:
             fake_img = tf.image.resize_images(self.f_img, [64,64])/2 + 0.5 # tanh -> [0,1]
-            tf.summary.image('fake_img', fake_img, max_outputs=100)
+            tf.summary.image('fake_img', fake_img[:5], max_outputs=100)
+
+            rows, cols = 10, 10
+            exp_img_long = fake_img[5:105]
+            exp_img_long = tf.concat([tf.concat([exp_img_long[row*rows + col] for col in range(cols)], axis=1) for row in range(rows)], axis=0)
+            exp_img_long = tf.expand_dims(exp_img_long, 0)
+            tf.summary.image('exp_img_long', exp_img_long, max_outputs=100)
+
+            exp_img_short = fake_img[105:205]
+            exp_img_short = tf.concat([tf.concat([exp_img_short[row*rows + col] for col in range(cols)], axis=1) for row in range(rows)], axis=0)
+            exp_img_short = tf.expand_dims(exp_img_short, 0)
+            tf.summary.image('exp_img_short', exp_img_short, max_outputs=100)
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 

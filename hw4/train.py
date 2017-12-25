@@ -5,7 +5,7 @@ from GAN import GAN
 imgs_dir = './data/data/faces/'
 tags_path = './data/data/tags_clean.csv'
 feature_path = './feature.txt'
-special_text_path = './special_text.txt'
+exp_text_path = './exp_text.txt'
 
 # params
 inputs_shape = (96, 96, 3)
@@ -16,11 +16,11 @@ feature_set = load_feature_set(feature_path)
 feature_map = load_feature_map(feature_path)
 
 # load data
-train_imgs, train_sents = load_train_data(imgs_dir, tags_path, feature_set, imresize_shape=inputs_shape, max_data_len=None)
+train_imgs, train_sents = load_train_data(imgs_dir, tags_path, feature_set, imresize_shape=inputs_shape, max_data_len=1000)
 train_sents = sent2feature(train_sents, feature_map, max_feature_len=seq_vec_len)
 train_imgs = train_imgs.astype('float32') / 172.5 - 1.0 # normalize to [-1, 1]
 
-test_sents = load_test_data(special_text_path)
+test_sents = load_test_data(exp_text_path)
 test_sents = sent2feature(test_sents, feature_map, max_feature_len=seq_vec_len)
 
 # data info
