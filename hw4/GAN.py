@@ -8,8 +8,8 @@ class BasicGAN(object):
         inputs_shape,
         seq_vec_len,
         noise_len=100,
-        g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
-        d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
+        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
         summary_path=None
     ):  
         # params
@@ -54,10 +54,10 @@ class BasicGAN(object):
         self.r_img = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='real_image')
         self.w_img = tf.placeholder(tf.float32, [None] + list(self.inputs_shape), name='wrong_image')
 
-    def _net_generative(self, seq, noise, training):
+    def _net_generative(self, seq, noise, training, use_bias=False):
         raise NotImplementedError()    
 
-    def _net_discriminative(self, seq, img, training):
+    def _net_discriminative(self, seq, img, training, use_bias=False):
         raise NotImplementedError()
 
     def _build_model(self):
@@ -77,9 +77,9 @@ class BasicGAN(object):
         with tf.variable_scope('loss'):
             self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.ones_like(self.d_net_rf))) 
             self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rr, labels=tf.ones_like(self.d_net_rr))) \
-                        + tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf))) \
-                        + tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr))) \
-                        #+ tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw))) 
+                        + tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rf, labels=tf.zeros_like(self.d_net_rf)))/3 \
+                        + tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_wr, labels=tf.zeros_like(self.d_net_wr)))/3 \
+                        + tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_net_rw, labels=tf.zeros_like(self.d_net_rw)))/3 
     
     def _build_optimize(self):
         with tf.variable_scope('train_op'):
@@ -90,7 +90,7 @@ class BasicGAN(object):
             
     def _build_summary(self):
         if self.summary_path:
-            fake_img = tf.image.resize_images(self.f_img, [64,64])/2 + 0.5
+            fake_img = tf.image.resize_images(self.f_img, [64,64])/2 + 0.5 # tanh -> [0,1]
             tf.summary.image('fake_img', fake_img, max_outputs=100)
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
@@ -176,7 +176,7 @@ class GAN(BasicGAN):
         net = tf.expand_dims(tf.expand_dims(net, 1), 2, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        net = tf.layers.conv2d_transpose(net, 512, (3, 3), strides=(1, 1), padding='valid', use_bias=use_bias, name='deconv1')
+        net = tf.layers.conv2d_transpose(net, 512, (3, 3), strides=(1, 1), padding='valid', use_bias=True, name='deconv1')
         print(net.name, net.shape)
         net = tf.nn.relu(net)
         # --------- layer2 ----------
