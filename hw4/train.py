@@ -1,30 +1,34 @@
-import os, sys
-import numpy as np
-import tensorflow as tf
-from utils import load_train_data, load_test_data, sent2vec
+from utils import load_feature_set, load_feature_map
+from utils import load_train_data, load_test_data, sent2feature
 from GAN import GAN
 
-testing_text_path = sys.argv[1] + os.sep if len(sys.argv) > 1 else './data/data/special_text.txt'
 imgs_dir = './data/data/faces/'
 tags_path = './data/data/tags_clean.csv'
-output_dir = './samples/'
+feature_path = './feature.txt'
 special_text_path = './special_text.txt'
 
+# params
+inputs_shape = (96, 96, 3)
+seq_vec_len = 100
+
+# feature
+feature_set = load_feature_set(feature_path)
+feature_map = load_feature_map(feature_path)
+
 # load data
-train_imgs, train_sents = load_train_data(imgs_dir, tags_path, max_data_len=None)
-train_sents, word2idx = sent2vec(train_sents)
+train_imgs, train_sents = load_train_data(imgs_dir, tags_path, feature_set, imresize_shape=inputs_shape, max_data_len=None)
+train_sents = sent2feature(train_sents, feature_map, max_feature_len=seq_vec_len)
+train_imgs = train_imgs.astype('float32') / 172.5 - 1.0 # normalize to [-1, 1]
 
 test_sents = load_test_data(special_text_path)
-test_sents, _ = sent2vec(test_sents, word2idx)
+test_sents = sent2feature(test_sents, feature_map, max_feature_len=seq_vec_len)
 
 # data info
-print('word2idx:', word2idx)
+print('feature_map:', feature_map)
 print('train img:', train_imgs.shape)
 print('train sents:', train_sents.shape)
 print('test sents:', test_sents.shape)
 
-inputs_shape = (96, 96, 3)
-seq_vec_len = 64
 model = GAN(
 	        inputs_shape,
         	seq_vec_len,

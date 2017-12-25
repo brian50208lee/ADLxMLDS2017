@@ -1,20 +1,11 @@
 import os
 import random
+import json
 from scipy import misc
 from scipy.misc import imread
 import numpy as np
 
-def load_train_data(imgs_dir, tags_path, imresize_shape=[96,96,3], filter_tag=True, max_data_len=None):
-    # define filter tag
-    hair_tag_filter = set([
-        'orange hair', 'white hair', 'aqua hair', 'gray hair',
-        'green hair', 'red hair', 'purple hair', 'pink hair',
-        'blue hair', 'black hair', 'brown hair', 'blonde hair'])
-    eyes_tag_filter = set([
-        'gray eyes', 'black eyes', 'orange eyes',
-        'pink eyes', 'yellow eyes', 'aqua eyes', 'purple eyes',
-        'green eyes', 'brown eyes', 'red eyes', 'blue eyes'])
-    UKN_tag = '<UKN>'
+def load_train_data(imgs_dir, tags_path, feature_set, imresize_shape=[96,96,3], max_data_len=None):
     # load data
     X, Y = [], []
     with open(tags_path, 'r') as f:
@@ -22,59 +13,59 @@ def load_train_data(imgs_dir, tags_path, imresize_shape=[96,96,3], filter_tag=Tr
             img_id, tags = line.strip().lower().split(',')
             if int(img_id) % 1000 == 0:
                 print('loading train image: {}'.format(img_id))
-            # parse tag
+            # init feature
+            feature = dict()
+            for key in feature_set.keys():
+                feature[key] = []
+            # parse feature from tags
             tags = [tuple(tag.strip().split(':')) for tag in tags.split('\t')]
-            if filter_tag:
-                # filter out hair tag and eyes tag
-                hair_tags = [(tag_name, tag_num) for tag_name, tag_num in tags if tag_name in hair_tag_filter]
-                eyes_tags = [(tag_name, tag_num) for tag_name, tag_num in tags if tag_name in eyes_tag_filter]
-                # skip if no hair tag and eyes tag
-                if len(hair_tags) == 0 and len(eyes_tags) == 0: 
-                    continue
-                # select max tag_num 
-                hair_tags = max(hair_tags, key=lambda x: int(x[1])) if len(hair_tags) > 0 else (UKN_tag, '0')
-                eyes_tags = max(eyes_tags, key=lambda x: int(x[1])) if len(eyes_tags) > 0 else (UKN_tag, '0')
-                tags = [hair_tags, eyes_tags]
-                random.shuffle(tags)
-            sent = [tag_name for tag_name, tag_num in tags]
-            Y.append(' '.join(sent))
-            Y.append(' '.join(list(reversed(sent))))
+            for tag in tags:
+                for feature_type, feature_name in feature_set.items():
+                    if tag[0].strip() in feature_name:
+                        feature[feature_type].append(tag)
+            # select max
+            for feature_type, feature_list in feature.items():
+                feature[feature_type] = max(feature_list, key=lambda x: int(x[1]))[0] if len(feature_list) > 0 else ''
+            sent = ' '.join(feature.values()).strip()
+            sent = ' '.join(sent.split())
+            if len(sent) == 0:
+                continue
+            Y.append(sent)
             # parse img
             img_path = os.path.join(imgs_dir, '{}.jpg'.format(img_id))
             img = misc.imread(img_path)
             img = misc.imresize(img, imresize_shape)
             X.append(img)
-            X.append(img)
             # max data length
             if max_data_len and len(X) >= max_data_len:
                 break
 
-    return np.array(X, dtype=np.float32)/172.5 - 1.0, Y
+    return np.array(X), Y
 
 def load_test_data(sents_path):
-	test = []
-	with open(sents_path, 'r') as f:
-		for line in f:
-			sent = line.split(',')[1].strip()
-			test.append(sent)
-	return test
+    test = []
+    with open(sents_path, 'r') as f:
+        for line in f:
+            sent = line.split(',')[1].strip()
+            test.append(sent)
+    return test
 
-def sent2vec(sents, word2idx=None, max_seq_len=4):
-	if word2idx is None: # build word2idx
-		word2idx = dict()
-		word2idx.update({'<UKN>': 0})
-		for sent in sents:
-			for word in sent.split():
-				if word not in word2idx:
-					word2idx[word] = len(word2idx)
-	sents_vec = np.zeros([len(sents), max_seq_len * len(word2idx)], dtype=np.float32)
-	for sent_idx, sent in enumerate(sents):
-		for word_idx, word in enumerate(sent.split()):
-			if word_idx >= max_seq_len:
-				break
-			if word in word2idx and word != '<UKN>':
-				onehot_idx = word_idx * len(word2idx) + word2idx[word]
-				sents_vec[sent_idx, onehot_idx] = 1.
-	return sents_vec, word2idx
+def load_feature_set(feature_path):
+    feature_dict = json.load(open(feature_path, 'r'))
+    for key in feature_dict.keys():
+        feature_dict[key] = set(feature_dict[key])
+    return feature_dict
 
+def load_feature_map(feature_path):
+    feature_map = json.load(open(feature_path, 'r'))
+    return feature_map
 
+def sent2feature(sents, feature_map, max_feature_len=100):
+    feature_dict = feature_map['hair_color'] + feature_map['eyes_color'] + feature_map['hair_style']
+    feature_dict = dict(zip(feature_dict, range(len(feature_dict))))
+    sents_vec = np.zeros([len(sents), max_feature_len], dtype=np.float32)
+    for sent_idx, sent in enumerate(sents):
+        for feature in feature_dict:
+            if feature in sent:
+                sents_vec[sent_idx ,feature_dict[feature]] = 1.0
+    return sents_vec

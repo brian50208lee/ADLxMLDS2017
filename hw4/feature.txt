@@ -1,0 +1,37 @@
+{
+    "eyes_color": [
+        "pink eyes",
+        "purple eyes",
+        "aqua eyes",
+        "bicolored eyes",
+        "black eyes",
+        "blue eyes",
+        "yellow eyes",
+        "green eyes",
+        "orange eyes",
+        "red eyes",
+        "brown eyes",
+        "gray eyes",
+        "11 eyes"
+    ],
+    "hair_color": [
+        "blonde hair",
+        "purple hair",
+        "red hair",
+        "blue hair",
+        "pink hair",
+        "green hair",
+        "white hair",
+        "gray hair",
+        "black hair",
+        "brown hair",
+        "aqua hair",
+        "orange hair",
+        "pubic hair",
+        "damage hair"
+    ],
+    "hair_style": [
+        "long hair",
+        "short hair"
+    ]
+}

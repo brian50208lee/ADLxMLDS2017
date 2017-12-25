@@ -1,4 +1,8 @@
-data/*
-experiment/*
+# file
 *.DS_Store
 *.pyc
+events.out.tfevents.*
+
+# folder
+data/
+experiment/
