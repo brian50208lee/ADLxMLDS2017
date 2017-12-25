@@ -8,8 +8,8 @@ class BasicGAN(object):
         inputs_shape,
         seq_vec_len,
         noise_len=100,
-        g_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
-        d_optimizer=tf.train.RMSPropOptimizer(learning_rate=0.0001),
+        g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.5),
+        d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.5),
         summary_path=None
     ):  
         # params
@@ -159,6 +159,11 @@ class GAN(BasicGAN):
     def leaky_relu(self, x, alpha=0.01):
         return tf.maximum(tf.minimum(0.0, alpha*x), x)
 
+    def selu(x):
+        alpha = 1.6732632423543772848170429916717
+        scale = 1.0507009873554804934193349852946
+        return scale*tf.where(x>=0.0, x, alpha*tf.nn.elu(x))
+
     def img_condition_concat(self, tensor_img, tensor_seq):
         """
         tensor_img shape: [batch, height, width, depth]
@@ -178,27 +183,27 @@ class GAN(BasicGAN):
         net = tf.expand_dims(tf.expand_dims(net, 1), 2, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        net = tf.layers.conv2d_transpose(net, 256, (3, 3), strides=(1, 1), padding='valid', use_bias=use_bias, name='deconv1')
+        net = tf.layers.conv2d_transpose(net, 1024, (3, 3), strides=(1, 1), padding='valid', use_bias=use_bias, name='deconv1')
         print(net.name, net.shape)
-        net = tf.nn.relu(net)
+        net = self.selu(net)
         # --------- layer2 ----------
-        net = tf.layers.conv2d_transpose(net, 256, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv2')
+        net = tf.layers.conv2d_transpose(net, 512, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv2')
         print(net.name, net.shape)
-        net = tf.nn.relu(net)
+        net = self.selu(net)
         # --------- layer3 ----------
-        net = tf.layers.conv2d_transpose(net, 128, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv3')
+        net = tf.layers.conv2d_transpose(net, 256, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv3')
         print(net.name, net.shape)
-        net = tf.nn.relu(net)
+        net = self.selu(net)
         # --------- layer4 ----------
-        net = tf.layers.conv2d_transpose(net, 64, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv4')
+        net = tf.layers.conv2d_transpose(net, 128, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv4')
         print(net.name, net.shape)
-        net = tf.nn.relu(net)
+        net = self.selu(net)
         # --------- layer5 ----------
-        net = tf.layers.conv2d_transpose(net, 32, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv5')
+        net = tf.layers.conv2d_transpose(net, 64, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv5')
         print(net.name, net.shape)
-        net = tf.nn.relu(net)
+        net = self.selu(net)
         # --------- layer6 ----------
-        net = tf.layers.conv2d_transpose(net, 3, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv6')
+        net = tf.layers.conv2d_transpose(net, 3, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='deconv6')
         print(net.name, net.shape)
         # --------- output ----------
         net = tf.nn.tanh(net)
@@ -212,32 +217,36 @@ class GAN(BasicGAN):
         net = tf.identity(img, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        net = tf.layers.conv2d(net, 32, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='conv1')
+        net = tf.layers.conv2d(net, 64, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='conv1')
         print(net.name, net.shape)
-        net = self.leaky_relu(net)
+        net = self.selu(net)
         # --------- layer2 ----------
-        net = tf.layers.conv2d(net, 64, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='conv2')
+        net = tf.layers.conv2d(net, 128, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='conv2')
         print(net.name, net.shape)
-        net = self.leaky_relu(net)
+        net = self.selu(net)
         # --------- layer3 ----------
-        net = tf.layers.conv2d(net, 128, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='conv3')
+        net = tf.layers.conv2d(net, 256, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='conv3')
         print(net.name, net.shape)
-        net = self.leaky_relu(net)
+        net = self.selu(net)
         # --------- layer4 ----------
-        net = tf.layers.conv2d(net, 256, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='conv4')
+        net = tf.layers.conv2d(net, 512, (4, 4), strides=(2, 2), padding='same', use_bias=use_bias, name='conv4')
         print(net.name, net.shape)
-        net = self.leaky_relu(net)
+        net = self.selu(net)
+        # --------- layer5 ----------
+        net = tf.layers.conv2d(net, 1024, (3, 3), strides=(2, 2), padding='same', use_bias=use_bias, name='conv5')
+        print(net.name, net.shape)
+        net = self.selu(net)
         # --------- concat ----------
         net = self.img_condition_concat(net, seq)
         net = tf.identity(net, name='concat_condition')
         print(net.name, net.shape)
         # --------- layer5 ----------
-        net = tf.layers.conv2d(net, 256, (1, 1), strides=(1, 1), padding='same', use_bias=use_bias, name='conv5')
+        net = tf.layers.conv2d(net, 1024, (1, 1), strides=(1, 1), padding='same', use_bias=use_bias, name='conv6')
         print(net.name, net.shape)
-        net = self.leaky_relu(net)
+        net = self.selu(net)
         # --------- layer6 ----------
         final_shape = net.shape.as_list()[1:-1] # discrimenative
-        net = tf.layers.conv2d(net, 1, final_shape, strides=(1, 1), padding='valid', use_bias=use_bias, name='conv6')
+        net = tf.layers.conv2d(net, 1, final_shape, strides=(1, 1), padding='valid', use_bias=use_bias, name='conv7')
         print(net.name, net.shape)
         # --------- output ----------
         net = tf.squeeze(net, [1, 2, 3], name='output')
