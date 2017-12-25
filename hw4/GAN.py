@@ -98,8 +98,9 @@ class BasicGAN(object):
     def train(self, train, valid_seqs=None, max_batch_num=150000, batch_size=64, summary_every=100):
         imgs, seqs = train
         d_iter, g_iter = 1, 1
+        smooth_g_loss = 0.0
         for batch in range(max_batch_num):
-            g_iter = max(min(g_iter, 5), 1)
+            g_iter = max(min(g_iter, 10), 1)
             for _ in range(d_iter): # discimenator iter
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
@@ -125,8 +126,9 @@ class BasicGAN(object):
                                                 self.r_img: imgs[r_idx],
                                           })
             print('batch:{} d_loss: {} g_loss: {} g_iter: {}'.format(batch, d_loss, g_loss, g_iter))
-            if batch % 50 == 0 and g_loss > 2: g_iter += 1
-            if batch % 50 == 0 and g_loss < 1: g_iter -= 1
+            smooth_g_loss = smooth_g_loss*0.9 + g_loss*0.1
+            if batch % 50 == 0 and smooth_g_loss > 2: g_iter += 1
+            if batch % 50 == 0 and smooth_g_loss < 2: g_iter -= 1
             if valid_seqs is not None and batch % summary_every == 0: # summary
                 self.summary(step=batch, seqs=valid_seqs)
 
@@ -154,7 +156,7 @@ class BasicGAN(object):
         print('Model restored from: {}'.format(checkpoint_file_path))
 
 class GAN(BasicGAN):
-    def leaky_relu(self, x, alpha=0.2):
+    def leaky_relu(self, x, alpha=0.01):
         return tf.maximum(tf.minimum(0.0, alpha*x), x)
 
     def img_condition_concat(self, tensor_img, tensor_seq):
@@ -176,7 +178,7 @@ class GAN(BasicGAN):
         net = tf.expand_dims(tf.expand_dims(net, 1), 2, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        net = tf.layers.conv2d_transpose(net, 512, (3, 3), strides=(1, 1), padding='valid', use_bias=True, name='deconv1')
+        net = tf.layers.conv2d_transpose(net, 256, (3, 3), strides=(1, 1), padding='valid', use_bias=use_bias, name='deconv1')
         print(net.name, net.shape)
         net = tf.nn.relu(net)
         # --------- layer2 ----------
@@ -212,22 +214,18 @@ class GAN(BasicGAN):
         # --------- layer1 ----------
         net = tf.layers.conv2d(net, 32, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='conv1')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         # --------- layer2 ----------
         net = tf.layers.conv2d(net, 64, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='conv2')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         # --------- layer3 ----------
         net = tf.layers.conv2d(net, 128, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='conv3')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         # --------- layer4 ----------
         net = tf.layers.conv2d(net, 256, (5, 5), strides=(2, 2), padding='same', use_bias=use_bias, name='conv4')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         # --------- concat ----------
         net = self.img_condition_concat(net, seq)
@@ -236,7 +234,6 @@ class GAN(BasicGAN):
         # --------- layer5 ----------
         net = tf.layers.conv2d(net, 256, (1, 1), strides=(1, 1), padding='same', use_bias=use_bias, name='conv5')
         print(net.name, net.shape)
-        net = tf.layers.batch_normalization(net, training=training)
         net = self.leaky_relu(net)
         # --------- layer6 ----------
         final_shape = net.shape.as_list()[1:-1] # discrimenative
