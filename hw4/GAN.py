@@ -108,7 +108,7 @@ class BasicGAN(object):
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
     def train(self, train, valid_seqs=None, max_batch_num=100000, batch_size=64, summary_every=100, save_every=1000):
-        imgs, seqs = train
+        imgs, seqs = train # image value range [-1.0, 1.0]
         d_iter, g_iter = 1, 1
         smooth_g_loss = 0.0
         for batch in range(max_batch_num):
