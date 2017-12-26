@@ -86,16 +86,20 @@ class BasicGAN(object):
     def _build_summary(self):
         if self.summary_path:
             fake_img = tf.image.resize_images(self.f_img, [64,64])/2 + 0.5 # tanh -> [0,1]
-            
+            # one image
+            exp_img_one = fake_img[:1]
+            tf.summary.image('exp_img_one', exp_img_one, max_outputs=100)
+
             # same condition 1x5
-            exp_img = fake_img[:5]
-            exp_img = tf.concat([exp_img[col] for col in range(5)], axis=1)
-            exp_img = tf.expand_dims(exp_img, 0)
-            tf.summary.image('exp_img', exp_img, max_outputs=100)
+            rows, cols = 3, 3
+            exp_img_nine = fake_img[1:10]
+            exp_img_nine = tf.concat([tf.concat([exp_img_nine[row*rows + col] for col in range(cols)], axis=1) for row in range(rows)], axis=0)
+            exp_img_nine = tf.expand_dims(exp_img_nine, 0)
+            tf.summary.image('exp_img_nine', exp_img_nine, max_outputs=100)
 
             # all different contidtion 10x10
             rows, cols = 10, 10
-            exp_img_full = fake_img[5:105]
+            exp_img_full = fake_img[11:110]
             exp_img_full = tf.concat([tf.concat([exp_img_full[row*rows + col] for col in range(cols)], axis=1) for row in range(rows)], axis=0)
             exp_img_full = tf.expand_dims(exp_img_full, 0)
             tf.summary.image('exp_img_full', exp_img_full, max_outputs=100)
