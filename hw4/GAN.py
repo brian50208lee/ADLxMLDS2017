@@ -194,7 +194,7 @@ class GAN(BasicGAN):
         net = tf.expand_dims(tf.expand_dims(net, 1), 2, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        net = tf.layers.conv2d_transpose(net, 512, (3, 3), strides=(1, 1), padding='valid', use_bias=False, name='deconv1')
+        net = tf.layers.conv2d_transpose(net, 512, (6, 6), strides=(1, 1), padding='valid', use_bias=False, name='deconv1')
         print(net.name, net.shape)
         net = self.selu(net)
         # --------- layer2 ----------
@@ -210,11 +210,7 @@ class GAN(BasicGAN):
         print(net.name, net.shape)
         net = self.selu(net)
         # --------- layer5 ----------
-        net = tf.layers.conv2d_transpose(net, 32, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv5')
-        print(net.name, net.shape)
-        net = self.selu(net)
-        # --------- layer6 ----------
-        net = tf.layers.conv2d_transpose(net, 3, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv6')
+        net = tf.layers.conv2d_transpose(net, 3, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv5')
         print(net.name, net.shape)
         # --------- output ----------
         net = tf.nn.tanh(net)
@@ -231,23 +227,19 @@ class GAN(BasicGAN):
         net = tf.identity(img, name='input')
         print(net.name, net.shape)
         # --------- layer1 ----------
-        net = tf.layers.conv2d(net, 32, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv1')
+        net = tf.layers.conv2d(net, 64, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv1')
         print(net.name, net.shape)
         net = self.selu(net)
         # --------- layer2 ----------
-        net = tf.layers.conv2d(net, 64, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv2')
+        net = tf.layers.conv2d(net, 128, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv2')
         print(net.name, net.shape)
         net = self.selu(net)
         # --------- layer3 ----------
-        net = tf.layers.conv2d(net, 128, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv3')
+        net = tf.layers.conv2d(net, 256, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv3')
         print(net.name, net.shape)
         net = self.selu(net)
         # --------- layer4 ----------
-        net = tf.layers.conv2d(net, 256, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv4')
-        print(net.name, net.shape)
-        net = self.selu(net)
-        # --------- layer5 ----------
-        net = tf.layers.conv2d(net, 512, (3, 3), strides=(2, 2), padding='same', use_bias=False, name='conv5')
+        net = tf.layers.conv2d(net, 512, (3, 3), strides=(2, 2), padding='same', use_bias=False, name='conv4')
         print(net.name, net.shape)
         net = self.selu(net)
         # --------- concat ----------
@@ -255,7 +247,7 @@ class GAN(BasicGAN):
         net = tf.identity(net, name='concat_condition')
         print(net.name, net.shape)
         # --------- layer5 ----------
-        net = tf.layers.conv2d(net, 1024, (1, 1), strides=(1, 1), padding='same', use_bias=False, name='conv6')
+        net = tf.layers.conv2d(net, 512, (1, 1), strides=(1, 1), padding='same', use_bias=False, name='conv5')
         print(net.name, net.shape)
         net = self.selu(net)
         # --------- layer6 ----------
