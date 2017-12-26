@@ -13,8 +13,8 @@ class BasicGAN(object):
         summary_path=None
     ):  
         # params
-        self.inputs_shape = inputs_shape
-        self.seq_vec_len = seq_vec_len
+        self.inputs_shape = inputs_shape # (96, 96, 3)
+        self.seq_vec_len = seq_vec_len # 100
         self.noise_len = noise_len
         self.g_optimizer = g_optimizer
         self.d_optimizer = d_optimizer
