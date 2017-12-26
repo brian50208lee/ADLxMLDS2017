@@ -99,7 +99,7 @@ class BasicGAN(object):
 
             # all different contidtion 10x10
             rows, cols = 10, 10
-            exp_img_full = fake_img[11:111]
+            exp_img_full = fake_img[10:111]
             exp_img_full = tf.concat([tf.concat([exp_img_full[row*rows + col] for col in range(cols)], axis=1) for row in range(rows)], axis=0)
             exp_img_full = tf.expand_dims(exp_img_full, 0)
             tf.summary.image('exp_img_full', exp_img_full, max_outputs=100)
