@@ -3,203 +3,103 @@
 3,red hair green eyes
 4,red hair green eyes
 5,red hair green eyes
-6,red hair red eyes long hair
-7,red hair pink eyes long hair
-8,red hair orange eyes long hair
-9,red hair yellow eyes long hair
-10,red hair aqua eyes long hair
-11,red hair green eyes long hair
-12,red hair blue eyes long hair
-13,red hair purple eyes long hair
-14,red hair black eyes long hair
-15,red hair gray eyes long hair
-16,pink hair red eyes long hair
-17,pink hair pink eyes long hair
-18,pink hair orange eyes long hair
-19,pink hair yellow eyes long hair
-20,pink hair aqua eyes long hair
-21,pink hair green eyes long hair
-22,pink hair blue eyes long hair
-23,pink hair purple eyes long hair
-24,pink hair black eyes long hair
-25,pink hair gray eyes long hair
-26,orange hair red eyes long hair
-27,orange hair pink eyes long hair
-28,orange hair orange eyes long hair
-29,orange hair yellow eyes long hair
-30,orange hair aqua eyes long hair
-31,orange hair green eyes long hair
-32,orange hair blue eyes long hair
-33,orange hair purple eyes long hair
-34,orange hair black eyes long hair
-35,orange hair gray eyes long hair
-36,aqua hair red eyes long hair
-37,aqua hair pink eyes long hair
-38,aqua hair orange eyes long hair
-39,aqua hair yellow eyes long hair
-40,aqua hair aqua eyes long hair
-41,aqua hair green eyes long hair
-42,aqua hair blue eyes long hair
-43,aqua hair purple eyes long hair
-44,aqua hair black eyes long hair
-45,aqua hair gray eyes long hair
-46,green hair red eyes long hair
-47,green hair pink eyes long hair
-48,green hair orange eyes long hair
-49,green hair yellow eyes long hair
-50,green hair aqua eyes long hair
-51,green hair green eyes long hair
-52,green hair blue eyes long hair
-53,green hair purple eyes long hair
-54,green hair black eyes long hair
-55,green hair gray eyes long hair
-56,blue hair red eyes long hair
-57,blue hair pink eyes long hair
-58,blue hair orange eyes long hair
-59,blue hair yellow eyes long hair
-60,blue hair aqua eyes long hair
-61,blue hair green eyes long hair
-62,blue hair blue eyes long hair
-63,blue hair purple eyes long hair
-64,blue hair black eyes long hair
-65,blue hair gray eyes long hair
-66,purple hair red eyes long hair
-67,purple hair pink eyes long hair
-68,purple hair orange eyes long hair
-69,purple hair yellow eyes long hair
-70,purple hair aqua eyes long hair
-71,purple hair green eyes long hair
-72,purple hair blue eyes long hair
-73,purple hair purple eyes long hair
-74,purple hair black eyes long hair
-75,purple hair gray eyes long hair
-76,white hair red eyes long hair
-77,white hair pink eyes long hair
-78,white hair orange eyes long hair
-79,white hair yellow eyes long hair
-80,white hair aqua eyes long hair
-81,white hair green eyes long hair
-82,white hair blue eyes long hair
-83,white hair purple eyes long hair
-84,white hair black eyes long hair
-85,white hair gray eyes long hair
-86,gray hair red eyes long hair
-87,gray hair pink eyes long hair
-88,gray hair orange eyes long hair
-89,gray hair yellow eyes long hair
-90,gray hair aqua eyes long hair
-91,gray hair green eyes long hair
-92,gray hair blue eyes long hair
-93,gray hair purple eyes long hair
-94,gray hair black eyes long hair
-95,gray hair gray eyes long hair
-96,black hair red eyes long hair
-97,black hair pink eyes long hair
-98,black hair orange eyes long hair
-99,black hair yellow eyes long hair
-100,black hair aqua eyes long hair
-101,black hair green eyes long hair
-102,black hair blue eyes long hair
-103,black hair purple eyes long hair
-104,black hair black eyes long hair
-105,black hair gray eyes long hair
-106,red hair red eyes short hair
-107,red hair pink eyes short hair
-108,red hair orange eyes short hair
-109,red hair yellow eyes short hair
-110,red hair aqua eyes short hair
-111,red hair green eyes short hair
-112,red hair blue eyes short hair
-113,red hair purple eyes short hair
-114,red hair black eyes short hair
-115,red hair gray eyes short hair
-116,pink hair red eyes short hair
-117,pink hair pink eyes short hair
-118,pink hair orange eyes short hair
-119,pink hair yellow eyes short hair
-120,pink hair aqua eyes short hair
-121,pink hair green eyes short hair
-122,pink hair blue eyes short hair
-123,pink hair purple eyes short hair
-124,pink hair black eyes short hair
-125,pink hair gray eyes short hair
-126,orange hair red eyes short hair
-127,orange hair pink eyes short hair
-128,orange hair orange eyes short hair
-129,orange hair yellow eyes short hair
-130,orange hair aqua eyes short hair
-131,orange hair green eyes short hair
-132,orange hair blue eyes short hair
-133,orange hair purple eyes short hair
-134,orange hair black eyes short hair
-135,orange hair gray eyes short hair
-136,aqua hair red eyes short hair
-137,aqua hair pink eyes short hair
-138,aqua hair orange eyes short hair
-139,aqua hair yellow eyes short hair
-140,aqua hair aqua eyes short hair
-141,aqua hair green eyes short hair
-142,aqua hair blue eyes short hair
-143,aqua hair purple eyes short hair
-144,aqua hair black eyes short hair
-145,aqua hair gray eyes short hair
-146,green hair red eyes short hair
-147,green hair pink eyes short hair
-148,green hair orange eyes short hair
-149,green hair yellow eyes short hair
-150,green hair aqua eyes short hair
-151,green hair green eyes short hair
-152,green hair blue eyes short hair
-153,green hair purple eyes short hair
-154,green hair black eyes short hair
-155,green hair gray eyes short hair
-156,blue hair red eyes short hair
-157,blue hair pink eyes short hair
-158,blue hair orange eyes short hair
-159,blue hair yellow eyes short hair
-160,blue hair aqua eyes short hair
-161,blue hair green eyes short hair
-162,blue hair blue eyes short hair
-163,blue hair purple eyes short hair
-164,blue hair black eyes short hair
-165,blue hair gray eyes short hair
-166,purple hair red eyes short hair
-167,purple hair pink eyes short hair
-168,purple hair orange eyes short hair
-169,purple hair yellow eyes short hair
-170,purple hair aqua eyes short hair
-171,purple hair green eyes short hair
-172,purple hair blue eyes short hair
-173,purple hair purple eyes short hair
-174,purple hair black eyes short hair
-175,purple hair gray eyes short hair
-176,white hair red eyes short hair
-177,white hair pink eyes short hair
-178,white hair orange eyes short hair
-179,white hair yellow eyes short hair
-180,white hair aqua eyes short hair
-181,white hair green eyes short hair
-182,white hair blue eyes short hair
-183,white hair purple eyes short hair
-184,white hair black eyes short hair
-185,white hair gray eyes short hair
-186,gray hair red eyes short hair
-187,gray hair pink eyes short hair
-188,gray hair orange eyes short hair
-189,gray hair yellow eyes short hair
-190,gray hair aqua eyes short hair
-191,gray hair green eyes short hair
-192,gray hair blue eyes short hair
-193,gray hair purple eyes short hair
-194,gray hair black eyes short hair
-195,gray hair gray eyes short hair
-196,black hair red eyes short hair
-197,black hair pink eyes short hair
-198,black hair orange eyes short hair
-199,black hair yellow eyes short hair
-200,black hair aqua eyes short hair
-201,black hair green eyes short hair
-202,black hair blue eyes short hair
-203,black hair purple eyes short hair
-204,black hair black eyes short hair
-205,black hair gray eyes short hair
+6,red hair red eyes
+7,red hair pink eyes
+8,red hair orange eyes
+9,red hair yellow eyes
+10,red hair aqua eyes
+11,red hair green eyes
+12,red hair blue eyes
+13,red hair purple eyes
+14,red hair black eyes
+15,red hair gray eyes
+16,pink hair red eyes
+17,pink hair pink eyes
+18,pink hair orange eyes
+19,pink hair yellow eyes
+20,pink hair aqua eyes
+21,pink hair green eyes
+22,pink hair blue eyes
+23,pink hair purple eyes
+24,pink hair black eyes
+25,pink hair gray eyes
+26,orange hair red eyes
+27,orange hair pink eyes
+28,orange hair orange eyes
+29,orange hair yellow eyes
+30,orange hair aqua eyes
+31,orange hair green eyes
+32,orange hair blue eyes
+33,orange hair purple eyes
+34,orange hair black eyes
+35,orange hair gray eyes
+36,aqua hair red eyes
+37,aqua hair pink eyes
+38,aqua hair orange eyes
+39,aqua hair yellow eyes
+40,aqua hair aqua eyes
+41,aqua hair green eyes
+42,aqua hair blue eyes
+43,aqua hair purple eyes
+44,aqua hair black eyes
+45,aqua hair gray eyes
+46,green hair red eyes
+47,green hair pink eyes
+48,green hair orange eyes
+49,green hair yellow eyes
+50,green hair aqua eyes
+51,green hair green eyes
+52,green hair blue eyes
+53,green hair purple eyes
+54,green hair black eyes
+55,green hair gray eyes
+56,blue hair red eyes
+57,blue hair pink eyes
+58,blue hair orange eyes
+59,blue hair yellow eyes
+60,blue hair aqua eyes
+61,blue hair green eyes
+62,blue hair blue eyes
+63,blue hair purple eyes
+64,blue hair black eyes
+65,blue hair gray eyes
+66,purple hair red eyes
+67,purple hair pink eyes
+68,purple hair orange eyes
+69,purple hair yellow eyes
+70,purple hair aqua eyes
+71,purple hair green eyes
+72,purple hair blue eyes
+73,purple hair purple eyes
+74,purple hair black eyes
+75,purple hair gray eyes
+76,white hair red eyes
+77,white hair pink eyes
+78,white hair orange eyes
+79,white hair yellow eyes
+80,white hair aqua eyes
+81,white hair green eyes
+82,white hair blue eyes
+83,white hair purple eyes
+84,white hair black eyes
+85,white hair gray eyes
+86,gray hair red eyes
+87,gray hair pink eyes
+88,gray hair orange eyes
+89,gray hair yellow eyes
+90,gray hair aqua eyes
+91,gray hair green eyes
+92,gray hair blue eyes
+93,gray hair purple eyes
+94,gray hair black eyes
+95,gray hair gray eyes
+96,black hair red eyes
+97,black hair pink eyes
+98,black hair orange eyes
+99,black hair yellow eyes
+100,black hair aqua eyes
+101,black hair green eyes
+102,black hair blue eyes
+103,black hair purple eyes
+104,black hair black eyes
+105,black hair gray eyes

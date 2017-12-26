@@ -32,10 +32,10 @@ print('test sents:', test_sents.shape)
 model = GAN(
 	        inputs_shape,
         	seq_vec_len,
-	        summary_path='tb'
+	        summary_path='./models/tb'
 		)
 model.train(train=[train_imgs, train_sents], valid_seqs=test_sents)
-model.save('./model/finish')
+model.save('./models/finish/finish')
 
 
 
