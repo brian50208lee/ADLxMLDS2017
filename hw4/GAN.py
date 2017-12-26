@@ -196,19 +196,19 @@ class GAN(BasicGAN):
         # --------- layer1 ----------
         net = tf.layers.conv2d_transpose(net, 512, (6, 6), strides=(1, 1), padding='valid', use_bias=False, name='deconv1')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = tf.nn.relu(net)
         # --------- layer2 ----------
         net = tf.layers.conv2d_transpose(net, 256, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv2')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = tf.nn.relu(net)
         # --------- layer3 ----------
         net = tf.layers.conv2d_transpose(net, 128, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv3')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = tf.nn.relu(net)
         # --------- layer4 ----------
         net = tf.layers.conv2d_transpose(net, 64, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv4')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = tf.nn.relu(net)
         # --------- layer5 ----------
         net = tf.layers.conv2d_transpose(net, 3, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv5')
         print(net.name, net.shape)
@@ -229,19 +229,19 @@ class GAN(BasicGAN):
         # --------- layer1 ----------
         net = tf.layers.conv2d(net, 64, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv1')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = self.leaky_relu(net)
         # --------- layer2 ----------
         net = tf.layers.conv2d(net, 128, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv2')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = self.leaky_relu(net)
         # --------- layer3 ----------
         net = tf.layers.conv2d(net, 256, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='conv3')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = self.leaky_relu(net)
         # --------- layer4 ----------
         net = tf.layers.conv2d(net, 512, (3, 3), strides=(2, 2), padding='same', use_bias=False, name='conv4')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = self.leaky_relu(net)
         # --------- concat ----------
         net = self.img_condition_concat(net, seq)
         net = tf.identity(net, name='concat_condition')
@@ -249,7 +249,7 @@ class GAN(BasicGAN):
         # --------- layer5 ----------
         net = tf.layers.conv2d(net, 512, (1, 1), strides=(1, 1), padding='same', use_bias=False, name='conv5')
         print(net.name, net.shape)
-        net = self.selu(net)
+        net = self.leaky_relu(net)
         # --------- layer6 ----------
         final_shape = net.shape.as_list()[1:-1] # discrimenative
         net = tf.layers.conv2d(net, 1, final_shape, strides=(1, 1), padding='valid', use_bias=False, name='conv7')
