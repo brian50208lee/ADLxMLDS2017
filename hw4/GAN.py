@@ -85,7 +85,7 @@ class BasicGAN(object):
             
     def _build_summary(self):
         if self.summary_path:
-            fake_img = tf.image.resize_images(self.f_img, [64,64])/2 + 0.5 # tanh -> [0,1]
+            fake_img = tf.image.resize_images(self.f_img, [64,64]) # tanh -> [0,1]
             # one image
             exp_img_one = fake_img[:1]
             tf.summary.image('exp_img_one', exp_img_one, max_outputs=100)
@@ -107,7 +107,7 @@ class BasicGAN(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
-    def train(self, train, valid_seqs=None, max_batch_num=100000, batch_size=64, summary_every=100, save_every=1000):
+    def train(self, train, valid_seqs=None, max_batch_num=50000, batch_size=64, summary_every=100, save_every=1000):
         imgs, seqs = train # image value range [-1.0, 1.0]
         d_iter, g_iter = 1, 1
         smooth_g_loss = 0.0
@@ -213,7 +213,7 @@ class GAN(BasicGAN):
         net = tf.layers.conv2d_transpose(net, 3, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv5')
         print(net.name, net.shape)
         # --------- output ----------
-        net = tf.nn.tanh(net)
+        net = tf.nn.sigmoid(net)
         net = tf.identity(net, name='output')
         print(net.name, net.shape)
 
