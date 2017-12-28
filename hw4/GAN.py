@@ -38,7 +38,7 @@ class BasicGAN(object):
         self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
 
         # saver
-        self.saver = tf.train.Saver(tf.global_variables())
+        self.saver = tf.train.Saver(tf.global_variables(), max_to_keep=None)
 
         # session
         config = tf.ConfigProto()
@@ -115,7 +115,7 @@ class BasicGAN(object):
             self.summary_op = tf.summary.merge_all()
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
-    def train(self, train, valid_seqs=None, max_batch_num=50000, batch_size=64, summary_every=100, save_every=1000):
+    def train(self, train, valid_seqs=None, max_batch_num=30000, batch_size=64, summary_every=100, save_every=1000):
         """
         train = [train_imgs, train_seqs]
         train_imgs shape = [batch, self.inputs_shape]
@@ -127,7 +127,7 @@ class BasicGAN(object):
         d_iter, g_iter = 1, 1
         smooth_g_loss = 0.0
         for batch in range(max_batch_num):
-            g_iter = max(min(g_iter, 10), 1) # clip
+            g_iter = max(min(g_iter, 20), 1) # clip
             for _ in range(d_iter): # discimenator iter
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
