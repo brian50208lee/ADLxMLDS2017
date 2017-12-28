@@ -94,18 +94,18 @@ class BasicGAN(object):
         if self.summary_path:
             fake_img = self.gen_img
 
-            # one image
+            # without noise
             exp_img_one = fake_img[:1]
             tf.summary.image('exp_img_one', exp_img_one, max_outputs=100)
 
-            # same condition 1x5
+            # same condition 3x3
             rows, cols = 3, 3
             exp_img_nine = fake_img[1:10]
             exp_img_nine = tf.concat([tf.concat([exp_img_nine[row*rows + col] for col in range(cols)], axis=1) for row in range(rows)], axis=0)
             exp_img_nine = tf.expand_dims(exp_img_nine, 0)
             tf.summary.image('exp_img_nine', exp_img_nine, max_outputs=100)
 
-            # all different contidtion 10x10
+            # different contidtion 10x10
             rows, cols = 10, 10
             exp_img_full = fake_img[10:111]
             exp_img_full = tf.concat([tf.concat([exp_img_full[row*rows + col] for col in range(cols)], axis=1) for row in range(rows)], axis=0)
