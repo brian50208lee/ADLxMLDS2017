@@ -47,7 +47,7 @@ if train:
                 output_shape,
                 summary_path='./models/log'
             )
-    model.train(train=[train_imgs, train_sents], valid_seqs=test_sents)
+    model.train(train=[train_imgs, train_sents], valid_seqs=exp_sents)
     model.save('./models/finish/finish')
 
 if test:
