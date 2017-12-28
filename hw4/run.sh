@@ -1,1 +1,1 @@
-python3.6 main.py "$@"
+python3.6 main.py "--test" "--test_text" "$@" 
