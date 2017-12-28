@@ -1,1 +1,1 @@
-python3.6 generate.py "$@"
+python3.6 main.py "$@"

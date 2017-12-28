@@ -40,15 +40,18 @@ def load_train_data(imgs_dir, tags_path, feature_set, imresize_shape=[96,96,3], 
             if max_data_len and len(X) >= max_data_len:
                 break
 
-    return np.array(X), Y
+    return np.array(X, dtype='float32'), Y
 
 def load_test_data(sents_path):
-    test = []
+    sents = []
+    indices = []
     with open(sents_path, 'r') as f:
         for line in f:
-            sent = line.split(',')[1].strip()
-            test.append(sent)
-    return test
+            idx, sent = line.split(',')
+            sent = sent.strip()
+            sents.append(sent)
+            indices.append(int(idx.strip()))
+    return sents, indices 
 
 def load_feature_set(feature_path):
     feature_dict = json.load(open(feature_path, 'r'))
@@ -69,3 +72,11 @@ def sent2feature(sents, feature_map, max_feature_len=100):
             if feature in sent:
                 sents_vec[sent_idx ,feature_dict[feature]] = 1.0
     return sents_vec
+
+def dump_img(output_dir, indices, imgs, sample_id=1):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    imgs = np.array(imgs, dtype=np.uint8)
+    for idx, img in zip(indices, imgs):
+        path = os.path.join(output_dir, 'sample_{testing_text_id}_{sample_id}.jpg'.format(testing_text_id=idx, sample_id=sample_id))
+        misc.imsave(path, img)

@@ -7,6 +7,7 @@ class BasicGAN(object):
         self,
         inputs_shape,
         seq_vec_len,
+        output_shape,
         noise_len=100,
         g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.5),
@@ -15,10 +16,16 @@ class BasicGAN(object):
         # params
         self.inputs_shape = inputs_shape # (96, 96, 3)
         self.seq_vec_len = seq_vec_len # 100
+        self.output_shape = output_shape # (64, 64, 3)
         self.noise_len = noise_len
         self.g_optimizer = g_optimizer
         self.d_optimizer = d_optimizer
         self.summary_path = summary_path
+
+        # image normalizer
+        self.img_resizer = lambda imgs: tf.image.resize_images(imgs, self.output_shape[:2])
+        self.img_normalizer = lambda imgs: imgs / 127.5 - 1.0 # [0, 255] -> [-1, 1] # tanh
+        self.img_renormalizer = lambda imgs: (imgs + 1.0) * 127.5 # [-1, 1] -> [0, 255]
 
         # model
         tf.reset_default_graph()
@@ -29,7 +36,6 @@ class BasicGAN(object):
 
         # noise sampler
         self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
-        #self.noise_sampler = lambda size: np.random.uniform(low=0.0, high=1.0, size=size)
 
         # saver
         self.saver = tf.train.Saver(tf.global_variables())
@@ -60,8 +66,9 @@ class BasicGAN(object):
 
     def _build_model(self):
         with tf.variable_scope('generative_net'):
-            self.g_net = self._net_generative(self.r_seq, self.g_noise)
-            self.f_img = self.g_net # fake image
+            self.f_img = self._net_generative(self.r_seq, self.g_noise)
+            self.gen_img = self.img_resizer(self.f_img)
+            self.gen_img = self.img_renormalizer(self.gen_img)
         with tf.variable_scope('discriminative_net'):
             self.d_net_rr = self._net_discriminative(self.r_seq, self.r_img) # real sequence, real image -> 1
             self.d_net_rf = self._net_discriminative(self.r_seq, self.f_img, reuse=True) # real sequence, fake image -> 0
@@ -85,7 +92,8 @@ class BasicGAN(object):
             
     def _build_summary(self):
         if self.summary_path:
-            fake_img = tf.image.resize_images(self.f_img, [64,64]) # tanh -> [0,1]
+            fake_img = self.gen_img
+
             # one image
             exp_img_one = fake_img[:1]
             tf.summary.image('exp_img_one', exp_img_one, max_outputs=100)
@@ -108,11 +116,18 @@ class BasicGAN(object):
             self.summary_writer = tf.summary.FileWriter(self.summary_path, self.sess.graph)
 
     def train(self, train, valid_seqs=None, max_batch_num=50000, batch_size=64, summary_every=100, save_every=1000):
-        imgs, seqs = train # image value range [-1.0, 1.0]
+        """
+        train = [train_imgs, train_seqs]
+        train_imgs shape = [batch, self.inputs_shape]
+        train_seqs shape = [batch, self.seq_vec_len]
+        imgs range = [0,255]
+        """
+        imgs, seqs = train
+        imgs = self.img_normalizer(imgs)
         d_iter, g_iter = 1, 1
         smooth_g_loss = 0.0
         for batch in range(max_batch_num):
-            g_iter = max(min(g_iter, 10), 1)
+            g_iter = max(min(g_iter, 10), 1) # clip
             for _ in range(d_iter): # discimenator iter
                 r_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # real
                 w_idx = np.random.choice(len(imgs), size=batch_size, replace=False) # wrong
@@ -137,8 +152,8 @@ class BasicGAN(object):
                                           })
             print('batch:{} d_loss: {} g_loss: {} g_iter: {}'.format(batch, d_loss, g_loss, g_iter))
             smooth_g_loss = smooth_g_loss*0.9 + g_loss*0.1
-            if batch % 50 == 0 and smooth_g_loss > 2: g_iter += 1
-            if batch % 50 == 0 and smooth_g_loss < 2: g_iter -= 1
+            if batch % 50 == 0 and smooth_g_loss > 1.5: g_iter += 1
+            if batch % 50 == 0 and smooth_g_loss < 1.5: g_iter -= 1
             if batch % save_every == 0:
                 self.save('./models/{}/cgan'.format(batch))
             if valid_seqs is not None and batch % summary_every == 0: # summary
@@ -146,19 +161,28 @@ class BasicGAN(object):
 
     def summary(self, step, seqs):
         if self.summary_path:
-            r_idx = range(len(seqs)) # real
             g_noise = self.noise_sampler([len(seqs), self.noise_len]) # noise
             g_noise[0] = np.zeros([1, g_noise.shape[1]], dtype='float32') # without noise
             result = self.sess.run(self.summary_op, 
                                    feed_dict={
                                         self.g_noise: g_noise,
-                                        self.r_seq: seqs[r_idx]
+                                        self.r_seq: seqs
                                    })
             self.summary_writer.add_summary(result, step)
 
+    def generate_image(self, seqs):
+        g_noise = self.noise_sampler([len(seqs), self.noise_len]) # noise
+        imgs = self.sess.run(self.gen_img, 
+                             feed_dict={
+                                self.g_noise: g_noise,
+                                self.r_seq: seqs
+                             })
+        return imgs
+
     def save(self, checkpoint_file_path):
-        if not os.path.exists(os.path.dirname(checkpoint_file_path)):
-            os.makedirs(os.path.dirname(checkpoint_file_path))
+        dirname = os.path.dirname(checkpoint_file_path)
+        if len(dirname) > 0 and not os.path.exists(dirname):
+            os.makedirs(dirname)
         self.saver.save(self.sess, checkpoint_file_path)
         print('Model saved to: {}'.format(checkpoint_file_path))
     
@@ -213,7 +237,7 @@ class GAN(BasicGAN):
         net = tf.layers.conv2d_transpose(net, 3, (4, 4), strides=(2, 2), padding='same', use_bias=False, name='deconv5')
         print(net.name, net.shape)
         # --------- output ----------
-        net = tf.nn.sigmoid(net)
+        net = tf.nn.tanh(net)
         net = tf.identity(net, name='output')
         print(net.name, net.shape)
 
