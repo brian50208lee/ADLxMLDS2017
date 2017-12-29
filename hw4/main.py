@@ -16,7 +16,7 @@ tags_path = './data/data/tags_clean.csv'
 exp_text_path = './exp_text.txt'
 
 # test setting
-best_model_path = './models/0/cgan'
+best_model_path = './models/22000/cgan'
 test_output_dir = './samples/'
 samples_num = 5
 
