@@ -3,5 +3,4 @@
 *.pyc
 
 # folder
-data/
 experiment/
