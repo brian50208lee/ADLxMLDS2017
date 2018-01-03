@@ -77,6 +77,7 @@ def test(test_text_path):
                 inputs_shape,
                 seq_vec_len,
                 output_shape,
+                seed=1034
             )
     model.load(best_model_path)
 

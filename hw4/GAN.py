@@ -11,7 +11,8 @@ class BasicGAN(object):
         noise_len=100,
         g_optimizer=tf.train.AdamOptimizer(learning_rate=0.0002, beta1=0.5),
         d_optimizer=tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.5),
-        summary_path=None
+        summary_path=None,
+        seed=None
     ):  
         # params
         self.inputs_shape = inputs_shape # (96, 96, 3)
@@ -35,6 +36,7 @@ class BasicGAN(object):
         self._build_optimize()
 
         # noise sampler
+        np.random.seed(seed)
         self.noise_sampler = lambda size: np.random.normal(loc=0.0, scale=1.0, size=size)
 
         # saver
