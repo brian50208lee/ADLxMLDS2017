@@ -1,6 +1,6 @@
 # Conditional Anime GAN
 
-![image](https://github.com/brian50208lee/ADLxMLDS2017/tree/master/hw4/10000.png)
+![image](https://github.com/brian50208lee/ADLxMLDS2017/blob/master/hw4/10000.png)
 
 ## Environment
 
